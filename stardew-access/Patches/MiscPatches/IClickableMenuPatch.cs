@@ -1,9 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using StardewModdingAPI;
 using stardew_access.Features;
 using stardew_access.Translation;
 using stardew_access.Utils;
@@ -12,7 +12,8 @@ using StardewValley.Menus;
 
 namespace stardew_access.Patches;
 
-// These patches are global, i.e. work on every menus
+// These patches are global, i.e. work on every menu
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 internal class IClickableMenuPatch : IPatch
 {
     private static readonly HashSet<Type> SkipMenuTypes =
@@ -100,8 +101,17 @@ internal class IClickableMenuPatch : IPatch
         typeof(TileDataEntryMenu),
     ];
 
+    private static readonly HashSet<Type> AllowFallbackInMenuTypes =
+    [
+        typeof(OptionsPage),
+        typeof(AdvancedGameOptions),
+        typeof(LanguageSelectionMenu),
+        typeof(MineElevatorMenu)
+    ];
+    
     private static bool _tryHoverPatch = false;
 
+    // ReSharper disable once FieldCanBeMadeReadOnly.Global
     internal static HashSet<string> ManuallyPatchedCustomMenus = [];
 
     internal static string? CurrentMenu;
@@ -115,26 +125,26 @@ internal class IClickableMenuPatch : IPatch
     {
         harmony.Patch(
                 original: AccessTools.Method(typeof(IClickableMenu), "exitThisMenu"),
-                postfix: new HarmonyMethod(typeof(IClickableMenuPatch), nameof(IClickableMenuPatch.ExitThisMenuPatch))
+                postfix: new HarmonyMethod(typeof(IClickableMenuPatch), nameof(ExitThisMenuPatch))
         );
 
         harmony.Patch(
             original: AccessTools.Method(typeof(IClickableMenu), "draw", [typeof(SpriteBatch)]),
-            postfix: new HarmonyMethod(typeof(IClickableMenuPatch), nameof(IClickableMenuPatch.DrawPatch))
+            postfix: new HarmonyMethod(typeof(IClickableMenuPatch), nameof(DrawPatch))
         );
 
         harmony.Patch(
             original: AccessTools.Method(typeof(IClickableMenu), "draw", [typeof(SpriteBatch), typeof(int), typeof(int), typeof(int)]),
-            postfix: new HarmonyMethod(typeof(IClickableMenuPatch), nameof(IClickableMenuPatch.DrawPatch))
+            postfix: new HarmonyMethod(typeof(IClickableMenuPatch), nameof(DrawPatch))
         );
 
         harmony.Patch(
             original: AccessTools.Method(typeof(IClickableMenu), "drawHoverText", [typeof(SpriteBatch), typeof(StringBuilder), typeof(SpriteFont), typeof(int), typeof(int), typeof(int), typeof(string), typeof(int), typeof(string[]), typeof(Item), typeof(int), typeof(string), typeof(int), typeof(int), typeof(int), typeof(float), typeof(CraftingRecipe), typeof(IList<Item>), typeof(Texture2D), typeof(Rectangle?), typeof(Color?), typeof(Color?), typeof(float), typeof(int), typeof(int)]),
-            postfix: new HarmonyMethod(typeof(IClickableMenuPatch), nameof(IClickableMenuPatch.DrawHoverTextPatch))
+            postfix: new HarmonyMethod(typeof(IClickableMenuPatch), nameof(DrawHoverTextPatch))
         );
         harmony.Patch(
             original: AccessTools.Method(typeof(IClickableMenu), nameof(IClickableMenu.receiveKeyPress), [typeof(Keys)]),
-            prefix: new HarmonyMethod(typeof(IClickableMenuPatch), nameof(IClickableMenuPatch.ReceiveKeyPressPatch))
+            prefix: new HarmonyMethod(typeof(IClickableMenuPatch), nameof(ReceiveKeyPressPatch))
         );
     }
 
@@ -159,32 +169,35 @@ internal class IClickableMenuPatch : IPatch
             {
                 return;
             }
+            
+            bool allowFallback = AllowFallbackInMenuTypes.Contains(activeMenuType);
+            Log.Debug($"allowFallback: {allowFallback} ActiveMenuType: {activeMenuType}");
 
             #if DEBUG
             if (_justOpened)
             {
                 _justOpened = false;
-                Log.Debug($"[IClickableMenuPatch.DrawPatch] Attempting to patch menu {{ManuallyCalled:{ManuallyCallingDrawPatch}}}: {activeMenuType?.FullName}");
+                Log.Debug($"[IClickableMenuPatch.DrawPatch] Attempting to patch menu {{ManuallyCalled:{ManuallyCallingDrawPatch}}} {{AllowFallback:{allowFallback}}}: {activeMenuType?.FullName}");
             }
             #endif
 
             if (activeMenu.currentlySnappedComponent == null || string.IsNullOrWhiteSpace(activeMenu!.currentlySnappedComponent.ScreenReaderText))
             {
-                if (OptionsElementUtils.NarrateOptionSlotsInMenuUsingReflection(activeMenu))
+                if (OptionsElementUtils.NarrateOptionSlotsInMenuUsingReflection(activeMenu, allowFallback: allowFallback))
                     return;
             }
             else
             {
-                ClickableComponentUtils.NarrateComponent(activeMenu.currentlySnappedComponent);
-                return;
+                if (ClickableComponentUtils.NarrateComponent(activeMenu.currentlySnappedComponent, allowFallback: allowFallback))
+                    return;
             }
 
-            if (ClickableComponentUtils.NarrateHoveredComponentUsingReflectionInMenu(activeMenu))
+            if (ClickableComponentUtils.NarrateHoveredComponentUsingReflectionInMenu(activeMenu, allowFallback: allowFallback))
             {
                 return;
             }
 
-            if (ClickableComponentUtils.NarrateHoveredComponentFromList(activeMenu.allClickableComponents))
+            if (ClickableComponentUtils.NarrateHoveredComponentFromList(activeMenu.allClickableComponents, allowFallback: allowFallback))
             {
                 return;
             }
