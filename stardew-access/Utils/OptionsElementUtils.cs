@@ -7,7 +7,7 @@ namespace stardew_access.Utils;
 
 public static class OptionsElementUtils
 {
-    public static bool NarrateOptionSlotsInMenuUsingReflection(IClickableMenu menu)
+    public static bool NarrateOptionSlotsInMenuUsingReflection(IClickableMenu? menu, bool allowFallback = false)
     {
         if (menu is null) return false;
 
@@ -52,13 +52,13 @@ public static class OptionsElementUtils
         {
             if (optionSlots == null || optionSlots.Count == 0)
                 continue;
-            if (NarrateHoveredElementFromSlots(optionSlots, optionElements, currentItemIndex))
+            if (NarrateHoveredElementFromSlots(optionSlots, optionElements, currentItemIndex, allowFallback: allowFallback))
                 return true;
         }
         return false;
     }
 
-    public static bool NarrateHoveredElementFromSlots(List<ClickableComponent> optionSlots, List<OptionsElement> options, int currentItemIndex)
+    public static bool NarrateHoveredElementFromSlots(List<ClickableComponent> optionSlots, List<OptionsElement> options, int currentItemIndex, bool allowFallback = false)
     {
         int x = Game1.getMouseX(true), y = Game1.getMouseY(true);
         for (int i = 0; i < optionSlots.Count; i++)
@@ -66,14 +66,13 @@ public static class OptionsElementUtils
             if (currentItemIndex + i >= options.Count || currentItemIndex < 0 || !optionSlots[i].bounds.Contains(x, y))
                 continue;
 
-            NarrateElement(options[currentItemIndex + i], true);
-            return true;
+            return NarrateElement(options[currentItemIndex + i], allowFallback: allowFallback);
         }
 
         return false;
     }
 
-    public static bool NarrateHoveredElementFromList<T>(List<T> options) where T : OptionsElement
+    public static bool NarrateHoveredElementFromList<T>(List<T> options, bool allowFallback = false) where T : OptionsElement
     {
         int x = Game1.getMouseX(true), y = Game1.getMouseY(true);
         for (int i = 0; i < options.Count; i++)
@@ -81,24 +80,32 @@ public static class OptionsElementUtils
             if (!options[i].bounds.Contains(x, y))
                 continue;
 
-            NarrateElement(options[i], true);
-            return true;
+            return NarrateElement(options[i], allowFallback: allowFallback);
         }
 
         return false;
     }
 
-    public static void NarrateElement(OptionsElement optionsElement, bool screenReaderInterrupt = true)
+    // Returns true only if the element has something in "ScreenReaderText"
+    public static bool NarrateElement(OptionsElement optionsElement, bool screenReaderInterrupt = true, bool allowFallback = false)
     {
-        if (optionsElement.ScreenReaderIgnore) return;
+        if (optionsElement.ScreenReaderIgnore) return false;
 
-        MainClass.ScreenReader.SayWithMenuChecker(GetNameOfElement(optionsElement), interrupt: screenReaderInterrupt);
+        var nameOfElement = GetNameOfElement(optionsElement, allowFallback);
+        if (string.IsNullOrWhiteSpace(nameOfElement)) return false;
+        
+        MainClass.ScreenReader.SayWithMenuChecker(nameOfElement, interrupt: screenReaderInterrupt);
+        return true;
     }
 
-    public static string GetNameOfElement(OptionsElement optionsElement)
+    public static string GetNameOfElement(OptionsElement optionsElement, bool allowFallback = false)
     {
         string translationKey;
-        string label = string.IsNullOrWhiteSpace(optionsElement.ScreenReaderText) ? optionsElement.label : optionsElement.ScreenReaderText;
+        string label = allowFallback
+            ? string.IsNullOrWhiteSpace(optionsElement.ScreenReaderText)
+                ? optionsElement.label
+                : optionsElement.ScreenReaderText
+            : optionsElement.ScreenReaderText;
         object? tokens = new { label };
 
         switch (optionsElement)

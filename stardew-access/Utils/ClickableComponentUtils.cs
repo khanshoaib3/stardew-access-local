@@ -5,15 +5,15 @@ using StardewValley.Menus;
 
 namespace stardew_access.Utils;
 
-public partial class ClickableComponentUtils
+public class ClickableComponentUtils
 {
-    public static bool NarrateHoveredComponentUsingReflectionInMenu(IClickableMenu menu, bool skipAllClickableComponents = true)
+    public static bool NarrateHoveredComponentUsingReflectionInMenu(IClickableMenu? menu, bool skipAllClickableComponents = true, bool allowFallback = false)
     {
         if (menu is null) return false;
 
         var fields = menu.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
 
-        var ccFieldInfos = fields.Where(x => IsAcceptableField(x));
+        var ccFieldInfos = fields.Where(IsAcceptableField);
         if (ccFieldInfos.Count() == 0)
         {
             return false;
@@ -21,7 +21,7 @@ public partial class ClickableComponentUtils
 
 #if DEBUG
         string fieldNamesList = string.Join('\n', ccFieldInfos.Select(x => $"{x.FieldType}\t{x.Name}"));
-        Log.Debug($"[ClickableComponentUtils] Fields found to check and narrate, menu in question: {menu.GetType().FullName}\n{fieldNamesList}", once: true);
+        Log.Debug($"[ClickableComponentUtils] Fields found to check and narrate, menu in question: {menu.GetType().FullName}\t[Allow Fallback: {allowFallback}]\n{fieldNamesList}", once: true);
 #endif
 
         int x = Game1.getMouseX(true), y = Game1.getMouseY(true);
@@ -36,8 +36,7 @@ public partial class ClickableComponentUtils
             if (!IsHovered(cc, x, y)) continue;
 
             CommonUIButton? commonButtonType = CommonUIButton.FromFieldInfo(fieldInfo);
-            NarrateComponent(cc!, commonButtonType: commonButtonType);
-            return true;
+            return NarrateComponent(cc!, commonButtonType: commonButtonType, allowFallback: allowFallback);
         }
 
         foreach (var fieldInfo in ccFieldInfos)
@@ -54,8 +53,7 @@ public partial class ClickableComponentUtils
                 if (cco is not ClickableComponent cc) continue;
                 if (!IsHovered(cc, x, y)) continue;
 
-                NarrateComponent(cc!);
-                return true;
+                return NarrateComponent(cc!, allowFallback: allowFallback);
             }
         }
 
@@ -69,7 +67,7 @@ public partial class ClickableComponentUtils
 
     private static bool IsInstanceOfCC(Type fieldType) => fieldType == typeof(ClickableComponent) || fieldType.IsSubclassOf(typeof(ClickableComponent));
 
-    public static bool NarrateHoveredComponentFromList<T>(List<T> clickableComponents) where T : ClickableComponent
+    public static bool NarrateHoveredComponentFromList<T>(List<T> clickableComponents, bool allowFallback = false) where T : ClickableComponent
     {
         if (clickableComponents == null || clickableComponents.Count == 0) return false;
 
@@ -78,8 +76,7 @@ public partial class ClickableComponentUtils
         {
             if (!IsHovered(clickableComponents[i], x, y)) continue;
 
-            NarrateComponent(clickableComponents[i]);
-            return true;
+            return NarrateComponent(clickableComponents[i], allowFallback: allowFallback);
         }
 
         return false;
@@ -87,16 +84,21 @@ public partial class ClickableComponentUtils
 
     private static bool IsHovered(ClickableComponent? cc, int x, int y) => cc is not null && cc.visible && cc.bounds.Contains(x, y);
 
-    public static void NarrateComponent(ClickableComponent clickableComponent, CommonUIButton? commonButtonType = null, bool screenReaderInterrupt = true)
+    public static bool NarrateComponent(ClickableComponent clickableComponent, CommonUIButton? commonButtonType = null, bool screenReaderInterrupt = true, bool allowFallback = false)
     {
-        if (clickableComponent.ScreenReaderIgnore) return;
+        if (clickableComponent.ScreenReaderIgnore) return false;
 
         string toSpeak = commonButtonType is null
-            ? string.IsNullOrWhiteSpace(clickableComponent.ScreenReaderText)
-                ? string.IsNullOrWhiteSpace(clickableComponent.name) ? clickableComponent.label : clickableComponent.name
+            ? allowFallback
+                ? string.IsNullOrWhiteSpace(clickableComponent.ScreenReaderText)
+                    ? string.IsNullOrWhiteSpace(clickableComponent.name) ? clickableComponent.label : clickableComponent.name
+                    : clickableComponent.ScreenReaderText
                 : clickableComponent.ScreenReaderText
             : commonButtonType.Value;
+        
+        if (string.IsNullOrWhiteSpace(toSpeak)) return false;
 
         MainClass.ScreenReader.SayWithMenuChecker(toSpeak, interrupt: screenReaderInterrupt);
+        return true;
     }
 }
