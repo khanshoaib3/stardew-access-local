@@ -120,6 +120,40 @@ internal class IClickableMenuPatch : IPatch
     private static bool _justOpened = true;
     #endif
 
+    internal static IClickableMenu? ActiveMenuOrSubMenu
+    {
+        get
+        {
+            var activeMenu = Game1.activeClickableMenu;
+
+            if (activeMenu == null) return null;
+
+            if (activeMenu.GetParentMenu() != null)
+            {
+                // To let the parent menu's draw() call set `activeMenu` to the child menu, in the next if condition.
+                return null;
+            }
+
+            if (activeMenu.GetChildMenu() != null && activeMenu.GetChildMenu().IsActive())
+            {
+                activeMenu = activeMenu.GetChildMenu();
+            }
+
+            if (activeMenu is TitleMenu titleMenu && TitleMenu.subMenu != null)
+            {
+                return TitleMenu.subMenu;
+            }
+
+            if (activeMenu is GameMenu gameMenu)
+            {
+                return gameMenu.GetCurrentPage();
+            }
+
+            return activeMenu;
+        }
+    }
+
+
     public void Apply(Harmony harmony)
     {
         harmony.Patch(
@@ -154,7 +188,7 @@ internal class IClickableMenuPatch : IPatch
             // The only case when the active menu is null (in vanilla stardew) is when a hud message with no icon is displayed.
             if (Game1.activeClickableMenu is null) return;
 
-            var activeMenu = GetActiveMenu();
+            var activeMenu = ActiveMenuOrSubMenu;
             if (activeMenu is null) return;
 
             // FIXME For some reason custom mod menus don't trigger this patch, even though they implement IClickableMenu,
@@ -166,11 +200,13 @@ internal class IClickableMenuPatch : IPatch
             var activeMenuType = activeMenu.GetType();
             if ((SkipMenuTypes.Contains(activeMenuType) || ManuallyPatchedCustomMenus.Contains(activeMenuType.FullName ?? "")))
             {
+                Log.Debug($"Skipping menu {activeMenuType.FullName}", once: true);
                 return;
             }
             
+            
             bool allowFallback = AllowFallbackInMenuTypes.Contains(activeMenuType);
-            Log.Debug($"allowFallback: {allowFallback} ActiveMenuType: {activeMenuType}");
+            Log.Debug($"allowFallback: {allowFallback} ActiveMenuType: {activeMenuType}", once: true);
 
             #if DEBUG
             if (_justOpened)
@@ -207,36 +243,6 @@ internal class IClickableMenuPatch : IPatch
         {
             Log.Error($"[IClickableMenuPatch.DrawPatch]: {e.Message}\n{e.StackTrace}");
         }
-    }
-
-    private static IClickableMenu? GetActiveMenu()
-    {
-        var activeMenu = Game1.activeClickableMenu;
-
-        if (activeMenu == null) return null;
-
-        if (activeMenu.GetParentMenu() != null)
-        {
-            // To let the parent menu's draw() call set `activeMenu` to the child menu, in the next if condition.
-            return null;
-        }
-
-        if (activeMenu.GetChildMenu() != null && activeMenu.GetChildMenu().IsActive())
-        {
-            activeMenu = activeMenu.GetChildMenu();
-        }
-
-        if (activeMenu is TitleMenu titleMenu && TitleMenu.subMenu != null)
-        {
-            return TitleMenu.subMenu;
-        }
-
-        if (activeMenu is GameMenu gameMenu)
-        {
-            return gameMenu.GetCurrentPage();
-        }
-
-        return activeMenu;
     }
 
     private static void DrawHoverTextPatch(StringBuilder text,
@@ -322,7 +328,7 @@ internal class IClickableMenuPatch : IPatch
     private static bool ReceiveKeyPressPatch(IClickableMenu __instance, ref Keys key)
     {
         if (__instance == null) return true;
-        var activeMenu = GetActiveMenu();
+        var activeMenu = ActiveMenuOrSubMenu;
                 return activeMenu switch
         {
             LoadGameMenu loadGameMenu => LoadGameMenuPatch.ReceiveKeyPressPatch(loadGameMenu, ref key),
