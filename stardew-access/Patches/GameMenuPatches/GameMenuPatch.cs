@@ -10,7 +10,7 @@ internal class GameMenuPatch : IPatch
     {
         harmony.Patch(
             original: AccessTools.DeclaredMethod(typeof(GameMenu), "draw"),
-            postfix: new HarmonyMethod(typeof(GameMenuPatch), nameof(GameMenuPatch.DrawPatch))
+            postfix: new HarmonyMethod(typeof(GameMenuPatch), nameof(DrawPatch))
         );
     }
 
@@ -18,6 +18,10 @@ internal class GameMenuPatch : IPatch
     {
         try
         {
+            // Skip speaking if GMCM menu is active
+            if (IClickableMenuPatch.ManuallyPatchedCustomMenus.Contains(IClickableMenuPatch.ActiveMenuOrSubMenu?.GetType().FullName ?? string.Empty))
+                return;
+
             // Skip if in map page
             if (__instance.currentTab == 3)
                 return;
