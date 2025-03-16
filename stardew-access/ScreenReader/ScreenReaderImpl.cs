@@ -12,6 +12,7 @@ public class ScreenReaderImpl : IScreenReader
     private string prevMenuPrefixText = "";
     private string menuSuffixText = "";
     private string prevMenuSuffixText = "";
+    private string prevMenuElementDescription = "";
     private string menuPrefixNoQueryText = "";
     private string menuSuffixNoQueryText = "";
 
@@ -154,6 +155,22 @@ public class ScreenReaderImpl : IScreenReader
         return SayWithMenuChecker(Translator.Instance.Translate(translationKey, translationTokens, translationCategory, disableTranslationWarnings), interrupt, customQuery, excludeFromBuffer: excludeFromBuffer);
     }
 
+    public bool SayMenuElement(string text, string description = "", bool interrupt = true, bool excludeFromBuffer = false)
+    {
+        if (prevMenuText == text && prevMenuSuffixText == MenuSuffixText && prevMenuPrefixText == MenuPrefixText)
+            return false;
+
+        prevMenuText = text;
+        prevMenuSuffixText = MenuSuffixText;
+        prevMenuPrefixText = MenuPrefixText;
+        bool re = Say($"{MenuPrefixNoQueryText}{MenuPrefixText}{text}{(prevMenuElementDescription != description ? description : "")}{MenuSuffixText}{MenuSuffixNoQueryText}", interrupt, excludeFromBuffer: excludeFromBuffer);
+        MenuPrefixNoQueryText = "";
+        MenuSuffixNoQueryText = "";
+        prevMenuElementDescription = description;
+        
+        return re;
+    }
+
     public bool SayWithChatChecker(string text, bool interrupt, bool excludeFromBuffer = false)
     {
         if (prevChatText == text)
@@ -179,5 +196,6 @@ public class ScreenReaderImpl : IScreenReader
         MainClass.ScreenReader.PrevMenuQueryText = "";
         MainClass.ScreenReader.MenuPrefixText = "";
         MainClass.ScreenReader.MenuSuffixText = "";
+        prevMenuElementDescription = "";
     }
 }
