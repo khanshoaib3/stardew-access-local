@@ -134,7 +134,8 @@ public static class OptionsElementUtils
                 tokens = new
                 {
                     label,
-                    slider_value = slider.value
+                    slider_value = slider.value,
+                    is_percentage = 0
                 };
                 break;
             case OptionsPlusMinus plusMinus:

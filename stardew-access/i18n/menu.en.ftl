@@ -43,7 +43,10 @@ options_element-checkbox_info = {$is_checked ->
     *[1] Enabled
   } {$label} checkbox
 options_element-dropdown_info = {$label} dropdown, option {$selected_option} selected
-options_element-slider_info = {$slider_value}% {$label} slider
+options_element-slider_info ={$is_percentage ->
+    [0] {$slider_value} {$label} slider
+    *[1] {$slider_value}% {$label} slider
+  }
 options_element-plus_minus_button_info = {$selected_option} selected of {$label}
 options_element-input_listener_info = {$label} is bound to {$buttons_list}. Left click to change.
 
