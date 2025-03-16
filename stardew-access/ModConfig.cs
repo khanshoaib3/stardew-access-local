@@ -51,7 +51,7 @@ internal class ModConfig
     /// <summary>
     /// Toggle this feature.
     /// </summary>
-    public Boolean ReadTile { get; set; } = true;
+    public bool ReadTile { get; set; } = true;
 
     /// <summary>
     /// Manually trigger read tile for the tile player is *looking at*.
@@ -66,7 +66,7 @@ internal class ModConfig
     /// <summary>
     /// Toggle reading flooring.
     /// </summary>
-    public Boolean ReadFlooring { get; set; } = false;
+    public bool ReadFlooring { get; set; }
 
     /// <summary>
     /// Toggles reading floorings, an alternate/companion to `flooring` command;
@@ -74,24 +74,24 @@ internal class ModConfig
     public KeybindList ReadFlooringKey { get; set; } = KeybindList.Parse("");
 
     /// <summary>
-    /// Toggle reading descriptive names for flooring or generice ones (pathway/flooring/stepping stone).
+    /// Toggle reading descriptive names for flooring or generic ones (pathway/flooring/stepping stone).
     /// </summary>
-    public Boolean DisableDescriptiveFlooring { get; set; } = false;
+    public bool DisableDescriptiveFlooring { get; set; } = false;
 
     /// <summary>
     /// Toggle speaking watered or unwatered for crops.
     /// </summary>
-    public Boolean WateredToggle { get; set; } = true;
+    public bool WateredToggle { get; set; } = true;
 
     /// <summary>
     /// Toggle speaking tile indexes and object ids with other info.
     /// </summary>
-    public Boolean ReadTileDebug { get; set; } = false;
+    public bool ReadTileDebug { get; set; } = false;
 
     /// <summary>
     /// Toggle speaking hoed dirt (soil) in mine shafts.
     /// </summary>
-    public Boolean ReadHoedDirtInMineShafts { get; set; } = false;
+    public bool ReadHoedDirtInMineShafts { get; set; } = false;
 
     #endregion
 
@@ -169,12 +169,12 @@ internal class ModConfig
     /// <summary>
     /// Toggle Radar feature.
     /// </summary>
-    public Boolean Radar { get; set; } = false;
+    public bool Radar { get; set; }
 
     /// <summary>
     /// Toggle whether to use stereo sound or mono
     /// </summary>
-    public Boolean RadarStereoSound { get; set; } = true;
+    public bool RadarStereoSound { get; set; } = true;
 
     #endregion
 
@@ -221,7 +221,7 @@ internal class ModConfig
     /// Toggle displaying character design options
     /// </summary>
     public KeybindList CharacterCreationMenuDesignToggleKey { get; set; } = KeybindList.Parse("LeftControl + Space, RightControl + Space");
-    public Boolean CharacterCreationMenuDesignDefaultEnabled { get; set; } = true;
+    public bool CharacterCreationMenuDesignDefaultEnabled { get; set; } = true;
 
 
     // Bundle menu keys
@@ -277,7 +277,7 @@ internal class ModConfig
     /// <summary>
     /// Enable or disable grid movement feature.
     /// </summary>
-    public Boolean GridMovementActive { get; set; } = true;
+    public bool GridMovementActive { get; set; } = true;
 
     /// <summary>
     /// Toggle grid movement.
@@ -379,22 +379,22 @@ internal class ModConfig
     /// <summary>
     /// 
     /// </summary>
-    public Boolean OTAutoRefreshing { get; set; } = true;
+    public bool OTAutoRefreshing { get; set; } = true;
 
     /// <summary>
     /// If enabled, the default sorting mode will be proximity. 
     /// </summary>
-    public Boolean OTSortByProximity { get; set; } = true;
+    public bool OTSortByProximity { get; set; } = true;
 
     /// <summary>
     /// 
     /// </summary>
-    public Boolean OTWrapLists { get; set; } = false;
+    public bool OTWrapLists { get; set; } = false;
 
     /// <summary>
     /// 
     /// </summary>
-    public Boolean OTRememberPosition { get; set; } = true;
+    public bool OTRememberPosition { get; set; } = true;
 
     #endregion
 
@@ -435,42 +435,42 @@ internal class ModConfig
     /// <summary>
     /// Whether to speak 'X:' and 'Y:' along with co-ordinates or not.
     /// </summary>
-    public Boolean VerboseCoordinates { get; set; } = true;
+    public bool VerboseCoordinates { get; set; } = true;
 
     /// <summary>
     /// Toggles the snap mouse feature
     /// </summary>
-    public Boolean SnapMouse { get; set; } = true;
+    public bool SnapMouse { get; set; } = true;
 
     /// <summary>
     /// Toggles the warnings feature
     /// </summary>
-    public Boolean Warning { get; set; } = true;
+    public bool Warning { get; set; } = true;
 
     /// <summary>
     /// Toggles the screen reader/tts.
     /// </summary>
-    public Boolean TTS { get; set; } = true;
+    public bool TTS { get; set; } = true;
 
     /// <summary>
     /// Toggles speaking of character speech bubbles.
     /// </summary>
-    public Boolean AutoReadCharacterBubbles { get; set; } = true;
+    public bool AutoReadCharacterBubbles { get; set; } = true;
 
     /// <summary>
     /// Toggles speaking of character dialog.
     /// </summary>
-    public Boolean AutoReadCharacterDialog { get; set; } = true;
+    public bool AutoReadCharacterDialog { get; set; } = true;
 
     /// <summary>
     /// Toggles speaking of question dialog.
     /// </summary>
-    public Boolean AutoReadQuestionDialog { get; set; } = true;
+    public bool AutoReadQuestionDialog { get; set; } = true;
 
     /// <summary>
     /// Toggles speaking of basic dialogs (like no mail in mailbox).
     /// </summary>
-    public Boolean AutoReadBasicDialog { get; set; } = true;
+    public bool AutoReadBasicDialog { get; set; } = true;
 
     /// <summary>
     /// Key to manually read current dialog.
@@ -480,53 +480,52 @@ internal class ModConfig
     /// <summary>
     /// Toggles detecting the dropped items.
     /// </summary>
-    public Boolean TrackDroppedItems { get; set; } = true;
+    public bool TrackDroppedItems { get; set; } = true;
 
     /// <summary>
     /// If enabled, does not speaks 'not usable here' and 'donatable' in inventories
     /// </summary>
-    public Boolean DisableInventoryVerbosity { get; set; } = false;
+    public bool DisableInventoryVerbosity { get; set; } = false;
 
     /// <summary>
     /// If enabled, does not speak bush type or size; only harvestable.
     /// </summary>
-    public Boolean DisableBushVerbosity { get; set; } = false;
+    public bool DisableBushVerbosity { get; set; } = false;
 
     /// <summary>
     /// If enabled, does not speak debris descriptions.
     /// </summary>
-    public Boolean DisableDescriptiveDebris { get; set; } = false;
+    public bool DisableDescriptiveDebris { get; set; } = false;
 
     /// <summary>
     /// If enabled, doesn't speak colors for slimes and big slimes.
     /// </summary>
-    public Boolean DisableColorfulSlime { get; set; } = false;
+    public bool DisableColorfulSlime { get; set; } = false;
 
     /// <summary>
     /// If enabled, uses expanded color set for matching.
     /// </summary>
-    public Boolean ExtraColors { get; set; } = false;
+    public bool ExtraColors { get; set; } = false;
 
     /// <summary>
     /// If enabled, does not pluralize inventory with fluent
     /// </summary>
-    public Boolean DisableInventoryFluentPluralization { get; set; } = false;
+    public bool DisableInventoryFluentPluralization { get; set; } = false;
 
-    /// <summary>
     /// <summary>
     /// If disabled, speaks "You've got mail!" with tts instead of playing the sound.
     /// </summary>
-    public Boolean YouveGotMailSound { get; set; } = true;
+    public bool YouveGotMailSound { get; set; } = true;
 
-    /// <summary>
     /// <summary>
     /// If enabled, toggles on in-game cheats / debug commands.
     /// </summary>
-    public Boolean EnableCheats { get; set; } = false;
+    public bool EnableCheats { get; set; } = false;
 
+    /// <summary>
     /// Sets speech rate for the Mac TTS.
     /// </summary>
-    public Single MacSpeechRate { get; set; } = 220;
+    public float MacSpeechRate { get; set; } = 220;
 
     #endregion
 
@@ -553,8 +552,8 @@ internal class ModConfig
     /// </summary>
     public float EggHuntTimerMultiplier
     {
-        get { return Math.Clamp(_EggHuntTimerMultiplier, 1f, 3f); }
-        set { _EggHuntTimerMultiplier = Math.Clamp(value, 1f, 3f); }
+        get => Math.Clamp(_EggHuntTimerMultiplier, 1f, 3f);
+        set => _EggHuntTimerMultiplier = Math.Clamp(value, 1f, 3f);
     }
 
     // TODO Add the exclusion and focus list too
