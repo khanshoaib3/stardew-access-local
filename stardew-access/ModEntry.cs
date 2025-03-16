@@ -125,6 +125,7 @@ public class MainClass : Mod
             Log.Info("Enabled debug cheats");
         }
         TileManager.Initialize();
+        ModConfigMenu.Create(modHelper!, ModManifest, config!);
     }
 
     private void OnDayStarted(object? sender, DayStartedEventArgs? e)
