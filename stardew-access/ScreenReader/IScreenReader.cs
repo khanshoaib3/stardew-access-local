@@ -108,6 +108,8 @@ public interface IScreenReader
     /// <returns>true if the text was spoken otherwise, false.</returns>
     public bool TranslateAndSayWithMenuChecker(string translationKey, bool interrupt, object? translationTokens = null, TranslationCategory translationCategory = TranslationCategory.Menu, string? customQuery = null, bool disableTranslationWarnings = false, bool excludeFromBuffer = false);
 
+    public bool SayMenuElement(string text, string description = "", bool interrupt = true, bool excludeFromBuffer = false);
+
     /// <summary>Speaks the text via the loaded screen reader (if any).
     /// <br/>Skips the text narration if the previously narrated text was the same as the one provided.
     /// <br/><br/>Use this when narrating chat messages to avoid interference.</summary>
