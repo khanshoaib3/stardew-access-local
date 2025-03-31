@@ -3,6 +3,7 @@ using StardewModdingAPI;
 
 namespace stardew_access;
 
+// TODO I18n!!
 internal static class ModConfigMenu
 {
     internal static void Create(IModHelper helper, IManifest manifest, ModConfig config)

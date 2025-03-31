@@ -39,6 +39,10 @@ public class FeatureManager
 
     public static void OnButtonPressedEvent(object? sender, ButtonPressedEventArgs e)
     {
+#if DEBUG
+        Log.Verbose($"[OnButtonPressedEvent]: {e.Button} was pressed in menu {IClickableMenuPatch.ActiveMenuOrSubMenu}");
+#endif
+
         #region Simulate left and right clicks
 
         if (!TextBoxPatch.IsAnyTextBoxActive)
