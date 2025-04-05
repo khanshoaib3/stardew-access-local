@@ -309,7 +309,7 @@ public class TileInfo
                     characterName = Translator.Instance.Translate("npc_name-pet", new
                     {
                         can_be_pet = wasPetToday ? 0 : 1,
-                        name = TokenParser.ParseText(pet.GetPetData().DisplayName)
+                        name = pet.getName()
                     });
                     characterCategory = wasPetToday ? CATEGORY.NPCs : CATEGORY.Pending;
                     break;
