@@ -12,8 +12,8 @@ internal class SpecialOrdersBoardPatch : IPatch
     public void Apply(Harmony harmony)
     {
         harmony.Patch(
-                original: AccessTools.Method(typeof(SpecialOrdersBoard), nameof(SpecialOrdersBoard.draw), [typeof(SpriteBatch)]),
-                postfix: new HarmonyMethod(typeof(SpecialOrdersBoardPatch), nameof(SpecialOrdersBoardPatch.DrawPatch))
+            original: AccessTools.Method(typeof(SpecialOrdersBoard), nameof(SpecialOrdersBoard.draw), [typeof(SpriteBatch)]),
+            postfix: new HarmonyMethod(typeof(SpecialOrdersBoardPatch), nameof(DrawPatch))
         );
     }
 
@@ -110,6 +110,6 @@ internal class SpecialOrdersBoardPatch : IPatch
         if (!flag2 && Game1.player.team.acceptedSpecialOrderTypes.Contains(__instance.GetOrderType()))
             flag1 = true;
 
-        return flag1;
+        return !flag1;
     }
 }

@@ -4,7 +4,7 @@ using StardewModdingAPI.Events;
 using System.Text.RegularExpressions;
 using Translation;
 using StardewValley;
-using stardew_access.Utils;
+using Utils;
 using StardewModdingAPI;
 
 internal class GameStateNarrator : FeatureBase
@@ -130,7 +130,7 @@ internal class GameStateNarrator : FeatureBase
             if (hudMessageQueryKey != searchQuery)
             {
                 hudMessageQueryKey = searchQuery;
-                MainClass.ScreenReader.Say(toSpeak, true);
+                MainClass.ScreenReader.Say(toSpeak, false);
                 HudMessagesBuffer.Add(toSpeak);
             }
         }
