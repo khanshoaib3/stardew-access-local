@@ -247,6 +247,11 @@ tile-volcano_dungeon-gate = Gate
 tile-forest-giant_tree_sump = Giant Tree Stump
 tile-town-bookseller = Bookseller
 tile-town-krobus_hiding_bush = Strange Bush
+tile-town-prize_ticket_box = Prize Ticket Box{$tickets ->
+    [0] {EMPTYSTRING()}
+    [1] , with 1 prize ticket
+    *[any] , with {$tickets} prize tickets 
+  }
 
 ## Entrances
 

@@ -1029,6 +1029,13 @@ public class DynamicTiles
             return ("tile-town-krobus_hiding_bush", CATEGORY.Quest);
         }
 
+        if (x is 60 && y is 93 && SpecialOrder.IsSpecialOrdersBoardUnlocked() && !Game1.isFestival())
+        {
+            int tickets = (int)Game1.player.stats.Get("specialOrderPrizeTickets");
+            string name = Translator.Instance.Translate("tile-town-prize_ticket_box", new { tickets = tickets });
+            return (name, tickets > 0 ? CATEGORY.Pending : CATEGORY.Buildings);
+        }
+
         return (null, null);
     }
 
