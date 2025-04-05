@@ -1,0 +1,89 @@
+name: merge.yml
+on:
+  workflow_dispatch:
+    inputs:
+      pull-request-number:
+        description: "The PR's number"
+        required: true
+        type: string
+      method:
+        description: "Merge method"
+        required: true
+        default: 'fast_forward'
+        type: choice
+        options:
+          - fast_forward
+          - rebase_fast_forward
+      parse-pr-message:
+        description: "Parse PR's message to generate changelog and contributors"
+        required: false
+        default: true
+        type: boolean
+
+# 1. Set environment
+# 2. Prepare branch
+# 3. Gather changelogs and commit
+# 4. Merge and push
+jobs:
+  merge:
+    name: Merge Pull Request ${{ inputs.pull-request-number }}
+
+    # Ref: https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
+    # issues: For adding the success/failure comments
+    # pull-requests: For some reason, even though I gave write perms to issues, it wasn't able to send the success/failure comment to PR, so maybe having pull-requests to write will?
+    # contents: For adding commits
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: write
+
+    runs-on: ubuntu-latest
+
+    # Only run the job if:-
+    # 1. It is a pull request
+    # 2. It's not closed
+    # 3. The comment was by the owner or one of the collaborator
+    # 4. The comment message is "/fast-forward"
+    steps:
+      # Ref: https://github.com/actions/github-script
+      - uses: actions/github-script@v7
+        id: check_result
+        with:
+          script: |
+            // const owner = context.repo.owner
+            // const repo = context.repo.repo
+            const pull_number = ${{ inputs.pull-request-number }}
+            const owner = 'stardew-access'
+            const repo = 'stardew-access'
+            
+            const isPullRequest = true
+            
+            const prInfo = await github.rest.pulls.get({
+              pull_number: pull_number,
+              owner: owner,
+              repo: repo,
+            })
+            
+            const isDraft = prInfo.data.draft
+            if (isDraft) {
+              core.setFailed('PR is a draft. Aborting...')
+              return
+            }
+            
+            if (prInfo.data.merged) {
+              core.setFailed('PR is already merged. Aborting...')
+              return
+            }
+            
+            const reqRevs = await github.rest.pulls.listRequestedReviewers({
+              pull_number: pull_number,
+              owner: owner,
+              repo: repo,
+            })
+            
+            const anyRequestedReviewers = reqRevs.data.users.length > 0 || reqRevs.data.teams.length > 0
+            if (anyRequestedReviewers) {
+              core.setFailed('The PR is has requested reviewers. Aborting...')
+              return
+            }
+
