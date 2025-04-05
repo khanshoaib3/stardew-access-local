@@ -1006,7 +1006,7 @@ public class DynamicTiles
     {
         if (SpecialOrder.IsSpecialOrdersBoardUnlocked() && x == 62 && y == 93)
         {
-            return ("tile_name-special_quest_board", CATEGORY.Interactables);
+            return ("tile-town-special_orders_board", CATEGORY.Interactables);
         }
 
         if (Utility.doesMasterPlayerHaveMailReceivedButNotMailForTomorrow("ccMovieTheater") && x == 98 && y == 51)

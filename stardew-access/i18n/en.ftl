@@ -214,7 +214,6 @@ tile_name-feeding_bench = {$is_empty ->
     [1] Empty
     *[0] {EMPTYSTRING()}
   } Feeding Bench
-tile_name-special_quest_board = Special Quest Board
 tile-museum_piece_showcase-suffix = {$content} Showcase
 tile_name-fridge = Fridge
 tile_name-mail_box = Mail Box
@@ -247,6 +246,7 @@ tile-volcano_dungeon-gate = Gate
 tile-forest-giant_tree_sump = Giant Tree Stump
 tile-town-bookseller = Bookseller
 tile-town-krobus_hiding_bush = Strange Bush
+tile-town-special_orders_board = Special Orders Board
 tile-town-prize_ticket_box = Prize Ticket Box{$tickets ->
     [0] {EMPTYSTRING()}
     [1] , with 1 prize ticket
