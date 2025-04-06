@@ -43,9 +43,19 @@ internal class SpecialOrdersBoardPatch : IPatch
                 return;
             }
 
-            SpecialOrder inProgress = IsInProgress(__instance.leftOrder, __instance) ? __instance.leftOrder : __instance.rightOrder;
+            SpecialOrder? inProgress = IsInProgress(__instance.leftOrder, __instance)
+                ? __instance.leftOrder
+                : IsInProgress(__instance.rightOrder, __instance)
+                    ? __instance.rightOrder
+                    : null;
 
-            if (__instance.boardType == "" && Game1.player.team.completedSpecialOrders.Contains(inProgress.questKey.Value))
+            if (inProgress is null)
+            {
+                MainClass.ScreenReader.TranslateAndSayWithMenuChecker("menu-special_orders_board-no_active_quest", true);
+                return;
+            }
+
+            if (Game1.player.team.completedSpecialOrders.Contains(inProgress.questKey.Value))
             {
                 MainClass.ScreenReader.TranslateAndSayWithMenuChecker("menu-special_orders_board-quest_completed", true, new
                 {
@@ -54,14 +64,10 @@ internal class SpecialOrdersBoardPatch : IPatch
                 return;
             }
 
-            if (Game1.player.team.acceptedSpecialOrderTypes.Contains(__instance.GetOrderType()))
+            MainClass.ScreenReader.TranslateAndSayWithMenuChecker("menu-special_orders_board-quest_in_progress", true, new
             {
-                MainClass.ScreenReader.TranslateAndSayWithMenuChecker("menu-special_orders_board-quest_in_progress", true, new
-                {
-                    quest_details = GetQuestDetails(inProgress)
-                });
-                return;
-            }
+                quest_details = GetQuestDetails(inProgress)
+            });
         }
         catch (Exception e)
         {
@@ -84,6 +90,7 @@ internal class SpecialOrdersBoardPatch : IPatch
 
     private static bool IsInProgress(SpecialOrder order, SpecialOrdersBoard __instance)
     {
+        // Ref: SpecialOrdersBoard::draw()
         bool flag1 = false;
         bool flag2 = false;
         foreach (SpecialOrder specialOrder in Game1.player.team.specialOrders)

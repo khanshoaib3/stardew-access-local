@@ -664,6 +664,7 @@ menu-special_orders_board-accept_button = {$is_left_quest ->
   Left click to accept this quest.
 menu-special_orders_board-quest_in_progress = In progress: {$quest_details}
 menu-special_orders_board-quest_completed = Quest {$name} completed! Open journal to collect your reward.
+menu-special_orders_board-no_active_quest = No active quest
 
 ## Title Menus
 
