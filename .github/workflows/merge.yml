@@ -8,53 +8,48 @@ on:
         type: string
       method:
         description: "Merge method"
-        required: true
+        required: false
         default: 'fast_forward'
         type: choice
         options:
           - fast_forward
           - rebase_fast_forward
-      parse-pr-message:
+      generate-changelog:
         description: "Parse PR's message to generate changelog and contributors"
         required: false
         default: true
         type: boolean
+      update-contributors:
+        description: "Parse PR's message to get and update contributors"
+        required: false
+        default: false
+        type: boolean
 
-# 1. Set environment
-# 2. Prepare branch
-# 3. Gather changelogs and commit
-# 4. Merge and push
+# 1. Check if mergeable and abort if not.
+# 2. Gather changelogs and update contributors section. Commit and push.
+# 3. Merge and push.
 jobs:
-  merge:
-    name: Merge Pull Request ${{ inputs.pull-request-number }}
-
-    # Ref: https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
-    # issues: For adding the success/failure comments
-    # pull-requests: For some reason, even though I gave write perms to issues, it wasn't able to send the success/failure comment to PR, so maybe having pull-requests to write will?
-    # contents: For adding commits
-    permissions:
-      issues: write
-      pull-requests: write
-      contents: write
-
+  check-mergeable:
+    name: ${{ format('[{0}] Mergeability Check', inputs.pull-request-number) }}
     runs-on: ubuntu-latest
-
-    # Only run the job if:-
-    # 1. It is a pull request
-    # 2. It's not closed
-    # 3. The comment was by the owner or one of the collaborator
-    # 4. The comment message is "/fast-forward"
+    outputs:
+      pr-message: ${{ steps.check_result.outputs.pr-message }}
+      base-ref: ${{ steps.check_result.outputs.base-ref }}
+      head-ref: ${{ steps.check_result.outputs.head-ref }}
+      is-fork: ${{ steps.check_result.outputs.is-fork }}
+      username: ${{ steps.check_result.outputs.username }}
+      clone-url: ${{ steps.check_result.outputs.clone-url }}
     steps:
       # Ref: https://github.com/actions/github-script
       - uses: actions/github-script@v7
         id: check_result
         with:
           script: |
-            // const owner = context.repo.owner
-            // const repo = context.repo.repo
+            const owner = context.repo.owner
+            const repo = context.repo.repo
             const pull_number = ${{ inputs.pull-request-number }}
-            const owner = 'stardew-access'
-            const repo = 'stardew-access'
+            // const owner = 'stardew-access'
+            // const repo = 'stardew-access'
             
             const isPullRequest = true
             
@@ -83,7 +78,109 @@ jobs:
             
             const anyRequestedReviewers = reqRevs.data.users.length > 0 || reqRevs.data.teams.length > 0
             if (anyRequestedReviewers) {
-              core.setFailed('The PR is has requested reviewers. Aborting...')
+              core.setFailed('The PR has pending requested reviewers. Aborting...')
               return
             }
-
+            
+            const revComm = await github.rest.pulls.listReviewComments({
+              owner: owner,
+              repo: repo,
+              pull_number: pull_number,
+            });
+            
+            const anyReviewComments = revComm.data.length > 0
+            if (anyReviewComments) {
+              core.setFailed('The PR has pending review comments. Aborting...')
+              return
+            }
+            
+            const revs = await github.rest.pulls.listReviews({
+              owner: owner,
+              repo: repo,
+              pull_number: pull_number,
+            });
+            
+            const anyReviews = revs.data.length > 0
+            if (anyReviews) {
+              core.setFailed('The PR has pending reviews. Aborting...')
+              return
+            }
+            
+            core.setOutput('pr-message', prInfo.data.body)
+            core.setOutput('base-ref', prInfo.data.base.ref)
+            core.setOutput('head-ref', prInfo.data.head.ref)
+            core.setOutput('is-fork', prInfo.data.head.repo.fork && prInfo.data.head.repo.full_name != prInfo.data.base.repo.full_name)
+            core.setOutput('username', prInfo.data.head.user.login)
+            core.setOutput('clone-url', prInfo.data.head.repo.clone_url)
+  
+  
+  gen-changelog-n-update-contrib:
+    name: ${{ format('[{0}] Generate Changelog and Update Contributions', inputs.pull-request-number) }}
+    runs-on: ubuntu-latest
+    needs: check-mergeable
+    # Ref: https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
+    # issues: For adding the success/failure comments
+    # pull-requests: For some reason, even though I gave write perms to issues, it wasn't able to send the success/failure comment to PR, so maybe having pull-requests to write will?
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: write
+    if: inputs.generate-changelog || inputs.update-contributors
+    steps:
+      - name: Fetch repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - id: prepare-branch
+        run: |
+          echo '${{ needs.check-mergeable.outputs.clone-url }}'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          git checkout ${{ needs.check-mergeable.outputs.base-ref }}
+          git pull origin ${{ needs.check-mergeable.outputs.base-ref }}
+          if ${{ needs.check-mergeable.outputs.is-fork }}; then
+            USER_NAME=${{ needs.check-mergeable.outputs.username }}
+            git remote add $USER_NAME ${{ needs.check-mergeable.outputs.clone-url }}
+            git pull $USER_NAME ${{ needs.check-mergeable.outputs.head-ref }}
+            git checkout -b $USER_NAME-${{ needs.check-mergeable.outputs.head-ref }} $USER_NAME/${{ needs.check-mergeable.outputs.head-ref }}
+            git branch --set-upstream-to $USER_NAME/${{ needs.check-mergeable.outputs.head-ref }}
+          else
+            # git pull origin ${{ needs.check-mergeable.outputs.head-ref }}
+            git checkout ${{ needs.check-mergeable.outputs.head-ref }}
+          fi
+          
+      - id: gen-changelog
+        if: inputs.generate-changelog
+        run: |
+          cd ./docs/changelogs
+          echo "${{ needs.check-mergeable.outputs.pr-message }}" > pr_msg.txt
+          sed -i '/## Changelog/,$!d' ./pr_msg.txt
+          python ./scripts/copy_changelogs_to.py ./pr_msg.txt ./latest.md > ../../response.txt
+          cat ../../response.txt
+          rm ./pr_msg.txt
+          cd ../../
+          if [[ "$( tail ./response.txt -n 1 )" = 'No changes to write!' ]] || [[ "$( tail ./response.txt -n 1 )" =~ "File \`(.*?)\` not found\!" ]]; then
+            echo 'No changelogs found...'
+          else
+            git add docs/changelogs/latest.md
+            git -c commit.gpgsign=false commit -m "docs: Add changelogs from #${{ inputs.pull-request-number }} to latest.md"
+            echo 'Copied the changelogs from pull request body to docs/changelogs/latest.md...'
+          fi
+          
+      - id: update-contrib
+        if: inputs.update-contributors
+        run: |
+          echo `${{ needs.check-mergeable.outputs.pr-message }}`
+          echo HELLO 2
+          
+      - id: push-commits
+        run: |
+          if ${{ needs.check-mergeable.outputs.is-fork }}; then
+            git push ${{ needs.check-mergeable.outputs.username }} HEAD:${{ needs.check-mergeable.outputs.head-ref }}
+          else
+            git push
+          fi
+          
