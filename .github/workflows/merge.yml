@@ -1,4 +1,4 @@
-name: merge.yml
+name: Merge
 on:
   workflow_dispatch:
     inputs:
@@ -90,6 +90,7 @@ jobs:
             
             const anyReviewComments = revComm.data.length > 0
             if (anyReviewComments) {
+              console.log(revComm.data)
               core.setFailed('The PR has pending review comments. Aborting...')
               return
             }
@@ -102,9 +103,19 @@ jobs:
             
             const anyReviews = revs.data.length > 0
             if (anyReviews) {
+              console.log(revs.data)
               core.setFailed('The PR has pending reviews. Aborting...')
               return
             }
+            
+            console.log(prInfo.data.base.ref)
+            console.log(prInfo.data.head.ref)
+            console.log(prInfo.data.head.user.login)
+            console.log(prInfo.data.head.repo.clone_url)
+            console.log(revs.data)
+            console.log(reqRevs.data)
+            console.log(revComm.data)
+            console.log(prInfo.data)
             
             core.setOutput('pr-message', prInfo.data.body)
             core.setOutput('base-ref', prInfo.data.base.ref)
