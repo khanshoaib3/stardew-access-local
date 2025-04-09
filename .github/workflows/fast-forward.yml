@@ -38,7 +38,7 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
 
       # API: https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#get-a-pull-request
-      - name: Get PR deatils
+      - name: Get PR details
         uses: octokit/request-action@v2.x
         id: get-pr-details
         with:

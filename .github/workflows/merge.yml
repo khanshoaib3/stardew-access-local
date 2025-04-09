@@ -1,4 +1,4 @@
-name: merge.yml
+name: Merge
 on:
   workflow_dispatch:
     inputs:
@@ -15,7 +15,7 @@ on:
           - fast_forward
           - rebase_fast_forward
       generate-changelog:
-        description: "Parse PR's message to generate changelog and contributors"
+        description: "Parse PR's message to generate changelog"
         required: false
         default: true
         type: boolean
@@ -90,6 +90,7 @@ jobs:
             
             const anyReviewComments = revComm.data.length > 0
             if (anyReviewComments) {
+              console.log(revComm.data)
               core.setFailed('The PR has pending review comments. Aborting...')
               return
             }
@@ -100,11 +101,28 @@ jobs:
               pull_number: pull_number,
             });
             
-            const anyReviews = revs.data.length > 0
+            let anyReviews = false
+            revs.data.forEach((review) => {
+              if(review.state === "PENDING" || review.state === "CHANGES_REQUESTED") {
+                console.log(revs.data)
+                core.setFailed('The PR has pending reviews. Aborting...')
+                anyReviews = true
+                return
+              }
+            })
             if (anyReviews) {
-              core.setFailed('The PR has pending reviews. Aborting...')
+              console.log('Here 1111')
               return
             }
+            
+            console.log(prInfo.data.base.ref)
+            console.log(prInfo.data.head.ref)
+            console.log(prInfo.data.head.user.login)
+            console.log(prInfo.data.head.repo.clone_url)
+            console.log(revs.data)
+            console.log(reqRevs.data)
+            console.log(revComm.data)
+            console.log(prInfo.data)
             
             core.setOutput('pr-message', prInfo.data.body)
             core.setOutput('base-ref', prInfo.data.base.ref)
@@ -136,8 +154,8 @@ jobs:
       - id: prepare-branch
         run: |
           echo '${{ needs.check-mergeable.outputs.clone-url }}'
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
           git config --global url."https://github.com/".insteadOf "git@github.com:"
           git checkout ${{ needs.check-mergeable.outputs.base-ref }}
           git pull origin ${{ needs.check-mergeable.outputs.base-ref }}
@@ -166,7 +184,7 @@ jobs:
             echo 'No changelogs found...'
           else
             git add docs/changelogs/latest.md
-            git -c commit.gpgsign=false commit -m "docs: Add changelogs from #${{ inputs.pull-request-number }} to latest.md"
+            git -c commit.gpgsign=false commit -m "docs: Added changelogs from #${{ inputs.pull-request-number }} to latest.md"
             echo 'Copied the changelogs from pull request body to docs/changelogs/latest.md...'
           fi
           

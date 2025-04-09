@@ -8,6 +8,7 @@ stardew-access/compiled-docs/
 act_out/
 *.patch
 .idea/
+*.DotSettings
 
 .vscode/*
 .git-old/
