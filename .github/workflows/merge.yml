@@ -1,4 +1,4 @@
-name: merge.yml
+name: Merge
 on:
   workflow_dispatch:
     inputs:
@@ -15,7 +15,7 @@ on:
           - fast_forward
           - rebase_fast_forward
       generate-changelog:
-        description: "Parse PR's message to generate changelog and contributors"
+        description: "Parse PR's message to generate changelog"
         required: false
         default: true
         type: boolean
@@ -24,11 +24,24 @@ on:
         required: false
         default: false
         type: boolean
+      skip-mergeable-state:
+        description: "Skip checking mergeable_state as it's value is sometimes 'unknown'"
+        required: false
+        default: false
+        type: boolean
 
 # 1. Check if mergeable and abort if not.
-# 2. Gather changelogs and update contributors section. Commit and push.
-# 3. Merge and push.
+# 2. Gather changelogs and update contributors section. Commit and push to head branch.
+# 3. Merge and push the base branch.
 jobs:
+  
+  # Possible values of mergeable_state include:
+  #   clean - Mergeable with no conflicts. (allowed)
+  #   dirty - Has merge conflicts. (aborts)
+  #   blocked - Blocked by review or status checks. (aborts)
+  #   behind - Behind base branch. (aborts)
+  #   unstable - Failing required checks. (aborts)
+  #   unknown - GitHub hasn't determined the status yet. (re-attempts 5 times)
   check-mergeable:
     name: ${{ format('[{0}] Mergeability Check', inputs.pull-request-number) }}
     runs-on: ubuntu-latest
@@ -48,16 +61,17 @@ jobs:
             const owner = context.repo.owner
             const repo = context.repo.repo
             const pull_number = ${{ inputs.pull-request-number }}
-            // const owner = 'stardew-access'
-            // const repo = 'stardew-access'
             
-            const isPullRequest = true
-            
-            const prInfo = await github.rest.pulls.get({
+            let prInfo = await github.rest.pulls.get({
               pull_number: pull_number,
               owner: owner,
               repo: repo,
             })
+            
+            if (prInfo.data.state !== "open") {
+              core.setFailed('PR is not open. Aborting...')
+              return
+            }
             
             const isDraft = prInfo.data.draft
             if (isDraft) {
@@ -70,40 +84,22 @@ jobs:
               return
             }
             
-            const reqRevs = await github.rest.pulls.listRequestedReviewers({
-              pull_number: pull_number,
-              owner: owner,
-              repo: repo,
-            })
-            
-            const anyRequestedReviewers = reqRevs.data.users.length > 0 || reqRevs.data.teams.length > 0
-            if (anyRequestedReviewers) {
-              core.setFailed('The PR has pending requested reviewers. Aborting...')
-              return
-            }
-            
-            const revComm = await github.rest.pulls.listReviewComments({
-              owner: owner,
-              repo: repo,
-              pull_number: pull_number,
-            });
-            
-            const anyReviewComments = revComm.data.length > 0
-            if (anyReviewComments) {
-              core.setFailed('The PR has pending review comments. Aborting...')
-              return
-            }
-            
-            const revs = await github.rest.pulls.listReviews({
-              owner: owner,
-              repo: repo,
-              pull_number: pull_number,
-            });
-            
-            const anyReviews = revs.data.length > 0
-            if (anyReviews) {
-              core.setFailed('The PR has pending reviews. Aborting...')
-              return
+            const skipMergeableCheck = "${{ inputs.skip-mergeable-state }}" === "true";
+            if (skipMergeableCheck) {
+              let attempts = 0;
+              
+              do {
+                prInfo = (await github.rest.pulls.get({ pull_number, owner, repo }));
+                if (prInfo.data.mergeable_state !== "unknown") break;
+                console.log("Mergeable state is unknown. Retrying in 2s...");
+                await new Promise(res => setTimeout(res, 2000));
+                attempts++;
+              } while (attempts < 5);
+                
+              if (prInfo.data.mergeable_state !== "clean") {
+                core.setFailed(`PR is not mergeable due to state: ${prInfo.data.mergeable_state}. Aborting...`)
+                return
+              }
             }
             
             core.setOutput('pr-message', prInfo.data.body)
@@ -136,8 +132,8 @@ jobs:
       - id: prepare-branch
         run: |
           echo '${{ needs.check-mergeable.outputs.clone-url }}'
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
           git config --global url."https://github.com/".insteadOf "git@github.com:"
           git checkout ${{ needs.check-mergeable.outputs.base-ref }}
           git pull origin ${{ needs.check-mergeable.outputs.base-ref }}
@@ -166,7 +162,7 @@ jobs:
             echo 'No changelogs found...'
           else
             git add docs/changelogs/latest.md
-            git -c commit.gpgsign=false commit -m "docs: Add changelogs from #${{ inputs.pull-request-number }} to latest.md"
+            git -c commit.gpgsign=false commit -m "docs: Added changelogs from #${{ inputs.pull-request-number }} to latest.md"
             echo 'Copied the changelogs from pull request body to docs/changelogs/latest.md...'
           fi
           
