@@ -5,12 +5,12 @@ Information about the controls for Stardew Access and Stardew Valley can be foun
 
 ## Guide Version
 
-**This guide file is up to date with Stardew Access [Beta Release v1.6.0-beta.5](https://github.com/khanshoaib3/stardew-access/releases/tag/v1.6.0-beta.5).**
+**This guide file is up to date with Stardew Access [Beta Release v1.6.0-beta.5](https://github.com/stardew-access/stardew-access/releases/tag/v1.6.0-beta.5).**
 
 To get the most current documentation, check the following links:
 
-- [Stable Release Documentation](https://github.com/khanshoaib3/stardew-access/tree/master/docs)
-- [Beta Release Documentation](https://github.com/khanshoaib3/stardew-access/tree/development/docs#introduction)
+- [Stable Release Documentation](https://github.com/stardew-access/stardew-access/tree/master/docs)
+- [Beta Release Documentation](https://github.com/stardew-access/stardew-access/tree/development/docs#introduction)
 
 ## Guide Pages
 

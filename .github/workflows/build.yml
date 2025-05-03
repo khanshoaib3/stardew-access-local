@@ -48,7 +48,7 @@ jobs:
           ruby ./compiler_script.rb
           cd ../
 
-      # https://github.com/khanshoaib3/stardew-access/blob/aa2f9a380e9b2ce94932e86631d416dee7e94461/stardew-access/stardew-access.csproj#L52-L55
+      # https://github.com/stardew-access/stardew-access/blob/aa2f9a380e9b2ce94932e86631d416dee7e94461/stardew-access/stardew-access.csproj#L52-L55
       - name: Build the mod
         run: |
           dotnet build -p:BuildConfig=GITHUB

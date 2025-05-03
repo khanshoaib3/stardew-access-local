@@ -5,7 +5,7 @@ import shutil
 import json
 import copy_changelogs_to
 
-CHANGELOG_DIR = 'https://github.com/khanshoaib3/stardew-access/blob/development/docs/changelogs/'
+CHANGELOG_DIR = 'https://github.com/stardew-access/stardew-access/blob/development/docs/changelogs/'
 LATEST_FILE_PATH = '../latest.md'
 DEFAULT_FILE_PATH = '../default.md'
 SEM_VER: str = r"v[0-9]+\.[0-9]+\.[0-9]+.*"

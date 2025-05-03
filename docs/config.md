@@ -236,7 +236,7 @@ For a full list of key names, refer to the [Key Bindings List](https://stardewva
 
 ## Default Config
 
-This config is current as of [Beta Release v1.6.0-beta.4](https://github.com/khanshoaib3/stardew-access/releases/tag/v1.6.0-beta.4)
+This config is current as of [Beta Release v1.6.0-beta.4](https://github.com/stardew-access/stardew-access/releases/tag/v1.6.0-beta.4)
 
 ```json
 {

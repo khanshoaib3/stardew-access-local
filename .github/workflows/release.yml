@@ -79,7 +79,7 @@ jobs:
           name: stardew-access-nightly
           path: act_out/
 
-      # Ref: https://github.com/khanshoaib3/minecraft-access/blob/bbe8bd7b97f960ad9fe48a36e69da2d4b6edadb8/.github/workflows/release.yml#L80
+      # Ref: https://github.com/minecraft-access/minecraft-access/blob/bbe8bd7b97f960ad9fe48a36e69da2d4b6edadb8/.github/workflows/release.yml#L80
       - name: Set environment variables
         run: |
           for f in act_out/*zip; do if [[ $f == *'debug'* ]]; then echo DEBUG_FILE=$f >> $GITHUB_ENV; else echo MAIN_FILE=$f >> $GITHUB_ENV; fi; done
@@ -92,7 +92,7 @@ jobs:
           echo NEXUSMOD_NAME=Stardew Access $RELEASE_TAG >> $GITHUB_ENV
           echo "NEXUSMOD_VERSION=$( echo $RELEASE_TAG | cut -c 2- )" >> $GITHUB_ENV
           echo "GH_TITLE=$( if $PRE_RELEASE; then echo 'Beta '; fi )Release ${RELEASE_TAG}" >> $GITHUB_ENV
-          echo "NEXUSMOD_DESC=Uploaded to nexus by github actions at: $( date ).$( if ${{ inputs.github-upload }}; then echo Checkout the changlog at: https://github.com/khanshoaib3/stardew-access/releases/tag/$( echo $RELEASE_TAG ); fi )" >> $GITHUB_ENV
+          echo "NEXUSMOD_DESC=Uploaded to nexus by github actions at: $( date ).$( if ${{ inputs.github-upload }}; then echo Checkout the changelog at: https://github.com/stardew-access/stardew-access/releases/tag/$( echo $RELEASE_TAG ); fi )" >> $GITHUB_ENV
 
       - name: Rename build zips if necessary
         if: inputs.version != 'auto-fetch'

@@ -8,7 +8,7 @@
   "MinimumApiVersion": "4.2.0",
   "MinimumGameVersion": "1.6.15",
   "UpdateKeys": [
-    "Github:khanshoaib3/stardew-access",
+    "Github:stardew-access/stardew-access",
     "Nexus:16205"
   ],
   "Dependencies": [

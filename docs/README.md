@@ -5,7 +5,7 @@ Nearby objects, monsters, and favorite locations are only a few keystrokes away 
 Planting, harvesting, construction, and mining are all made easy via narration of tiles and the tile reader.
 To interact with the active screen reader, Stardew Access uses the [Tolk](https://github.com/ndarilek/tolk) library on windows, [libspeechdwrapper](https://github.com/khanshoaib3/libspeechdwrapper) on Linux, and [libspeak](https://github.com/Flameborn/libspeak) on Mac OS.
 
-<!--todo: add this link to the wiki once there's info for developers. https://github.com/khanshoaib3/stardew-access/wiki-->
+<!--todo: add this link to the wiki once there's info for developers. https://github.com/stardew-access/stardew-access/wiki-->
 
 ## Features
 
@@ -39,12 +39,12 @@ Check out the [official guide](guides/guides-home.md) for tutorials on creating 
 
 - [Stardew Valley Wiki](https://stardewvalleywiki.com/Stardew_Valley_Wiki)
     - The official Stardew Valley wiki. It has guides and info for everything in Stardew valley though some things may not be screen-reader accessible.
-- [Issues](https://github.com/khanshoaib3/stardew-access/issues)
+- [Issues](https://github.com/stardew-access/stardew-access/issues)
     - post any bug or feature request here.
-- [Source Code](https://github.com/khanshoaib3/stardew-access)
+- [Source Code](https://github.com/stardew-access/stardew-access)
     - contributions are always welcome!
 - [Stardew Access on Nexus Mods](https://www.nexusmods.com/stardewvalley/mods/16205)
-- [Latest Release](https://github.com/khanshoaib3/stardew-access/releases/latest)
+- [Latest Release](https://github.com/stardew-access/stardew-access/releases/latest)
 - [Our Discord Server](https://discord.gg/yQjjsDqWQX)
 - [Shoaib's Twitter](https://twitter.com/shoaib_mk0) - follow me on twitter to get updates regarding Stardew Access and [minecraft access](https://github.com/khanshoaib3/minecraft-access)
 
@@ -71,7 +71,7 @@ Your support will help us dedicate more time to this project as well as other fu
 ## Translations
 
 As of v1.5.0, the mod has been fully internationalised.
-Follow [the language translations issue page](https://github.com/khanshoaib3/stardew-access/issues/182) to track the progress of
+Follow [the language translations issue page](https://github.com/stardew-access/stardew-access/issues/182) to track the progress of
 translations currently in the works and/or if you want to provide translation for your language.
 
 ## Contact Us

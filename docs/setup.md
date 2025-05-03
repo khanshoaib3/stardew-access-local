@@ -164,7 +164,7 @@ After installing Stardew Valley with Steam:
 
 Once you have installed at least Stardew Valley and SMAPI:
 
-1. Download the latest version from [Github](https://github.com/khanshoaib3/stardew-access/releases/latest) or
+1. Download the latest version from [Github](https://github.com/stardew-access/stardew-access/releases/latest) or
    from [Nexus](https://www.nexusmods.com/stardewvalley/mods/16205/?tab=files).
 2. Extract the zip file (extracting it into the download folder should be fine).
 3. Copy/Cut the generated `stardew-access` folder.
@@ -204,7 +204,7 @@ To update Stardew Access:
 
 We are working on integrating some SMAPI mods with stardew access. If you want to track our progress and/or want to
 suggest a mod that you want to be integrated, follow
-this [issue page](https://github.com/khanshoaib3/stardew-access/issues/181).
+this [issue page](https://github.com/stardew-access/stardew-access/issues/181).
 
 - [Auto Travel](https://www.nexusmods.com/stardewvalley/mods/10693)
     - [GitHub Repository](https://github.com/darkade-games/auto-travel2/)
