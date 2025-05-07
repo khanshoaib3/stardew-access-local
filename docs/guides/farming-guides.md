@@ -107,7 +107,7 @@ The following guides provide instructions on how to purchase and move farm anima
 
 - [Purchasing Farm Animals](#purchasing-farm-animals)
 - [Moving Farm Animals](#moving-farm-animals)
-- [back to top](
+- [back to top](#farming)
 
 ### Purchasing Farm Animals
 

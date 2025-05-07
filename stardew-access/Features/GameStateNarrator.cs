@@ -130,7 +130,7 @@ internal class GameStateNarrator : FeatureBase
             if (hudMessageQueryKey != searchQuery)
             {
                 hudMessageQueryKey = searchQuery;
-                MainClass.ScreenReader.Say(toSpeak, false);
+                MainClass.ScreenReader.Say(toSpeak, true);
                 HudMessagesBuffer.Add(toSpeak);
             }
         }

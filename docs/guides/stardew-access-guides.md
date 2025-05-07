@@ -28,11 +28,11 @@ This will open a dialogue which provides you with various options:
 3. Speak detailed tile info
     - Get more information about the selected tile
 
-This feature can be remapped to a controller/gamepad via the `config.json` file. More info available in [keybindings](keybindings.md#tile-viewer-keys) and [configs](config.md#tile-viewer-configs).
+This feature can be remapped to a controller/gamepad via the `config.json` file. More info available in [keybindings](../keybindings.md#tile-viewer-keys) and [configs](../config.md#tile-viewer-configs).
 
 ## Using The Object Tracker
 
-The object tracker is an extremely helpful feature of Stardew Access. It lets you browse all of the items, NPCs, interactable items, and other points of interest on the current map. For a full list of keys and config options, check out the relevant sections in [keybinds](keybindings.md#object-tracker-keys) and [configs](config.md#object-tracker-configs).
+The object tracker is an extremely helpful feature of Stardew Access. It lets you browse all of the items, NPCs, interactable items, and other points of interest on the current map. For a full list of keys and config options, check out the relevant sections in [keybinds](../keybindings.md#object-tracker-keys) and [configs](../config.md#object-tracker-configs).
 
 - [Object Tracker](#object-tracker)
 - [Object Tracker Favorites](#object-tracker-favorites)

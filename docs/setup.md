@@ -68,7 +68,7 @@ If you prefer to install SMAPI, Stardew Access, and its dependencies manually, y
 2. Download the [latest version of SMAPI](https://smapi.io/).
 3. Extract the .zip file somewhere. (Your downloads folder is fine).
 4. Open the new folder once it has finished unzipping. You may need to open two folders to get to the contents.
-4. Double-click `install on Windows.bat`, and follow the on-screen instructions.
+5. Double-click `install on Windows.bat`, and follow the on-screen instructions.
 
 ##### Xbox App Setup
 
@@ -117,7 +117,7 @@ This process is done when installing SMAPI on an Xbox App copy.
     - As an alternative, focus on Stardew Valley in the grid, use `NVDA + numpad divide` to route the mouse cursor to the element, and then use `numpad multiply` to right-click and open the context menu
 7. In the context menu, find and select "properties"
 8. Ensure you are focused on the "General" tab in the new window and press `right arrow` to enter the general section
-    - If you are not using focus mode, you may either press `e` to move to the text box described in step 9 or disable automatic move of the system focus due to browse mode commands" with `NVDA + 8` and use the down arrow immediately to find the text box described in step 9
+    - If you are not using focus mode, you may either press `e` to move to the text box described in step 9 or disable automatic move of the system focus due to browse mode commands with `NVDA + 8` and use the down arrow immediately to find the text box described in step 9
 9. Arrow down until you come across a text box located shortly after a button labeled "default" and paste the following text:
     - `"C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley\StardewModdingAPI.exe" %command%`
 10. Once you have entered the text, exit Big Picture mode with `alt + f4`. The text you just entered is saved automatically

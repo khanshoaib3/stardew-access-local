@@ -14,31 +14,31 @@ For a list of SMAPI commands, visit the [Console commands](https://stardewvalley
 
 ## Tile Reader Commands
 
-| Command  | Description                                    |
-|----------|------------------------------------------------|
-| readtile | Toggle Read Tile feature                       |
-| snapmouse  | Toggle Snap Mouse Feature                                        |
-| flooring | Toggle reading flooring                        |
-| watered  | Toggle speaking watered or unwatered for crops |
+| Command    | Description                                    |
+|------------|------------------------------------------------|
+| readtile   | Toggle Read Tile feature                       |
+| snapmouse  | Toggle Snap Mouse Feature                      |
+| flooring   | Toggle reading flooring                        |
+| watered    | Toggle speaking watered or unwatered for crops |
 
 ## Building Commands
 
-| Command   | Description                                                                                         | Special Syntax (If any)                  | Argument details (If any)                                                                                                         | Example      |
-|-----------|-----------------------------------------------------------------------------------------------------|------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|--------------|
-| mark      | Marks the player's current position at a specified index                      | mark [Index:number]                      | Index: the desired index to save the position (0 - 9)                                                          | mark 0       |
-| marklist  | List all marked positions                                                                           |                                          |                                                                                                                                   | marklist     |
-| buildlist | List all buildings for selection                                 |                                          |                                                                                                                                   | buildlist    |
-| buildsel  | Select the index of a building to place a farm animal in the desired building                            | buildsel [Index:number]                  | Index: the index of the building we want to select, use buildlist command to list the buildings with their index                  | buildsel 3   |
+| Command   | Description                                                                                          | Special Syntax (If any)                  | Argument details (If any)                                                                                        | Example      |
+|-----------|------------------------------------------------------------------------------------------------------|------------------------------------------|------------------------------------------------------------------------------------------------------------------|--------------|
+| mark      | Marks the player's current position at a specified index                                             | mark [Index:number]                      | Index: the desired index to save the position (0 - 9)                                                            | mark 0       |
+| marklist  | List all marked positions                                                                            |                                          |                                                                                                                  | marklist     |
+| buildlist | List all buildings for selection                                                                     |                                          |                                                                                                                  | buildlist    |
+| buildsel  | Select the index of a building to place a farm animal in the desired building                        | buildsel [Index:number]                  | Index: the index of the building we want to select, use buildlist command to list the buildings with their index | buildsel 3   |
 
 ## Narration & Verbosity Commands
 
-| Command    | Description                                                      |
-|------------|------------------------------------------------------------------|
+| Command         | Description                                                                                                           |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------|
 | rlt ``<index>`` | Repeats the last phrase narrated. ``<index>`` specifies how many phrases before the latest are skipped when repeating |
-| hnspercent | Toggle between speaking in percentage or full health and stamina |
-| warning    | Toggle warnings feature                                          |
-| tts        | Toggles the screen reader/tts                                    |
-| refsr      | Refreshes screen reader                                          |
+| hnspercent      | Toggle between speaking in percentage or full health and stamina                                                      |
+| warning         | Toggle warnings feature                                                                                               |
+| tts             | Toggles the screen reader/tts                                                                                         |
+| refsr           | Refreshes screen reader                                                                                               |
 
 ## Radar Commands
 

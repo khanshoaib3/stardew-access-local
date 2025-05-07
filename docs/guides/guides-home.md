@@ -1,7 +1,7 @@
 # Guides
 
-These pages provide guides for playing Stardew Valley with Stardew Access enabled. While Stardew Access attempts to provide its players feature parity with the base game, some activities must be performed differently and/or may not be obvious to new players. all pages in this guide assume that you have already installed both Stardew Valley and Stardew Access as well as all required dependencies. Information on how to install both can be found in the [setup page](setup.md).
-Information about the controls for Stardew Access and Stardew Valley can be found in [Keybindings](keybindings.md).
+These pages provide guides for playing Stardew Valley with Stardew Access enabled. While Stardew Access attempts to provide its players feature parity with the base game, some activities must be performed differently and/or may not be obvious to new players. all pages in this guide assume that you have already installed both Stardew Valley and Stardew Access as well as all required dependencies. Information on how to install both can be found in the [setup page](../setup.md).
+Information about the controls for Stardew Access and Stardew Valley can be found in [Keybindings](../keybindings.md).
 
 ## Guide Version
 
