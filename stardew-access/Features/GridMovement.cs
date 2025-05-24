@@ -277,7 +277,28 @@ internal class GridMovement : FeatureBase
             Log.Verbose("Collides with Warp");
 #endif
 
-            if (location.checkAction(new Location((int)tileLocation.X * Game1.tileSize, (int)tileLocation.Y * Game1.tileSize), Game1.viewport, Game1.player))
+            // Check if player will be out of bounds at the warp point while an event is up,
+            // In the case of festivals, the end festival dialogue appears,
+            // but it isn't triggered by 'location.checkAction' rather than by 'location.checkCollision'.
+            var position = new Rectangle((int)tileLocation.X * Game1.tileSize, (int)tileLocation.Y * Game1.tileSize, Game1.tileSize / 2, Game1.tileSize / 2);
+            if (location.IsOutOfBounds(position) && Game1.eventUp)
+            {
+#if DEBUG
+                Log.Verbose("Player will be out of bounds at the warp's position.");
+#endif
+                bool? isFestival = location.currentEvent?.isFestival;
+                if (isFestival.HasValue && isFestival.GetValueOrDefault())
+                {
+#if DEBUG
+                    Log.Verbose("A festival is up, checking for collision event.");
+#endif
+                    if (location.currentEvent?.checkForCollision(position, Game1.player) ?? false)
+                        return;
+                }
+            }
+
+            var tileLocation1 = new Location((int)tileLocation.X * Game1.tileSize, (int)tileLocation.Y * Game1.tileSize);
+            if (location.checkAction(tileLocation1, Game1.viewport, Game1.player))
             {
                 timer.Stop();
             }
@@ -289,6 +310,7 @@ internal class GridMovement : FeatureBase
                 timer.Stop();
                 timer.Interval = TimerInterval;
                 timer.Start();
+                Log.Info($"{string.Join("\n", location.warps.Select(warp => $"{warp.X} {warp.Y} {warp.TargetName} {warp.TargetX} {warp.TargetY}"))}");
 
                 // TODO Replace with custom sound
                 Game1.playSound("doorOpen");
