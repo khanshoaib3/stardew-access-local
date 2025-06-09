@@ -28,7 +28,7 @@ internal class SpecialOrdersBoardPatch : IPatch
                 MainClass.ScreenReader.TranslateAndSayWithMenuChecker("menu-special_orders_board-accept_button", true, new
                 {
                     is_left_quest = 1,
-                    quest_details = GetQuestDetails(__instance.leftOrder)
+                    quest_details = GetQuestDetails(__instance.leftOrder, Game1.player.team.completedSpecialOrders.Contains(__instance.leftOrder.questKey.Value))
                 });
                 return;
             }
@@ -38,7 +38,7 @@ internal class SpecialOrdersBoardPatch : IPatch
                 MainClass.ScreenReader.TranslateAndSayWithMenuChecker("menu-special_orders_board-accept_button", true, new
                 {
                     is_left_quest = 0,
-                    quest_details = GetQuestDetails(__instance.rightOrder)
+                    quest_details = GetQuestDetails(__instance.rightOrder, Game1.player.team.completedSpecialOrders.Contains(__instance.rightOrder.questKey.Value))
                 });
                 return;
             }
@@ -48,6 +48,7 @@ internal class SpecialOrdersBoardPatch : IPatch
                 : IsInProgress(__instance.rightOrder, __instance)
                     ? __instance.rightOrder
                     : null;
+            
 
             if (inProgress is null)
             {
@@ -57,16 +58,27 @@ internal class SpecialOrdersBoardPatch : IPatch
 
             if (Game1.player.team.completedSpecialOrders.Contains(inProgress.questKey.Value))
             {
-                MainClass.ScreenReader.TranslateAndSayWithMenuChecker("menu-special_orders_board-quest_completed", true, new
+                if (inProgress.questState.Value == SpecialOrderStatus.Complete)
                 {
-                    name = inProgress.GetName()
-                });
+                    MainClass.ScreenReader.TranslateAndSayWithMenuChecker("menu-special_orders_board-quest_completed", true, new
+                    {
+                        name = inProgress.GetName()
+                    });
+                }
+                else
+                {
+                    MainClass.ScreenReader.TranslateAndSayWithMenuChecker("menu-special_orders_board-quest_in_progress", true, new
+                    {
+                        quest_details = GetQuestDetails(inProgress, true)
+                    });
+                }
+
                 return;
             }
 
             MainClass.ScreenReader.TranslateAndSayWithMenuChecker("menu-special_orders_board-quest_in_progress", true, new
             {
-                quest_details = GetQuestDetails(inProgress)
+                quest_details = GetQuestDetails(inProgress, false)
             });
         }
         catch (Exception e)
@@ -75,10 +87,11 @@ internal class SpecialOrdersBoardPatch : IPatch
         }
     }
 
-    private static string GetQuestDetails(SpecialOrder order) => Translator.Instance.Translate(
+    private static string GetQuestDetails(SpecialOrder order, bool previouslyCompleted) => Translator.Instance.Translate(
         "menu-special_orders_board-quest_details", new
         {
             name = order.GetName(),
+            previously_completed = previouslyCompleted ? 1 : 0,
             description = order.GetDescription(),
             objectives_list = string.Join(", ", order.GetObjectiveDescriptions()),
             is_timed = order.IsTimedQuest() ? 1 : 0,

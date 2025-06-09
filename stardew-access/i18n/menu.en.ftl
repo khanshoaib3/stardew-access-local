@@ -647,7 +647,10 @@ menu-quest_log-quest_detail = {$name} {$is_completed ->
 
 ### Special Orders Board Menu
 
-menu-special_orders_board-quest_details = {$name}, Description: {$description}, Objectives: {$objectives_list}{$is_timed ->
+menu-special_orders_board-quest_details = {$name}{$previously_completed ->
+    [0] {EMPTYSTRING()}
+    *[1] , previously completed
+  }, Description: {$description}, Objectives: {$objectives_list}{$is_timed ->
     [0] {EMPTYSTRING()}
     *[1] , Time: {$days} {$days ->
       [1] day
