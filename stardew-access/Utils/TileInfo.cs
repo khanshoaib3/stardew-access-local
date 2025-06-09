@@ -241,7 +241,12 @@ public class TileInfo
                                 break;
                             }
                             color = GetNearestColorName(slime.color.R, slime.color.G, slime.color.B);
-                            string slimeType = slime.Name == "Green Slime" ? Translator.Instance.Translate("monster_name-slime") : Monster.GetDisplayName(slime.Name);
+                            string slimeType = Translator.Instance.Translate("monster_name-slime", new
+                            {
+                                name = Monster.GetDisplayName(slime.Name),
+                                is_green_slime = slime.Name == "Green Slime" ? 1 : 0,
+                                is_cute = slime.cute.Value ? 1 : 0
+                            });
                             characterName = $"{color} {slimeType}";
                             break;
                         case Grub grub when grub.hard.Value:

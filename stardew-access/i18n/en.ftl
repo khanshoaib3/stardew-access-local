@@ -375,7 +375,13 @@ monster_name-dangerous = Dangerous {$monster_name}
 monster_name-flying_purple_shorts = Flying Purple Shorts
 monster_name-mage = {$monster_name} Mage
 monster_name-mutant = Mutant {$monster_name}
-monster_name-slime = Slime
+monster_name-slime = {$is_green_slime ->
+    [0] {$name}
+    *[1] Slime
+  }{$is_cute ->
+    [0] {EMPTYSTRING()}
+    *[1] , cute
+  }
 monster_name-truffle_crab = Truffle Crab
 
 patch-trash_bear-wanted_item = {$trash_bear_name} wants {$item_name}!
