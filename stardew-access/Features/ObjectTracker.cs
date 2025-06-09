@@ -93,16 +93,20 @@ internal class ObjectTracker : FeatureBase
         // The event with id 13 is the Haley's six heart event, the one at the beach requiring the player to find the bracelet
         // *** Exiting here will cause GridMovement and ObjectTracker functionality to not work during this event, making the bracelet impossible to track ***
         if (!Context.IsPlayerFree && !(Game1.CurrentEvent is not null && Game1.CurrentEvent.id == "13"))
-            return; // so ... why are we exiting here? _^_
-
-        if (Game1.activeClickableMenu != null && pathfinder != null && pathfinder.IsActive)
         {
-            #if DEBUG
-            Log.Verbose(
-                "ObjectTracker->Update: a menu has opened, canceling auto walking.");
-            #endif
-            pathfinder.StopPathfinding();
-            return;
+            // Kat: so ... why are we exiting here? _^_ 
+            // Shoaib: To stop the object tracker when the player isn't 'free' to move i.e., they are busy in a menu,
+            //         in an event or so on. The cancel auto walking when interrupted by a menu logic should've been implemented here.
+            
+            if (pathfinder != null && pathfinder.IsActive)
+            {
+                #if DEBUG
+                Log.Verbose("ObjectTracker->Update: player isn't \"free\" to move, canceling auto walking.");
+                #endif
+                pathfinder.StopPathfinding();
+                Game1.player.completelyStopAnimatingOrDoingAction();
+            }
+            return;            
         }
 
         if (e.IsMultipleOf(5))
@@ -124,6 +128,7 @@ internal class ObjectTracker : FeatureBase
                 pathfinder.StopPathfinding();
                 MainClass.ModHelper!.Input.Suppress(e.Button);
                 return true;
+                
             }
             else if (IsAnyMovementKeyPressed())
             {
