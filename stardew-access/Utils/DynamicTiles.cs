@@ -1095,7 +1095,7 @@ public class DynamicTiles
             Utility.GetDayOfPassiveFestival("DesertFestival") > 0 && mineShaft.getMineArea() == 121
             && mineShaft.getTileIndexAt(new Point(x, y), "Buildings") is 284 or 285)
         {
-            return ("Calico Statue", CATEGORY.Interactables);
+            return ("tile-mine_shaft-calico_statue", CATEGORY.Interactables);
         }
 
         return (null, null);

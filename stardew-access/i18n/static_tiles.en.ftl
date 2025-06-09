@@ -40,6 +40,14 @@ static_tile-npc-unknown_person = Unknown person
 static_tile-npc-desert_trader = Desert Trader
 static_tile-npc-camel = Camel
 
+## Desert Festival
+
+static_tile-npc-cactus_man = Cactus Man
+static_tile-npc-calico_egg_merchant = Calico Egg Merchant
+static_tile-npc-race_announcer = Race Announcer
+static_tile-npc-scholar = Scholar
+static_tile-npc-suspicious_guy = Suspicious Guy
+
 ## Island Farm Cave
 
 static_tile-npc-gourmand_frog = Gourmand Frog
@@ -161,6 +169,16 @@ static_tile-desert-three_pillars_center = Three Pillars Center
 static_tile-desert-desert_warp_statue = Desert Warp Statue
 static_tile-desert-sand_dragon_skull = Sand Dragon Skull
 static_tile-desert-southern_pond_overlook = Southern Pond Overlook
+
+# Desert Festival
+
+static_tile-desert_festival-emily_outfit_service = Emily's Outfit Service
+static_tile-desert_festival-chef_tent = Chef's Tent
+static_tile-desert_festival-marlon_tent = Marlon's Tent
+static_tile-desert_festival-villager_shop = Villager Shop
+static_tile-desert_festival-willy_challenge_board = Willy's Challenge Board
+static_tile-desert_festival-harvey_medical_station = Harvey's Medical Station
+static_tile-desert_festival-harvey_tent = Harvey's Tent
 
 # Elliott House
 
@@ -537,6 +555,7 @@ static_tile-sewer-sewage_pool = sewage pool
 # Scull Cavern Entrance
 
 static_tile-skull_cave-skull_cavern_door = Skull Cavern
+static_tile-skill_cave-skull_statue = Skull Statue
 
 # Slime Hutch
 
