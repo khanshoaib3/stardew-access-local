@@ -100,6 +100,7 @@ public class TileInfoMenu(int tileX, int tileY) : DialogueBox("", [MarkTileRespo
 
                     Log.Debug($"*******************************************");
                     Log.Debug($"Tile: {_tileX}x {_tileY}y");
+                    Log.Debug($"Object Id: {Game1.currentLocation?.getObjectAtTile(_tileX, _tileY)?.QualifiedItemId}");
                     Log.Debug($"Back: {Game1.currentLocation?.getTileIndexAt(new Point(_tileX, _tileY), "Back")}");
                     Log.Debug($"Buildings: {Game1.currentLocation?.getTileIndexAt(new Point(_tileX, _tileY), "Buildings")}");
                     Log.Debug($"Paths: {Game1.currentLocation?.getTileIndexAt(new Point(_tileX, _tileY), "Paths")}");
@@ -157,6 +158,12 @@ public class TileInfoMenu(int tileX, int tileY) : DialogueBox("", [MarkTileRespo
 
     public override void receiveKeyPress(Keys key)
     {
+        if (key == Keys.Escape)
+        {
+            exitThisMenu();
+            return;
+        }
+
         if (GetChildMenu() == null)
             base.receiveKeyPress(key);
         else

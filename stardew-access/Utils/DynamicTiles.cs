@@ -1090,6 +1090,13 @@ public class DynamicTiles
                 return ("tile-mine_shaft-duggy_hole", CATEGORY.Decor);
             }
         }
+        
+        if (mineShaft.calicoStatueSpot.X == x && mineShaft.calicoStatueSpot.Y == y &&
+            Utility.GetDayOfPassiveFestival("DesertFestival") > 0 && mineShaft.getMineArea() == 121
+            && mineShaft.getTileIndexAt(new Point(x, y), "Buildings") is 284 or 285)
+        {
+            return ("Calico Statue", CATEGORY.Interactables);
+        }
 
         return (null, null);
     }

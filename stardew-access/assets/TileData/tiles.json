@@ -947,6 +947,128 @@
       "Category": "Fishing"
     }
   ],
+  "DesertFestival": [
+    {
+      "NameOrTranslationKey": "Emily's Outfit Service",
+      "X": [26],
+      "Y": [51],
+      "Category": "doors"
+    },
+    {
+      "NameOrTranslationKey": "Calico Egg Merchant",
+      "X": [37],
+      "Y": [13],
+      "Category": "interactables"
+    },
+    {
+      "NameOrTranslationKey": "Chef's Tent",
+      "X": [8],
+      "Y": [23],
+      "Category": "interactables"
+    },
+    {
+      "NameOrTranslationKey": "Desert Trader",
+      "X": [42],
+      "Y": [23],
+      "Category": "interactables"
+    },
+    {
+      "NameOrTranslationKey": "Marlon's Tent",
+      "X": [19],
+      "Y": [7],
+      "Category": "interactables"
+    },
+    {
+      "NameOrTranslationKey": "Traveling Cart",
+      "X": [45],
+      "Y": [16],
+      "Category": "interactables"
+    },
+    {
+      "NameOrTranslationKey": "Villager Shop 1",
+      "X": [15],
+      "Y": [41],
+      "Category": "interactables"
+    },
+    {
+      "NameOrTranslationKey": "Villager Shop 2",
+      "X": [26],
+      "Y": [41],
+      "Category": "interactables"
+    },
+    {
+      "NameOrTranslationKey": "Willy's Challenge Board",
+      "X": [15],
+      "Y": [14],
+      "Category": "interactables"
+    },
+    {
+      "NameOrTranslationKey": "Cactus Man",
+      "X": [29],
+      "Y": [66],
+      "Category": "npcs"
+    },
+    {
+      "NameOrTranslationKey": "Camel",
+      "X": [34, 35, 36],
+      "Y": [23],
+      "Category": "npcs"
+    },
+    {
+      "NameOrTranslationKey": "Gil",
+      "X": [21],
+      "Y": [8],
+      "Category": "npcs"
+    },
+    {
+      "NameOrTranslationKey": "Race Announcer",
+      "X": [44],
+      "Y": [39],
+      "Category": "npcs"
+    },
+    {
+      "NameOrTranslationKey": "Scholar",
+      "X": [44],
+      "Y": [7],
+      "Category": "npcs"
+    },
+    {
+      "NameOrTranslationKey": "Shrouded Figure",
+      "X": [36],
+      "Y": [5],
+      "Category": "npcs"
+    },
+    {
+      "NameOrTranslationKey": "Suspicious Guy",
+      "X": [2],
+      "Y": [50],
+      "Category": "npcs"
+    },
+    {
+      "NameOrTranslationKey": "Bench 1",
+      "X": [43, 44],
+      "Y": [54],
+      "Category": "decor"
+    },
+    {
+      "NameOrTranslationKey": "Bench 2",
+      "X": [28, 29],
+      "Y": [23],
+      "Category": "decor"
+    },
+    {
+      "NameOrTranslationKey": "Harvey's Medical Station",
+      "X": [26],
+      "Y": [14],
+      "Category": "decor"
+    },
+    {
+      "NameOrTranslationKey": "Harvey's Tent",
+      "X": [28],
+      "Y": [10],
+      "Category": "decor"
+    }
+  ],
   "EliottHouse": [
     {
       "NameOrTranslationKey": "static_tile-elliott_house-piano_key_1",
@@ -3320,6 +3442,12 @@
       "X": [3],
       "Y": [3],
       "Category": "doors"
+    },
+    {
+      "NameOrTranslationKey": "static_tile-skill_cave-skull_statue",
+      "X": [12],
+      "Y": [4],
+      "Category": "decor"
     }
   ],
   "Slime Hutch": [
