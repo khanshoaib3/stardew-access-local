@@ -955,6 +955,12 @@
       "Category": "doors"
     },
     {
+      "NameOrTranslationKey": "static_tile-desert-bus",
+      "X": [18],
+      "Y": [27],
+      "Category": "interactables"
+    },
+    {
       "NameOrTranslationKey": "static_tile-desert_festival-chef_tent",
       "X": [8],
       "Y": [23],

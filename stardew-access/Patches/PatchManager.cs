@@ -36,11 +36,12 @@ internal class PatchManager
             // Misc Patches
             new ChatBoxPatch(),
             new DialogueBoxPatch(),
+            new FarmerTeamPatch(),
             new Game1Patch(),
             new GameLocationPatch(),
             new IClickableMenuPatch(),
             new InstanceGamePatch(),
-            new NPCPatch(),
+            new DrawAboveAlwaysFrontLayerPatch(),
             new PetBowlPatch(),
             new SoundsHelperPatch(),
             new TextBoxPatch(),

@@ -150,6 +150,12 @@ menu-game_menu-tab_names = {$tab_name} Tab {$is_active ->
 menu-inventory_page-money_info_key = {$farm_name}, {$current_funds}, {$total_earnings}{SIGNOFNUMBER($festival_score) ->
     [positive] , Festival score: {$festival_score}
     *[other] {EMPTYSTRING()}
+  }{SIGNOFNUMBER($calico_egg_count) ->
+    [positive] , Calico Eggs: {$calico_egg_count}
+    *[other] {EMPTYSTRING()}
+  }{SIGNOFNUMBER($calico_egg_rating) ->
+    [positive] , Egg Rating: {$calico_egg_rating}
+    *[other] {EMPTYSTRING()}
   }{SIGNOFNUMBER($golden_walnut_count) ->
     [positive] , Golden walnut: {$golden_walnut_count}
     *[other] {EMPTYSTRING()}

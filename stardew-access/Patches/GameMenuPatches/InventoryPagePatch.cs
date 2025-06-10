@@ -2,6 +2,7 @@ using HarmonyLib;
 using stardew_access.Translation;
 using stardew_access.Utils;
 using StardewValley;
+using StardewValley.Locations;
 using StardewValley.Menus;
 
 namespace stardew_access.Patches;
@@ -61,11 +62,18 @@ internal class InventoryPagePatch : IPatch
         int walnut = Game1.netWorldState.Value.GoldenWalnuts;
         int qiGems = Game1.player.QiGems;
         int qiCoins = Game1.player.clubCoins;
+        bool isDesertFestival = Utility.GetDayOfPassiveFestival("DesertFestival") > 0
+                                && ((Game1.player.currentLocation is MineShaft && Game1.mine.getMineArea() == 121)
+                                    || Game1.player.currentLocation is DesertFestival);
+        int calicoEggCount = isDesertFestival ? Game1.player.getItemCount("CalicoEgg") : -1;
+        int calicoEggRating = isDesertFestival ? Game1.player.team.highestCalicoEggRatingToday.Value + 1 : -1;
 
 
         MainClass.ScreenReader.TranslateAndSay("menu-inventory_page-money_info_key", true, new
             {
                 farm_name = farmName,
+                calico_egg_count = calicoEggCount,
+                calico_egg_rating = calicoEggRating,
                 current_funds = currentFunds,
                 total_earnings = totalEarnings,
                 festival_score = festivalScore,
