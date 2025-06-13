@@ -37,6 +37,7 @@ internal class IClickableMenuPatch : IPatch
         typeof(CraftingPage),
         typeof(ExitPage),
         typeof(InventoryPage),
+        typeof(MapPage),
         typeof(PowersTab),
         typeof(SkillsPage),
         typeof(SocialPage),
