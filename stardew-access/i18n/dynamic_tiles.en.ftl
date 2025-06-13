@@ -5,11 +5,6 @@
 ## Beach
 
 dynamic_tile-beach-old_mariner = Old Mariner
-dynamic_tile-beach-squid_fest_booth = Squid Booth
-dynamic_tile-beach-squid_fest_rewards_sign = Reward Tier: {$is_first_day ->
-    [0] 2 squids for copper tier, 5 squids for iron tier, 7 squids for gold tier and 10 squids for iridium tier.
-    *[1] 1 squid for copper tier, 3 squids for iron tier, 5 squids for gold tier and 8 squids for iridium tier.
-  }
 
 # Events
 
@@ -40,7 +35,6 @@ dynamic_tile-stardew_valley_fair-strength_game_arrow = Strength Game Arrow
 dynamic_tile-stardew_valley_fair-the_wheel = The Wheel
 dynamic_tile-stardew_valley_fair-tourist = Tourist {$number}
 
-
 # Farm
 
 dynamic_tile-farm-lumber_pile = Lumber Pile
@@ -56,3 +50,17 @@ dynamic_tile-mastery_cave-pedestal = {$has_hat ->
     *[1] Pedestal with a Hat
   }
   
+# Trout Derby
+
+dynamic_tile-trout_derby-sign = Trout Derby Sign
+dynamic_tile-trout_derby-booth = Derby Booth
+dynamic_tile-trout_derby-billboard = The annual Trout Derby billboard
+
+# Squid Fest
+
+dynamic_tile-squid_fest-booth = Squid Booth
+dynamic_tile-squid_fest-billboard = Squid Fest Billboard
+dynamic_tile-squid_fest-rewards_sign = Reward Tier: {$is_first_day ->
+    [0] 2 squids for copper tier, 5 squids for iron tier, 7 squids for gold tier and 10 squids for iridium tier.
+    *[1] 1 squid for copper tier, 3 squids for iron tier, 5 squids for gold tier and 8 squids for iridium tier.
+  }

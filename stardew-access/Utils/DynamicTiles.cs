@@ -315,18 +315,24 @@ public class DynamicTiles
             return ("item-haley_bracelet-name", CATEGORY.DroppedItems);
         }
 
-        if (x == 15 && y == 7 && Game1.IsWinter && Game1.dayOfMonth >= 12 && Game1.dayOfMonth <= 13)
+        if (x == 15 && y == 7 && Game1.IsWinter && Game1.dayOfMonth is 12 or 13)
         {
-            return ("dynamic_tile-beach-squid_fest_booth", CATEGORY.Interactables);
+            return ("dynamic_tile-squid_fest-booth", CATEGORY.Interactables);
         }
 
-        if (x == 12 && y == 7 && Game1.IsWinter && Game1.dayOfMonth >= 12 && Game1.dayOfMonth <= 13)
+        if (x == 12 && y == 7 && Game1.IsWinter && Game1.dayOfMonth is 12 or 13)
         {
             return (
-                name: Translator.Instance.Translate("dynamic_tile-beach-squid_fest_rewards_sign",
+                name: Translator.Instance.Translate("dynamic_tile-squid_fest-rewards_sign",
                     new { is_first_day = Game1.dayOfMonth == 12 ? 1 : 0 }, TranslationCategory.DynamicTiles),
                 category: CATEGORY.Decor
             );
+        }
+        
+        Log.Debug($"{x} {x is 23 or 24}");
+        if (x is 23 or 24 && y == 7 && Game1.IsWinter && Game1.dayOfMonth is 12 or 13)
+        {
+            return ("dynamic_tile-squid_fest-billboard", CATEGORY.Decor);
         }
         
         return (null, null);
@@ -666,6 +672,21 @@ public class DynamicTiles
         if (Game1.MasterPlayer.mailReceived.Contains("raccoonTreeFallen") && x == 56 && y == 6)
         {
             return ("tile-forest-giant_tree_sump", forest.stumpFixed.Value ? CATEGORY.Decor : CATEGORY.Quest);
+        }
+
+        if (x == 69 && y == 46 && Game1.IsSummer && Game1.dayOfMonth is 17 or 18 or 19)
+        {
+            return ("dynamic_tile-trout_derby-sign", CATEGORY.Interactables);
+        }
+
+        if (x == 70 && y == 47 && Game1.IsSummer && Game1.dayOfMonth is 20 or 21)
+        {
+            return ("dynamic_tile-trout_derby-booth", CATEGORY.Interactables);
+        }
+
+        if (x is 64 or 65 && y == 47 && Game1.IsSummer && Game1.dayOfMonth is 20 or 21)
+        {
+            return ("dynamic_tile-trout_derby-billboard", CATEGORY.Decor);
         }
 
         return (null, null);
