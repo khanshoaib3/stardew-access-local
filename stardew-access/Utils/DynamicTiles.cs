@@ -297,7 +297,8 @@ public class DynamicTiles
         {
             return ("dynamic_tile-beach-old_mariner", CATEGORY.NPCs);
         }
-        else if (x == 58 && y == 13)
+
+        if (x == 58 && y == 13)
         {
             if (!beach.bridgeFixed.Value)
             {
@@ -313,6 +314,21 @@ public class DynamicTiles
         {
             return ("item-haley_bracelet-name", CATEGORY.DroppedItems);
         }
+
+        if (x == 15 && y == 7 && Game1.IsWinter && Game1.dayOfMonth >= 12 && Game1.dayOfMonth <= 13)
+        {
+            return ("dynamic_tile-beach-squid_fest_booth", CATEGORY.Interactables);
+        }
+
+        if (x == 12 && y == 7 && Game1.IsWinter && Game1.dayOfMonth >= 12 && Game1.dayOfMonth <= 13)
+        {
+            return (
+                name: Translator.Instance.Translate("dynamic_tile-beach-squid_fest_rewards_sign",
+                    new { is_first_day = Game1.dayOfMonth == 12 ? 1 : 0 }, TranslationCategory.DynamicTiles),
+                category: CATEGORY.Decor
+            );
+        }
+        
         return (null, null);
     }
 

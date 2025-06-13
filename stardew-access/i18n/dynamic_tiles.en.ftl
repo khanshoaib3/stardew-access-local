@@ -5,6 +5,11 @@
 ## Beach
 
 dynamic_tile-beach-old_mariner = Old Mariner
+dynamic_tile-beach-squid_fest_booth = Squid Booth
+dynamic_tile-beach-squid_fest_rewards_sign = Reward Tier: {$is_first_day ->
+    [0] 2 squids for copper tier, 5 squids for iron tier, 7 squids for gold tier and 10 squids for iridium tier.
+    *[1] 1 squid for copper tier, 3 squids for iron tier, 5 squids for gold tier and 8 squids for iridium tier.
+  }
 
 # Events
 

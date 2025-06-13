@@ -2,6 +2,7 @@ using HarmonyLib;
 using stardew_access.Translation;
 using stardew_access.Utils;
 using StardewValley;
+using StardewValley.Constants;
 using StardewValley.Locations;
 using StardewValley.Menus;
 
@@ -67,6 +68,9 @@ internal class InventoryPagePatch : IPatch
                                     || Game1.player.currentLocation is DesertFestival);
         int calicoEggCount = isDesertFestival ? Game1.player.getItemCount("CalicoEgg") : -1;
         int calicoEggRating = isDesertFestival ? Game1.player.team.highestCalicoEggRatingToday.Value + 1 : -1;
+        int squid_fest_count = (Game1.IsWinter && Game1.dayOfMonth >= 12 && Game1.dayOfMonth <= 13)
+            ? (int)Game1.stats.Get(StatKeys.SquidFestScore(Game1.dayOfMonth, Game1.year))
+            : -999;
 
 
         MainClass.ScreenReader.TranslateAndSay("menu-inventory_page-money_info_key", true, new
@@ -74,6 +78,7 @@ internal class InventoryPagePatch : IPatch
                 farm_name = farmName,
                 calico_egg_count = calicoEggCount,
                 calico_egg_rating = calicoEggRating,
+                squid_fest_count = squid_fest_count,
                 current_funds = currentFunds,
                 total_earnings = totalEarnings,
                 festival_score = festivalScore,
