@@ -57,6 +57,8 @@ public class TileInfo
         "tile-twig-name"
     ];
 
+    private static string _prevStaticTile = "";
+
     static TileInfo()
     {
         JsonLoader.TryLoadJsonArray("trackable_machines.json", out trackable_machines, subdir: "assets/TileData");
@@ -363,7 +365,11 @@ public class TileInfo
         if (staticTile is { } static_tile)
         {
 #if DEBUG
-            Log.Verbose($"TileInfo: Got static tile {static_tile} from TileManager");
+            if (_prevStaticTile != static_tile.name)
+            {
+                _prevStaticTile = static_tile.name;
+                Log.Verbose($"TileInfo: Got static tile {static_tile} from TileManager");
+            }
 #endif
             return (static_tile.name, static_tile.category);
         }

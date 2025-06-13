@@ -44,6 +44,7 @@ namespace stardew_access
         /// Logs a trace level message that appears in the log (and console in the for developers version) only if SMAPI's verbose logging option is enabled. Meant for diagnostic information needed to troubleshoot, which doesn't need to be logged in most cases. Players can enable verbose logging by editing the smapi-internal/StardewModdingAPI.config.json file.
         /// </summary>
         /// <param name="message">The message to log.</param>
+        /// <param name="once">If true, the message will only be logged once per session.</param>
         internal static void Verbose(string message, bool once = false)
         {
             if (Monitor.IsVerbose)

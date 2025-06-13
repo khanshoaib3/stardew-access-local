@@ -18,6 +18,7 @@ internal static class InventoryUtils
     private static int prev_stamina_recovery = 0;
     private static int prev_health_recovery = 0;
     private static string prev_stamina_and_health_recovery_on_consumption = "";
+    private static string prev_qualified_item_id = "";
 
     internal static bool NarrateHoveredSlot(InventoryMenu? inventoryMenu,
         bool? giveExtraDetails = null,
@@ -198,7 +199,11 @@ internal static class InventoryUtils
         string specialName = Translator.Instance.Translate("inventory_util-special_items-name",
                 tokens: new { item_id = strippedQualifiedItemId });
 #if DEBUG
-        Log.Verbose($"Item: {displayName} [id={qualifiedItemId}] [stripped_id={strippedQualifiedItemId}] [special_name={specialName}]");
+        if (prev_qualified_item_id != qualifiedItemId)
+        {
+            prev_qualified_item_id = qualifiedItemId;
+            Log.Verbose($"Item: {displayName} [id={qualifiedItemId}] [stripped_id={strippedQualifiedItemId}] [special_name={specialName}]");
+        }
 #endif
         if (specialName != "-9999")
         {

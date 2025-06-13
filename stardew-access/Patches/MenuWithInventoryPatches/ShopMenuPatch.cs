@@ -94,8 +94,8 @@ internal class ShopMenuPatch : IPatch
 
         if (__instance.ShopId is Game1.shop_petAdoption)
         {
-            string petType = __instance.hoveredItem.Name.Split("_")[0].ToLower();
-            int breed = int.Parse(__instance.hoveredItem.Name.Split("_")[1]);
+            string petType = __instance.hoveredItem.Name.Split("|")[0].ToLower();
+            int breed = int.Parse(__instance.hoveredItem.Name.Split("|")[1]);
             breed++;
 
             name = Translator.Instance.Translate($"menu-character_creation-description-{petType}", translationCategory: TranslationCategory.CharacterCreationMenu, tokens: new
