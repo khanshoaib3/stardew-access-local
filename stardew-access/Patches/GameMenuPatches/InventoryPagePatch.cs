@@ -6,8 +6,10 @@ using StardewModdingAPI.Framework.ModLoading.Rewriters.StardewValley_1_6;
 using StardewValley;
 using StardewValley.Buffs;
 using StardewValley.Constants;
+using StardewValley.GameData.Pants;
 using StardewValley.Locations;
 using StardewValley.Menus;
+using StardewValley.Objects;
 
 namespace stardew_access.Patches;
 
@@ -128,12 +130,20 @@ internal class InventoryPagePatch : IPatch
             _ => null
         };
 
+        string description = (item != null)
+            ? (item is Boots boots)
+                ? boots.description +
+                  (boots.defenseBonus.Value > 0 ? "\n" + Game1.content.LoadString("Strings\\UI:ItemHover_DefenseBonus", boots.defenseBonus.Value) : "") +
+                  (boots.immunityBonus.Value > 0 ? "\n" + Game1.content.LoadString("Strings\\UI:ItemHover_ImmunityBonus", boots.immunityBonus.Value) : "")
+                : item.getDescription()
+            : "";
+
         return Translator.Instance.Translate("common-ui-equipment_slots", new
         {
             slot_name = slotName,
             is_empty = (item == null) ? 1 : 0,
             item_name = (item == null) ? "" : item.DisplayName,
-            item_description = (item == null) ? "" : item.getDescription()
+            item_description = (item == null) ? "" : description
         }, TranslationCategory.Menu);
     }
 
