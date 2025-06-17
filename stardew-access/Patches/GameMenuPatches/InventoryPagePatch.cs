@@ -1,7 +1,10 @@
+using System.Text;
 using HarmonyLib;
 using stardew_access.Translation;
 using stardew_access.Utils;
+using StardewModdingAPI.Framework.ModLoading.Rewriters.StardewValley_1_6;
 using StardewValley;
+using StardewValley.Buffs;
 using StardewValley.Constants;
 using StardewValley.Locations;
 using StardewValley.Menus;
@@ -52,6 +55,12 @@ internal class InventoryPagePatch : IPatch
         if (MainClass.Config.MoneyKey.JustPressed())
         {
             SpeakMoneyWithExtras();
+            return;
+        }
+
+        if (MainClass.Config.HealthNStaminaKey.JustPressed())
+        {
+            SpeakHealthNStaminaWithBuffs();
             return;
         }
     }
@@ -153,7 +162,7 @@ internal class InventoryPagePatch : IPatch
                 _ => Game1.CurrentEvent.playerControlSequenceID
             }
             : "null";
-        int walnut = Game1.player.currentLocation is IslandLocation ? Game1.netWorldState.Value.GoldenWalnuts :-1;
+        int walnut = Game1.player.currentLocation is IslandLocation ? Game1.netWorldState.Value.GoldenWalnuts : -1;
         int qiGems = Game1.player.currentLocation?.Name == "QiNutRoom" ? Game1.player.QiGems : -1;
         int qiCoins = Game1.player.currentLocation is Club ? Game1.player.clubCoins : -1;
         bool isDesertFestival = Utility.GetDayOfPassiveFestival("DesertFestival") > 0
@@ -161,7 +170,8 @@ internal class InventoryPagePatch : IPatch
                                     || Game1.player.currentLocation is DesertFestival);
         int calicoEggCount = isDesertFestival ? Game1.player.Items.CountId("CalicoEgg") : -1;
         int calicoEggRating = isDesertFestival ? Game1.player.team.highestCalicoEggRatingToday.Value + 1 : -1;
-        int squidFestCount = (Game1.player.currentLocation is Beach && Game1.IsWinter && Game1.dayOfMonth >= 12 && Game1.dayOfMonth <= 13)
+        int squidFestCount = (Game1.player.currentLocation is Beach && Game1.IsWinter && Game1.dayOfMonth >= 12 &&
+                              Game1.dayOfMonth <= 13)
             ? (int)Game1.stats.Get(StatKeys.SquidFestScore(Game1.dayOfMonth, Game1.year))
             : -1;
 
@@ -180,5 +190,60 @@ internal class InventoryPagePatch : IPatch
             qi_gem_count = qiGems,
             qi_club_coins = qiCoins
         }, TranslationCategory.Menu);
+    }
+
+    private static void SpeakHealthNStaminaWithBuffs()
+    {
+        int health = CurrentPlayer.CurrentHealth;
+        int stamina = CurrentPlayer.CurrentStamina;
+        string buffs = Game1.player.buffs.AppliedBuffs.Values.Reverse().Join(e => Translator.Instance.Translate(
+            "menu-inventory_page-buff_info", new
+            {
+                name = e.displayName,
+                effects = getDescription(e) ?? "null",
+                time_left = $"{(e.millisecondsDuration / 60000).ToString()}:{(e.millisecondsDuration % 60000 / 10000).ToString()}{(e.millisecondsDuration % 60000 % 10000 / 1000).ToString()}"
+            }, TranslationCategory.Menu)
+        );
+        buffs = buffs.Trim();
+
+        MainClass.ScreenReader.TranslateAndSay("menu-inventory_page-health_n_buff_info_key", true,
+            new { health, stamina, buffs = string.IsNullOrWhiteSpace(buffs) ? "null" : buffs }, TranslationCategory.Menu);
+    }
+
+    // Method copied from BuffsDisplay
+    private static string? getDescription(Buff buff)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        
+        string description1 = buff.description;
+        if ((description1 != null ? (description1.Length > 1 ? 1 : 0) : 0) != 0)
+            stringBuilder.Append(buff.description + " ");
+        foreach (BuffAttributeDisplay displayAttribute in BuffsDisplay.displayAttributes)
+        {
+            string? description2 = getDescription(buff, displayAttribute);
+            if (description2 != null) stringBuilder.Append(description2 + " ");
+        }
+
+        string? sourceLine = getSourceLine(buff);
+        if (sourceLine != null) stringBuilder.Append(sourceLine + " ");
+        if (string.IsNullOrWhiteSpace(stringBuilder.ToString())) return null;
+        return stringBuilder.ToString().TrimEnd();
+    }
+
+    // Method copied from BuffsDisplay
+    private static string? getDescription(Buff buff, BuffAttributeDisplay attribute)
+    {
+        float num = attribute.Value(buff);
+        if (num == 0.0) return null;
+        return attribute.Description(num);
+    }
+
+    // Method copied from BuffsDisplay
+    private static string? getSourceLine(Buff buff)
+    {
+        string str = buff.displaySource ?? buff.source;
+        return string.IsNullOrWhiteSpace(str)
+            ? null
+            : Game1.content.LoadString("Strings\\StringsFromCSFiles:Buff.cs.508") + str;
     }
 }

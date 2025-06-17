@@ -1,217 +1,216 @@
 using StardewValley;
 using Microsoft.Xna.Framework;
 
-namespace stardew_access.Utils
+namespace stardew_access.Utils;
+
+internal class CurrentPlayer
 {
-    internal class CurrentPlayer
+
+    /// <summary>
+    /// Returns the percentage health remaining of player.
+    /// </summary>
+    public static int PercentHealth
     {
-
-        /// <summary>
-        /// Returns the percentage health remaining of player.
-        /// </summary>
-        public static int PercentHealth
+        get
         {
-            get
-            {
-                if (Game1.player == null)
-                    return 0;
+            if (Game1.player == null)
+                return 0;
 
-                return (CurrentHealth * 100) / Game1.player.maxHealth; ;
-            }
+            return (CurrentHealth * 100) / Game1.player.maxHealth; ;
         }
+    }
 
-        /// <summary>
-        /// Returns the total health player has currently
-        /// </summary>
-        public static int CurrentHealth
+    /// <summary>
+    /// Returns the total health player has currently
+    /// </summary>
+    public static int CurrentHealth
+    {
+        get
         {
-            get
-            {
-                if (Game1.player == null)
-                    return 0;
+            if (Game1.player == null)
+                return 0;
 
-                return Game1.player.health;
-            }
+            return Game1.player.health;
         }
+    }
 
-        /// <summary>
-        /// Returns the percentage stamine/energy remaining of player.
-        /// </summary>
-        public static int PercentStamina
+    /// <summary>
+    /// Returns the percentage stamine/energy remaining of player.
+    /// </summary>
+    public static int PercentStamina
+    {
+        get
         {
-            get
-            {
-                if (Game1.player == null)
-                    return 0;
+            if (Game1.player == null)
+                return 0;
 
-                return (CurrentStamina * 100) / Game1.player.maxStamina.Value;
-            }
+            return (CurrentStamina * 100) / Game1.player.maxStamina.Value;
         }
+    }
 
-        /// <summary>
-        /// Returns the total stamina player has currently
-        /// </summary>
-        public static int CurrentStamina
+    /// <summary>
+    /// Returns the total stamina player has currently
+    /// </summary>
+    public static int CurrentStamina
+    {
+        get
         {
-            get
-            {
-                if (Game1.player == null)
-                    return 0;
+            if (Game1.player == null)
+                return 0;
 
-                return (int)Game1.player.stamina;
-            }
+            return (int)Game1.player.stamina;
         }
+    }
 
-        /// <summary>
-        /// Returns the tile location of the player
-        /// </summary>
-        public static Vector2 Position
+    /// <summary>
+    /// Returns the tile location of the player
+    /// </summary>
+    public static Vector2 Position
+    {
+        get
         {
-            get
-            {
-                if (Game1.player == null)
-                    return Vector2.Zero;
+            if (Game1.player == null)
+                return Vector2.Zero;
 
-                return Game1.player.Tile;
-            }
+            return Game1.player.Tile;
         }
+    }
 
-        /// <summary>
-        /// Returns the X coordinate of the player
-        /// </summary>
-        public static int PositionX
+    /// <summary>
+    /// Returns the X coordinate of the player
+    /// </summary>
+    public static int PositionX
+    {
+        get
         {
-            get
-            {
-                if (Game1.player == null)
-                    return 0;
+            if (Game1.player == null)
+                return 0;
 
-                return (int)Position.X;
-            }
+            return (int)Position.X;
         }
+    }
 
-        /// <summary>
-        /// Returns the Y coordinate of the player
-        /// </summary>
-        public static int PositionY
+    /// <summary>
+    /// Returns the Y coordinate of the player
+    /// </summary>
+    public static int PositionY
+    {
+        get
         {
-            get
-            {
-                if (Game1.player == null)
-                    return 0;
+            if (Game1.player == null)
+                return 0;
 
-                return (int)Position.Y;
-            }
+            return (int)Position.Y;
         }
+    }
 
-        /// <summary>
-        /// Returns the time in the 12 or 24 hours format
-        /// </summary>
-        public static string TimeOfDay
+    /// <summary>
+    /// Returns the time in the 12 or 24 hours format
+    /// </summary>
+    public static string TimeOfDay
+    {
+        get
         {
-            get
+            int timeOfDay = Game1.timeOfDay;
+
+            int minutes = timeOfDay % 100;
+            int hours = timeOfDay / 100;
+
+            if (MainClass.Config.Use24HourFormat is false)
             {
-                int timeOfDay = Game1.timeOfDay;
-
-                int minutes = timeOfDay % 100;
-                int hours = timeOfDay / 100;
-
-                if (MainClass.Config.Use24HourFormat is false)
-                {
-                    string amOrpm = hours / 12 == 1 ? "PM" : "AM";
-                    hours %= 12;
-                    if (hours == 0) hours = 12;
-                    return $"{hours}:{minutes:00} {amOrpm}";
-                } 
-                else
-                {
-                    
-                    // fix for ingame 26 hoursformat
-                    if (hours >= 24) hours -= 24;
-
-                    return $"{hours}:{minutes:00}";
-                }
+                string amOrpm = hours / 12 == 1 ? "PM" : "AM";
+                hours %= 12;
+                if (hours == 0) hours = 12;
+                return $"{hours}:{minutes:00} {amOrpm}";
             } 
-        }
-
-        /// <summary>
-        /// Returns the current season
-        /// </summary>
-        public static string Season => Game1.CurrentSeasonDisplayName;
-
-        /// <summary>
-        /// Returns the current date of month
-        /// </summary>
-        public static int Date => Game1.dayOfMonth;
-
-        /// <summary>
-        /// Returns the current day of week
-        /// </summary>
-        /// <returns></returns>
-        public static string Day => Game1.Date.DayOfWeek.ToString();
-
-        /// <summary>
-        /// Returns the amount of money the player has currently
-        /// </summary>
-        public static int Money
-        {
-            get
+            else
             {
-                if (Game1.player == null)
-                    return -1;
+                    
+                // fix for ingame 26 hoursformat
+                if (hours >= 24) hours -= 24;
 
-                return Game1.player.Money;
+                return $"{hours}:{minutes:00}";
             }
-        }
+        } 
+    }
 
-        /// <summary>
-        /// Returns the tile position of the tile the player is facing
-        /// </summary>
-        /// <value></value>
-        public static Vector2 FacingTile
+    /// <summary>
+    /// Returns the current season
+    /// </summary>
+    public static string Season => Game1.CurrentSeasonDisplayName;
+
+    /// <summary>
+    /// Returns the current date of month
+    /// </summary>
+    public static int Date => Game1.dayOfMonth;
+
+    /// <summary>
+    /// Returns the current day of week
+    /// </summary>
+    /// <returns></returns>
+    public static string Day => Game1.Date.DayOfWeek.ToString();
+
+    /// <summary>
+    /// Returns the amount of money the player has currently
+    /// </summary>
+    public static int Money
+    {
+        get
         {
-            get
-            {
-                int x = Game1.player.GetBoundingBox().Center.X;
-                int y = Game1.player.GetBoundingBox().Center.Y;
+            if (Game1.player == null)
+                return -1;
 
-                int offset = 64;
-
-                switch (Game1.player.FacingDirection)
-                {
-                    case 0:
-                        y -= offset;
-                        break;
-                    case 1:
-                        x += offset;
-                        break;
-                    case 2:
-                        y += offset;
-                        break;
-                    case 3:
-                        x -= offset;
-                        break;
-                }
-
-                x /= Game1.tileSize;
-                y /= Game1.tileSize;
-                return new Vector2(x, y);
-            }
+            return Game1.player.Money;
         }
+    }
 
-        /// <summary>
-        /// The bounding box of the tile the player is facing.
-        /// </summary>
-        public static Rectangle FacingTileBoundingBox
+    /// <summary>
+    /// Returns the tile position of the tile the player is facing
+    /// </summary>
+    /// <value></value>
+    public static Vector2 FacingTile
+    {
+        get
         {
-            get
-            {
-		Rectangle playerBoundingBox = Game1.player.GetBoundingBox();
-                int x = (int)FacingTile.X * Game1.tileSize;
-                int y = (int)FacingTile.Y * Game1.tileSize;
+            int x = Game1.player.GetBoundingBox().Center.X;
+            int y = Game1.player.GetBoundingBox().Center.Y;
 
-                return new(x, y, playerBoundingBox.Width, playerBoundingBox.Height);
+            int offset = 64;
+
+            switch (Game1.player.FacingDirection)
+            {
+                case 0:
+                    y -= offset;
+                    break;
+                case 1:
+                    x += offset;
+                    break;
+                case 2:
+                    y += offset;
+                    break;
+                case 3:
+                    x -= offset;
+                    break;
             }
+
+            x /= Game1.tileSize;
+            y /= Game1.tileSize;
+            return new Vector2(x, y);
+        }
+    }
+
+    /// <summary>
+    /// The bounding box of the tile the player is facing.
+    /// </summary>
+    public static Rectangle FacingTileBoundingBox
+    {
+        get
+        {
+            Rectangle playerBoundingBox = Game1.player.GetBoundingBox();
+            int x = (int)FacingTile.X * Game1.tileSize;
+            int y = (int)FacingTile.Y * Game1.tileSize;
+
+            return new(x, y, playerBoundingBox.Width, playerBoundingBox.Height);
         }
     }
 }
