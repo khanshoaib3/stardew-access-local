@@ -174,14 +174,20 @@ menu-inventory_page-money_info_key = {$farm_name}, {$current_funds}, {$total_ear
     [positive] , Qi club coins: {$qi_club_coins}
     *[other] {EMPTYSTRING()}
   }
-menu-inventory_page-health_n_buff_info_key = Health: {$health}, Stamina: {$stamina}, {$buffs ->
+menu-inventory_page-health_n_buff_info_key = Health: {$health}, Stamina: {$stamina}{$buffs ->
     [null] {EMPTYSTRING()}
-    *[other] Buffs: {$buffs}
+    *[other] , Buffs: {$buffs}
   }
-menu-inventory_page-buff_info = {$name} {$effects ->
+menu-inventory_page-buff_info = {$name ->
+    [null] {EMPTYSTRING()}
+    *[other] {$name}
+  } {$effects ->
     [null] {EMPTYSTRING()}
     *[other] ({$effects})
-  } for {$time_left} minutes
+  } {$time_left ->
+    [null] {EMPTYSTRING()}
+    *[other] for {$time_left} minutes
+  }
 
 ### Social Page
 

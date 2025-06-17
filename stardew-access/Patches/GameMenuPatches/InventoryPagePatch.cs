@@ -209,9 +209,11 @@ internal class InventoryPagePatch : IPatch
         string buffs = Game1.player.buffs.AppliedBuffs.Values.Reverse().Join(e => Translator.Instance.Translate(
             "menu-inventory_page-buff_info", new
             {
-                name = e.displayName,
+                name = string.IsNullOrWhiteSpace(e.displayName) ? "null" : e.displayName,
                 effects = getDescription(e) ?? "null",
-                time_left = $"{(e.millisecondsDuration / 60000).ToString()}:{(e.millisecondsDuration % 60000 / 10000).ToString()}{(e.millisecondsDuration % 60000 % 10000 / 1000).ToString()}"
+                time_left = e.millisecondsDuration <= 0
+                    ? "null"
+                    : $"{(e.millisecondsDuration / 60000).ToString()}:{(e.millisecondsDuration % 60000 / 10000).ToString()}{(e.millisecondsDuration % 60000 % 10000 / 1000).ToString()}"
             }, TranslationCategory.Menu)
         );
         buffs = buffs.Trim();
