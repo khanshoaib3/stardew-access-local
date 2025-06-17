@@ -1,3 +1,4 @@
+using stardew_access.Patches;
 using stardew_access.Translation;
 using stardew_access.Utils;
 using StardewModdingAPI.Events;
@@ -71,20 +72,21 @@ public class PlayerTriggered : FeatureBase
         // Narrate Current Location
         if (MainClass.Config.LocationKey.JustPressed())
         {
-            MainClass.ScreenReader.Say(Game1.currentLocation.GetParentLocation() is Farm ? Game1.currentLocation.Name : Game1.currentLocation.DisplayName, true);
+            MainClass.ScreenReader.Say(Game1.currentLocation.GetParentLocation() is Farm
+                ? Game1.currentLocation.Name
+                : Game1.currentLocation.DisplayName, true);
             return true;
         }
 
         // Narrate Position
         if (MainClass.Config.PositionKey.JustPressed())
         {
-            MainClass.ScreenReader.TranslateAndSay("feature-speak_position", true,
-                new
-                {
-                    verbose_coordinates = MainClass.Config.VerboseCoordinates ? 1 : 0,
-                    x_pos = CurrentPlayer.PositionX,
-                    y_pos = CurrentPlayer.PositionY
-                });
+            MainClass.ScreenReader.TranslateAndSay("feature-speak_position", true, new
+            {
+                verbose_coordinates = MainClass.Config.VerboseCoordinates ? 1 : 0,
+                x_pos = CurrentPlayer.PositionX,
+                y_pos = CurrentPlayer.PositionY
+            });
             return true;
         }
 
@@ -95,22 +97,16 @@ public class PlayerTriggered : FeatureBase
                 return true;
 
             string toSpeak = MainClass.Config.HealthNStaminaInPercentage
-                ? Translator.Instance.Translate(
-                    "feature-speak_health_n_stamina-in_percentage_format",
-                    new
-                    {
-                        health = CurrentPlayer.PercentHealth,
-                        stamina = CurrentPlayer.PercentStamina
-                    }
-                )
-                : Translator.Instance.Translate(
-                    "feature-speak_health_n_stamina-in_normal_format",
-                    new
-                    {
-                        health = CurrentPlayer.CurrentHealth,
-                        stamina = CurrentPlayer.CurrentStamina
-                    }
-                );
+                ? Translator.Instance.Translate("feature-speak_health_n_stamina-in_percentage_format", new
+                {
+                    health = CurrentPlayer.PercentHealth,
+                    stamina = CurrentPlayer.PercentStamina
+                })
+                : Translator.Instance.Translate("feature-speak_health_n_stamina-in_normal_format", new
+                {
+                    health = CurrentPlayer.CurrentHealth,
+                    stamina = CurrentPlayer.CurrentStamina
+                });
 
             MainClass.ScreenReader.Say(toSpeak, true);
             return true;
@@ -119,27 +115,33 @@ public class PlayerTriggered : FeatureBase
         // Narrate money at hand
         if (MainClass.Config.MoneyKey.JustPressed())
         {
-            MainClass.ScreenReader.TranslateAndSay("feature-speak_money", true, new { money = CurrentPlayer.Money });
+            if (Game1.CurrentEvent?.playerControlSequenceID != null
+                && Game1.CurrentEvent.playerControlSequenceID is "eggHunt" or "iceFishing")
+            {
+                InventoryPagePatch.SpeakMoneyWithExtras();
+                return true;
+            }
+
+            MainClass.ScreenReader.TranslateAndSay("feature-speak_money", true, new
+            {
+                money = CurrentPlayer.Money
+            });
             return true;
         }
 
         // Narrate time and season
         if (MainClass.Config.TimeNSeasonKey.JustPressed())
         {
-            MainClass.ScreenReader.TranslateAndSay(
-                "feature-speak_time_and_season",
-                true,
-                new
-                {
-                    time_of_day = CurrentPlayer.TimeOfDay,
-                    day = CurrentPlayer.Day,
-                    date = CurrentPlayer.Date,
-                    season = CurrentPlayer.Season
-                });
+            MainClass.ScreenReader.TranslateAndSay("feature-speak_time_and_season", true, new
+            {
+                time_of_day = CurrentPlayer.TimeOfDay,
+                day = CurrentPlayer.Day,
+                date = CurrentPlayer.Date,
+                season = CurrentPlayer.Season
+            });
             return true;
         }
 
         return false;
     }
-
 }

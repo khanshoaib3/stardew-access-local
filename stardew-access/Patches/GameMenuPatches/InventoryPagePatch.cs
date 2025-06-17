@@ -49,44 +49,11 @@ internal class InventoryPagePatch : IPatch
 
     private static void HandleKeyBinds()
     {
-        if (!MainClass.Config.MoneyKey.JustPressed())
+        if (MainClass.Config.MoneyKey.JustPressed())
+        {
+            SpeakMoneyWithExtras();
             return;
-
-        string farmName = Game1.content.LoadString("Strings\\UI:Inventory_FarmName", Game1.player.farmName.Value);
-        string currentFunds = Game1.content.LoadString(
-            "Strings\\UI:Inventory_CurrentFunds" + (Game1.player.useSeparateWallets ? "_Separate" : ""),
-            Utility.getNumberWithCommas(Game1.player.Money));
-        string totalEarnings = Game1.content.LoadString(
-            "Strings\\UI:Inventory_TotalEarnings" + (Game1.player.useSeparateWallets ? "_Separate" : ""),
-            Utility.getNumberWithCommas((int)Game1.player.totalMoneyEarned));
-        int festivalScore = Game1.player.festivalScore;
-        int walnut = Game1.netWorldState.Value.GoldenWalnuts;
-        int qiGems = Game1.player.QiGems;
-        int qiCoins = Game1.player.clubCoins;
-        bool isDesertFestival = Utility.GetDayOfPassiveFestival("DesertFestival") > 0
-                                && ((Game1.player.currentLocation is MineShaft && Game1.mine.getMineArea() == 121)
-                                    || Game1.player.currentLocation is DesertFestival);
-        int calicoEggCount = isDesertFestival ? Game1.player.getItemCount("CalicoEgg") : -1;
-        int calicoEggRating = isDesertFestival ? Game1.player.team.highestCalicoEggRatingToday.Value + 1 : -1;
-        int squid_fest_count = (Game1.IsWinter && Game1.dayOfMonth >= 12 && Game1.dayOfMonth <= 13)
-            ? (int)Game1.stats.Get(StatKeys.SquidFestScore(Game1.dayOfMonth, Game1.year))
-            : -999;
-
-
-        MainClass.ScreenReader.TranslateAndSay("menu-inventory_page-money_info_key", true, new
-            {
-                farm_name = farmName,
-                calico_egg_count = calicoEggCount,
-                calico_egg_rating = calicoEggRating,
-                squid_fest_count = squid_fest_count,
-                current_funds = currentFunds,
-                total_earnings = totalEarnings,
-                festival_score = festivalScore,
-                golden_walnut_count = walnut,
-                qi_gem_count = qiGems,
-                qi_club_coins = qiCoins
-            },
-            TranslationCategory.Menu);
+        }
     }
 
     private static bool NarrateHoveredButton(InventoryPage __instance, int x, int y)
@@ -152,15 +119,66 @@ internal class InventoryPagePatch : IPatch
             _ => null
         };
 
-        return Translator.Instance.Translate(
-            "common-ui-equipment_slots",
-            new
+        return Translator.Instance.Translate("common-ui-equipment_slots", new
+        {
+            slot_name = slotName,
+            is_empty = (item == null) ? 1 : 0,
+            item_name = (item == null) ? "" : item.DisplayName,
+            item_description = (item == null) ? "" : item.getDescription()
+        }, TranslationCategory.Menu);
+    }
+
+    internal static void SpeakMoneyWithExtras()
+    {
+        string farmName = Game1.content.LoadString("Strings\\UI:Inventory_FarmName", Game1.player.farmName.Value);
+        string currentFunds = Game1.content.LoadString(
+            "Strings\\UI:Inventory_CurrentFunds" + (Game1.player.useSeparateWallets ? "_Separate" : ""),
+            Utility.getNumberWithCommas(Game1.player.Money)
+        );
+        string totalEarnings = Game1.content.LoadString(
+            "Strings\\UI:Inventory_TotalEarnings" + (Game1.player.useSeparateWallets ? "_Separate" : ""),
+            Utility.getNumberWithCommas((int)Game1.player.totalMoneyEarned)
+        );
+        string dateInfo = Utility.getDateString();
+        int festivalScore = Game1.CurrentEvent?.playerControlSequenceID != null
+                            && Game1.CurrentEvent.playerControlSequenceID is "eggHunt" or "fair" or "iceFishing"
+            ? Game1.player.festivalScore
+            : -1;
+        string festivalType = Game1.CurrentEvent?.playerControlSequenceID != null
+            ? Game1.CurrentEvent.playerControlSequenceID switch
             {
-                slot_name = slotName,
-                is_empty = (item == null) ? 1 : 0,
-                item_name = (item == null) ? "" : item.DisplayName,
-                item_description = (item == null) ? "" : item.getDescription()
-            },
-            TranslationCategory.Menu);
+                "eggHunt" => "EggHunt",
+                "fair" => "StardewFair",
+                "iceFishing" => "FestivalOfIce",
+                _ => Game1.CurrentEvent.playerControlSequenceID
+            }
+            : "null";
+        int walnut = Game1.player.currentLocation is IslandLocation ? Game1.netWorldState.Value.GoldenWalnuts :-1;
+        int qiGems = Game1.player.currentLocation?.Name == "QiNutRoom" ? Game1.player.QiGems : -1;
+        int qiCoins = Game1.player.currentLocation is Club ? Game1.player.clubCoins : -1;
+        bool isDesertFestival = Utility.GetDayOfPassiveFestival("DesertFestival") > 0
+                                && ((Game1.player.currentLocation is MineShaft && Game1.mine.getMineArea() == 121)
+                                    || Game1.player.currentLocation is DesertFestival);
+        int calicoEggCount = isDesertFestival ? Game1.player.Items.CountId("CalicoEgg") : -1;
+        int calicoEggRating = isDesertFestival ? Game1.player.team.highestCalicoEggRatingToday.Value + 1 : -1;
+        int squidFestCount = (Game1.player.currentLocation is Beach && Game1.IsWinter && Game1.dayOfMonth >= 12 && Game1.dayOfMonth <= 13)
+            ? (int)Game1.stats.Get(StatKeys.SquidFestScore(Game1.dayOfMonth, Game1.year))
+            : -1;
+
+        MainClass.ScreenReader.TranslateAndSay("menu-inventory_page-money_info_key", true, new
+        {
+            farm_name = farmName,
+            current_funds = currentFunds,
+            total_earnings = totalEarnings,
+            date_info = dateInfo,
+            festival_type = festivalType,
+            festival_score = festivalScore,
+            calico_egg_count = calicoEggCount,
+            calico_egg_rating = calicoEggRating,
+            squid_fest_count = squidFestCount,
+            golden_walnut_count = walnut,
+            qi_gem_count = qiGems,
+            qi_club_coins = qiCoins
+        }, TranslationCategory.Menu);
     }
 }

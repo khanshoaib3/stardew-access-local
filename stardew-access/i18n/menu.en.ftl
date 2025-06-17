@@ -147,8 +147,13 @@ menu-game_menu-tab_names = {$tab_name} Tab {$is_active ->
 
 ### Inventory Page
 
-menu-inventory_page-money_info_key = {$farm_name}, {$current_funds}, {$total_earnings}{SIGNOFNUMBER($festival_score) ->
-    [positive] , Festival score: {$festival_score}
+menu-inventory_page-money_info_key = {$farm_name}, {$current_funds}, {$total_earnings}, {$date_info}{SIGNOFNUMBER($festival_score) ->
+    [positive] , {$festival_type ->
+        [EggHunt] Eggs caught
+        [StardewFair] Star Tokens
+        [FestivalOfIce] Fishes caught
+        *[other] {$festival_type}
+      }: {$festival_score}
     *[other] {EMPTYSTRING()}
   }{SIGNOFNUMBER($calico_egg_count) ->
     [positive] , Calico Eggs: {$calico_egg_count}

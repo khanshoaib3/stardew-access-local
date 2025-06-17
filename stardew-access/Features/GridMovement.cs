@@ -310,7 +310,6 @@ internal class GridMovement : FeatureBase
                 timer.Stop();
                 timer.Interval = TimerInterval;
                 timer.Start();
-                Log.Info($"{string.Join("\n", location.warps.Select(warp => $"{warp.X} {warp.Y} {warp.TargetName} {warp.TargetX} {warp.TargetY}"))}");
 
                 // TODO Replace with custom sound
                 Game1.playSound("doorOpen");
