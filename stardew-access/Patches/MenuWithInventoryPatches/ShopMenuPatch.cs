@@ -3,6 +3,7 @@ using stardew_access.Translation;
 using stardew_access.Utils;
 using StardewValley;
 using StardewValley.Menus;
+using StardewValley.Objects;
 
 namespace stardew_access.Patches;
 
@@ -90,7 +91,11 @@ internal class ShopMenuPatch : IPatch
             : Translator.Instance.Translate("menu-shop-buy_price_info", new { price = __instance.hoverPrice }, TranslationCategory.Menu);
         string description = __instance.hoveredItem.IsRecipe
             ? new CraftingRecipe(__instance.hoveredItem.Name.Replace(" Recipe", "")).description
-            : __instance.hoveredItem.getDescription();
+            : (__instance.hoveredItem is Boots boots)
+                ? boots.description +
+                  (boots.defenseBonus.Value > 0 ? "\n" + Game1.content.LoadString("Strings\\UI:ItemHover_DefenseBonus", boots.defenseBonus.Value) : "") +
+                  (boots.immunityBonus.Value > 0 ? "\n" + Game1.content.LoadString("Strings\\UI:ItemHover_ImmunityBonus", boots.immunityBonus.Value) : "")
+                : __instance.hoveredItem.getDescription();
 
         if (__instance.ShopId is Game1.shop_petAdoption)
         {

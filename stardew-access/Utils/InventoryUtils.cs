@@ -124,7 +124,11 @@ internal static class InventoryUtils
         string buffs = (customBuffs is not null)
             ? string.Join(", ", customBuffs)
             : GetBuffsFromItem(item);
-        string description = item.getDescription();
+        string description = item is Boots boots
+            ? boots.description +
+              (boots.defenseBonus.Value > 0 ? "\n" + Game1.content.LoadString("Strings\\UI:ItemHover_DefenseBonus", boots.defenseBonus.Value) : "") +
+              (boots.immunityBonus.Value > 0 ? "\n" + Game1.content.LoadString("Strings\\UI:ItemHover_ImmunityBonus", boots.immunityBonus.Value) : "")
+            : item.getDescription();
         bool isShowingSellPrice = (Game1.player.stats.Get("Book_PriceCatalogue") != 0 && item is not Furniture && item.CanBeLostOnDeath() && item is not Clothing && item is not Wallpaper && (item is not StardewValley.Object || !(item as StardewValley.Object)!.bigCraftable.Value) && item.sellToStorePrice(-1L) > 0);
         string price = isShowingSellPrice ? GetPrice(item.sellToStorePrice() * item.Stack) : GetPrice(hoverPrice);
         string requirements = GetExtraItemInfo(extraItemToShowIndex, extraItemToShowAmount);
