@@ -1308,7 +1308,7 @@
       "Category": "doors"
     }
   ],
-  "GreenHouse": [
+  "Greenhouse": [
     {
       "NameOrTranslationKey": "static_tile-greenhouse-water_trough",
       "X": [9, 10],
@@ -3454,32 +3454,6 @@
       "X": [12],
       "Y": [4],
       "Category": "decor"
-    }
-  ],
-  "Slime Hutch": [
-    {
-      "NameOrTranslationKey": "static_tile-slime_hutch-water_trough_1",
-      "X": [16],
-      "Y": [6],
-      "Category": "other"
-    },
-    {
-      "NameOrTranslationKey": "static_tile-slime_hutch-water_trough_2",
-      "X": [16],
-      "Y": [7],
-      "Category": "other"
-    },
-    {
-      "NameOrTranslationKey": "static_tile-slime_hutch-water_trough_3",
-      "X": [16],
-      "Y": [8],
-      "Category": "other"
-    },
-    {
-      "NameOrTranslationKey": "static_tile-slime_hutch-water_trough_4",
-      "X": [16],
-      "Y": [9],
-      "Category": "other"
     }
   ],
   "Spirit's Eve": [

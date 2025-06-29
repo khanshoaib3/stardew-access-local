@@ -150,6 +150,15 @@ public class DynamicTiles
         { "Deluxe Coop", (6, 17, 3) }
     };
 
+    // Dictionary of coordinates for feeding benches in barns and coops
+    private static readonly HashSet<(int x, int y)> SlimeHutchWaterTroughTiles = new()
+    {
+        (16, 6),
+        (16, 7),
+        (16, 8),
+        (16, 9)
+    };
+
     // List to hold Egg Festival eggs
     private static List<Prop>? eggs;
 
@@ -724,7 +733,7 @@ public class DynamicTiles
     /// <summary>
     /// Retrieves information about interactables, NPCs, or other features at a given coordinate in an IslandNorth.
     /// </summary>
-    /// <param name="islandNorth">The IslandNorth to search.</param>
+    /// <param name="islandHut">The IslandNorth to search.</param>
     /// <param name="x">The x-coordinate to search.</param>
     /// <param name="y">The y-coordinate to search.</param>
     /// <param name="tileAction">The tile action string associated with the tile, if any.</param>
@@ -1149,16 +1158,30 @@ public class DynamicTiles
     private static (string? name, CATEGORY? category)? GetFeedingBenchInfo(GameLocation currentLocation, int x, int y, bool lessInfo = false)
     {
         string locationName = currentLocation.Name;
+        if (!FeedingBenchBounds.TryGetValue(locationName, out var bounds)
+            || x < bounds.minX || x > bounds.maxX || y != bounds.y) return null;
+        
+        (string? name, CATEGORY category) = TileInfo.GetObjectAtTile(currentLocation, x, y, true);
+        bool hasHay = name != null && name.Contains("hay", StringComparison.OrdinalIgnoreCase);
+        category = hasHay ? CATEGORY.Other : CATEGORY.Pending;
+        return (Translator.Instance.Translate("tile_name-feeding_bench", new { is_empty = hasHay ? 0 : 1 }), category);
+    }
 
-        if (FeedingBenchBounds.TryGetValue(locationName, out var bounds) && x >= bounds.minX && x <= bounds.maxX && y == bounds.y)
-        {
-            (string? name, CATEGORY category) = TileInfo.GetObjectAtTile(currentLocation, x, y, true);
-            bool hasHay = name != null && name.Contains("hay", StringComparison.OrdinalIgnoreCase);
-            category = hasHay ? CATEGORY.Other : CATEGORY.Pending;
-            return (Translator.Instance.Translate("tile_name-feeding_bench", new { is_empty = (hasHay ? 0 : 1) }), category);
-        }
+    /// <summary>
+    /// Retrieves information about interactables or other features at a given coordinate in the Slime Hutch.
+    /// </summary>
+    /// <param name="currentLocation">The current GameLocation instance.</param>
+    /// <param name="x">The x coordinate of the tile.</param>
+    /// <param name="y">The y coordinate of the tile.</param>
+    /// <param name="lessInfo">Optional. If true, returns information only if the tile coordinates match the resource clump's origin. Default is false.</param>
+    /// <returns>A tuple of (string? name, CATEGORY? category) for the feeding bench, or null if not applicable.</returns>
+    private static (string? name, CATEGORY? category) GetSlimeHutchInfo(SlimeHutch slimeHutch, int x, int y, string? tileAction, bool lessInfo = false)
+    {
+        if (!SlimeHutchWaterTroughTiles.Contains((x, y))) return (null, null);
 
-        return null;
+        bool hasWater = slimeHutch.waterSpots[y - 6];
+        CATEGORY category = hasWater ? CATEGORY.Water : CATEGORY.Pending;
+        return (Translator.Instance.Translate("tile-water_trough", new { is_empty = hasWater ? 0 : 1 }), category);
     }
 
     /// <summary>
@@ -1600,6 +1623,7 @@ public class DynamicTiles
                 Town town => GetTownInfo(town, x, y, tileAction, lessInfo),
                 Railroad railroad => GetRailroadInfo(railroad, x, y, tileAction, lessInfo),
                 MineShaft mineShaft => GetMineShaftInfo(mineShaft, x, y, tileAction, lessInfo),
+                SlimeHutch slimeHutch => GetSlimeHutchInfo(slimeHutch, x, y, tileAction, lessInfo),
                 _ => GetLocationByNameInfo(currentLocation, x, y, tileAction, lessInfo)
             },
             // Running events

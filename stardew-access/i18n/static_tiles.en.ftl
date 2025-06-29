@@ -557,13 +557,6 @@ static_tile-sewer-sewage_pool = sewage pool
 static_tile-skull_cave-skull_cavern_door = Skull Cavern
 static_tile-skill_cave-skull_statue = Skull Statue
 
-# Slime Hutch
-
-static_tile-slime_hutch-water_trough_1 = Water Trough 1
-static_tile-slime_hutch-water_trough_2 = Water Trough 2
-static_tile-slime_hutch-water_trough_3 = Water Trough 3
-static_tile-slime_hutch-water_trough_4 = Water Trough 4
-
 # Submarine
 
 static_tile-submarine-deep_ocean = deep ocean

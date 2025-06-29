@@ -253,6 +253,10 @@ tile-town-prize_ticket_box = Prize Ticket Box{$tickets ->
     [1] , with 1 prize ticket
     *[any] , with {$tickets} prize tickets 
   }
+tile-water_trough = {$is_empty ->
+    [1] Empty
+    *[0] {EMPTYSTRING()}
+  } Water Trough
 
 ## Entrances
 
