@@ -147,37 +147,37 @@ menu-game_menu-tab_names = {$tab_name} Tab {$is_active ->
 
 ### Inventory Page
 
-menu-inventory_page-money_info_key = {$farm_name}, {$current_funds}, {$total_earnings}, {$date_info}{SIGNOFNUMBER($festival_score) ->
-    [positive] , {$festival_type ->
+menu-inventory_page-money_info_key = {SIGNOFNUMBER($festival_score) ->
+    [positive] {$festival_type ->
         [EggHunt] Eggs caught
         [StardewFair] Star Tokens
         [FestivalOfIce] Fishes caught
         *[other] {$festival_type}
-      }: {$festival_score}
+      }: {$festival_score},
     *[other] {EMPTYSTRING()}
   }{SIGNOFNUMBER($calico_egg_count) ->
-    [positive] , Calico Eggs: {$calico_egg_count}
+    [positive] Calico Eggs: {$calico_egg_count},
     *[other] {EMPTYSTRING()}
   }{SIGNOFNUMBER($calico_egg_rating) ->
-    [positive] , Egg Rating: {$calico_egg_rating}
+    [positive] Egg Rating: {$calico_egg_rating},
     *[other] {EMPTYSTRING()}
   }{SIGNOFNUMBER($squid_fest_count) ->
-    [positive] , Squids Caught: {$squid_fest_count}
+    [positive] Squids Caught: {$squid_fest_count},
     *[other] {EMPTYSTRING()}
   }{SIGNOFNUMBER($golden_walnut_count) ->
-    [positive] , Golden walnut: {$golden_walnut_count}
+    [positive] Golden walnut: {$golden_walnut_count},
     *[other] {EMPTYSTRING()}
   }{SIGNOFNUMBER($qi_gem_count) ->
-    [positive] , Qi gems: {$qi_gem_count}
+    [positive] Qi gems: {$qi_gem_count},
     *[other] {EMPTYSTRING()}
   }{SIGNOFNUMBER($qi_club_coins) ->
-    [positive] , Qi club coins: {$qi_club_coins}
+    [positive] Qi club coins: {$qi_club_coins},
     *[other] {EMPTYSTRING()}
-  }
-menu-inventory_page-health_n_buff_info_key = Health: {$health}, Stamina: {$stamina}{$buffs ->
+  } {$farm_name}, {$current_funds}, {$total_earnings}, {$date_info}
+menu-inventory_page-health_n_buff_info_key = {$buffs ->
     [null] {EMPTYSTRING()}
-    *[other] , Buffs: {$buffs}
-  }
+    *[other] Buffs: {$buffs},
+  } Health: {$health}, Stamina: {$stamina}
 menu-inventory_page-buff_info = {$name ->
     [null] {EMPTYSTRING()}
     *[other] {$name}
