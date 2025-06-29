@@ -195,6 +195,7 @@ tile-mine_shaft-coal_bag = Bag
 tile-mine_shaft-dirt = Dirt
 tile-mine_shaft-duggy_hole = Duggy Hole
 tile-mine_shaft-calico_statue = Calico Statue
+tile-mine_shaft-shrine_of_challenge = Shrine Of Challenge
 tile-pet_bowl-prefix = {$is_in_use ->
     [0] Unused
     *[1] {$is_empty ->

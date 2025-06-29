@@ -1144,6 +1144,12 @@ public class DynamicTiles
             return ("tile-mine_shaft-calico_statue", CATEGORY.Interactables);
         }
 
+        if (mineShaft.mineLevel == 120 && Game1.player.hasOrWillReceiveMail("reachedBottomOfHardMines")
+                                       && x is 9 or 10 or 11 && y == 6)
+        {
+            return ("tile-mine_shaft-shrine_of_challenge",  CATEGORY.Interactables);
+        }
+
         return (null, null);
     }
 
