@@ -3448,12 +3448,6 @@
       "X": [3],
       "Y": [3],
       "Category": "doors"
-    },
-    {
-      "NameOrTranslationKey": "static_tile-skill_cave-skull_statue",
-      "X": [12],
-      "Y": [4],
-      "Category": "decor"
     }
   ],
   "Spirit's Eve": [

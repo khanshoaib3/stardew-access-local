@@ -555,7 +555,6 @@ static_tile-sewer-sewage_pool = sewage pool
 # Scull Cavern Entrance
 
 static_tile-skull_cave-skull_cavern_door = Skull Cavern
-static_tile-skill_cave-skull_statue = Skull Statue
 
 # Submarine
 

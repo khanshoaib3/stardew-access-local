@@ -1230,6 +1230,14 @@ public class DynamicTiles
             }
         }
 
+        if (locationName.Equals("SkullCave", StringComparison.OrdinalIgnoreCase) && x == 12 && y == 4)
+        {
+            return ("tile-skull_cave-skull_statue",
+                Game1.player.team.completedSpecialOrders.Contains("QiChallenge10")
+                    ? CATEGORY.Interactables
+                    : CATEGORY.Decor);
+        }
+
         // Unimplemented locations are logged.
         // Check if the location has already been logged
         if (!loggedLocations.Contains(locationType))
