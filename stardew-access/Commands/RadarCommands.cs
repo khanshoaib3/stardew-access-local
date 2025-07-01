@@ -7,6 +7,21 @@ public class RadarCommands
     public static void CountFocus_rfcount(string[] args, bool fromChatBox = false)
     {
         Log.Info($"There are {Radar.Instance.Focus.Count} objects in the focus list in the radar feature.");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Log.Info("Helleo");
     }
 
     public static void ClearFocus_rfclear(string[] args, bool fromChatBox = false)
