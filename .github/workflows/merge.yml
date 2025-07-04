@@ -30,18 +30,20 @@ on:
         default: false
         type: boolean
 
-# 1. Check if mergeable and abort if not.
-# 2. Gather changelogs and update contributors section. Commit and push to head branch.
-# 3. Merge and push the base branch.
+# Workflow Steps:
+# 1. Check if PR is mergeable and abort if not
+# 2. Generate changelogs and update contributors section, commit and push to head branch
+# 3. Merge and push to the base branch
+
 jobs:
-  
+  # Job 1: Validate PR state and mergeability
   # Possible values of mergeable_state include:
-  #   clean - Mergeable with no conflicts. (allowed)
-  #   dirty - Has merge conflicts. (aborts)
-  #   blocked - Blocked by review or status checks. (aborts)
-  #   behind - Behind base branch. (aborts)
-  #   unstable - Failing required checks. (aborts)
-  #   unknown - GitHub hasn't determined the status yet. (re-attempts 5 times)
+  #   clean - Mergeable with no conflicts (allowed)
+  #   dirty - Has merge conflicts (aborts)
+  #   blocked - Blocked by review or status checks (aborts)
+  #   behind - Behind base branch (aborts)
+  #   unstable - Failing required checks (aborts)
+  #   unknown - GitHub hasn't determined the status yet (re-attempts 5 times)
   check-mergeable:
     name: ${{ format('[{0}] Mergeability Check', inputs.pull-request-number) }}
     runs-on: ubuntu-latest
@@ -53,8 +55,9 @@ jobs:
       username: ${{ steps.check_result.outputs.username }}
       clone-url: ${{ steps.check_result.outputs.clone-url }}
     steps:
-      # Ref: https://github.com/actions/github-script
-      - uses: actions/github-script@v7
+      # Use GitHub API to check PR state and mergeability
+      - name: Check PR State and Mergeability
+        uses: actions/github-script@v7
         id: check_result
         with:
           script: |
@@ -62,32 +65,38 @@ jobs:
             const repo = context.repo.repo
             const pull_number = ${{ inputs.pull-request-number }}
             
+            // Get PR information
             let prInfo = await github.rest.pulls.get({
               pull_number: pull_number,
               owner: owner,
               repo: repo,
             })
             
+            // Check if PR is open
             if (prInfo.data.state !== "open") {
               core.setFailed('PR is not open. Aborting...')
               return
             }
             
+            // Check if PR is draft
             const isDraft = prInfo.data.draft
             if (isDraft) {
               core.setFailed('PR is a draft. Aborting...')
               return
             }
             
+            // Check if PR is already merged
             if (prInfo.data.merged) {
               core.setFailed('PR is already merged. Aborting...')
               return
             }
             
+            // Check mergeability unless skip flag is set
             const skipMergeableCheck = "${{ inputs.skip-mergeable-state }}" === "true";
-            if (skipMergeableCheck) {
+            if (!skipMergeableCheck) {
               let attempts = 0;
-              
+            
+              // Retry up to 5 times if mergeable_state is unknown
               do {
                 prInfo = (await github.rest.pulls.get({ pull_number, owner, repo }));
                 if (prInfo.data.mergeable_state !== "unknown") break;
@@ -95,109 +104,148 @@ jobs:
                 await new Promise(res => setTimeout(res, 2000));
                 attempts++;
               } while (attempts < 5);
-                
+            
+              // Only allow clean merges
               if (prInfo.data.mergeable_state !== "clean") {
                 core.setFailed(`PR is not mergeable due to state: ${prInfo.data.mergeable_state}. Aborting...`)
                 return
               }
             }
             
+            // Set outputs for next job
             core.setOutput('pr-message', prInfo.data.body)
             core.setOutput('base-ref', prInfo.data.base.ref)
             core.setOutput('head-ref', prInfo.data.head.ref)
             core.setOutput('is-fork', prInfo.data.head.repo.fork && prInfo.data.head.repo.full_name != prInfo.data.base.repo.full_name)
             core.setOutput('username', prInfo.data.head.user.login)
             core.setOutput('clone-url', prInfo.data.head.repo.clone_url)
-  
-  
+
+  # Job 2: Generate changelog and update contributors
   gen-changelog-n-update-contrib:
     name: ${{ format('[{0}] Generate Changelog and Update Contributions', inputs.pull-request-number) }}
     runs-on: ubuntu-latest
     needs: check-mergeable
-    # Ref: https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
-    # issues: For adding the success/failure comments
-    # pull-requests: For some reason, even though I gave write perms to issues, it wasn't able to send the success/failure comment to PR, so maybe having pull-requests to write will?
+    # Permissions needed for various operations
     permissions:
-      issues: write
-      pull-requests: write
-      contents: write
-    if: inputs.generate-changelog || inputs.update-contributors
+      issues: write          # For adding success/failure comments
+      pull-requests: write   # For PR comments and operations
+      contents: write        # For committing changes
     steps:
-      - name: Fetch repository
+      # Checkout the repository with full history
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Full history needed for proper merging
           token: ${{ secrets.GITHUB_TOKEN }}
-          
-      - id: checkout-head
+      
+      # Setup git configuration and checkout head branch
+      - name: Setup Git and Checkout Head Branch
+        id: checkout-head
         run: |
-          echo '${{ needs.check-mergeable.outputs.clone-url }}'
+          echo "Setting up git configuration..."
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
           git config --global url."https://github.com/".insteadOf "git@github.com:"
+          
+          # Checkout and update base branch first
+          echo "Checking out base branch: ${{ needs.check-mergeable.outputs.base-ref }}"
           git checkout ${{ needs.check-mergeable.outputs.base-ref }}
           git pull origin ${{ needs.check-mergeable.outputs.base-ref }}
+          
+          # Handle fork vs same-repo PRs differently
           if ${{ needs.check-mergeable.outputs.is-fork }}; then
+            echo "Handling fork PR..."
             USER_NAME=${{ needs.check-mergeable.outputs.username }}
             git remote add $USER_NAME ${{ needs.check-mergeable.outputs.clone-url }}
-            git pull $USER_NAME ${{ needs.check-mergeable.outputs.head-ref }}
+            git fetch $USER_NAME ${{ needs.check-mergeable.outputs.head-ref }}
             git checkout -b $USER_NAME-${{ needs.check-mergeable.outputs.head-ref }} $USER_NAME/${{ needs.check-mergeable.outputs.head-ref }}
             git branch --set-upstream-to $USER_NAME/${{ needs.check-mergeable.outputs.head-ref }}
           else
-            # git pull origin ${{ needs.check-mergeable.outputs.head-ref }}
+            echo "Handling same-repo PR..."
+            git fetch origin ${{ needs.check-mergeable.outputs.head-ref }}
             git checkout ${{ needs.check-mergeable.outputs.head-ref }}
           fi
       
-      - id: rebase-head
+      # Rebase head branch onto base if rebase method is selected
+      - name: Rebase Head Branch
+        id: rebase-head
         if: ${{ inputs.method == 'rebase_fast_forward' }}
         run: |
+          echo "Rebasing head branch onto base..."
           if ! git rebase ${{ needs.check-mergeable.outputs.base-ref }}; then
             echo "Rebase failed due to conflicts. Aborting..."
             exit 1
           fi
-          
-      - id: gen-changelog
+      
+      # Generate changelog from PR message
+      - name: Generate Changelog
+        id: gen-changelog
         if: inputs.generate-changelog
         run: |
+          echo "Generating changelog from PR message..."
           cd ./docs/changelogs
+          
+          # Extract changelog section from PR message
           echo "${{ needs.check-mergeable.outputs.pr-message }}" > pr_msg.txt
           sed -i '/## Changelog/,$!d' ./pr_msg.txt
+          
+          # Process changelog using Python script
           python ./scripts/copy_changelogs_to.py ./pr_msg.txt ./latest.md > ../../response.txt
           cat ../../response.txt
           rm ./pr_msg.txt
+          
           cd ../../
+          
+          # Check if changelog was actually generated
           if [[ "$( tail ./response.txt -n 1 )" = 'No changes to write!' ]] || [[ "$( tail ./response.txt -n 1 )" =~ "File \`(.*?)\` not found\!" ]]; then
-            echo 'No changelogs found...'
+            echo 'No changelogs found in PR message...'
           else
             git add docs/changelogs/latest.md
             git -c commit.gpgsign=false commit -m "docs: Added changelogs from #${{ inputs.pull-request-number }} to latest.md"
-            echo 'Copied the changelogs from pull request body to docs/changelogs/latest.md...'
+            echo 'Successfully copied changelogs from PR body to docs/changelogs/latest.md'
           fi
-          
-      - id: update-contrib
+      
+      # Update contributors (placeholder - needs implementation)
+      - name: Update Contributors
+        id: update-contrib
         if: inputs.update-contributors
         run: |
-          echo "${{ needs.check-mergeable.outputs.pr-message }}"
-          echo HELLO 2
-          
-      - id: push-commits
+          echo "Updating contributors..."
+          echo "PR Message: ${{ needs.check-mergeable.outputs.pr-message }}"
+          # TODO: Implement contributor update logic here
+          echo "Contributor update functionality not yet implemented"
+      
+      # Push changes back to head branch
+      - name: Push Changes to Head Branch
+        id: push-commits
+        if: inputs.generate-changelog || inputs.update-contributors
         run: |
+          echo "Pushing changes to head branch..."
           if ${{ needs.check-mergeable.outputs.is-fork }}; then
             git push ${{ needs.check-mergeable.outputs.username }} HEAD:${{ needs.check-mergeable.outputs.head-ref }}
           else
-            git push
+            git push origin HEAD:${{ needs.check-mergeable.outputs.head-ref }}
           fi
       
-      - id: merge-n-push-base
+      # Merge head branch into base branch and push
+      - name: Merge and Push Base Branch
+        id: merge-n-push-base
         run: |
+          echo "Merging head branch into base branch..."
           git checkout ${{ needs.check-mergeable.outputs.base-ref }}
+          
+          # Determine correct head reference based on fork status
           if ${{ needs.check-mergeable.outputs.is-fork }}; then
             HEAD_REF=${{ needs.check-mergeable.outputs.username }}-${{ needs.check-mergeable.outputs.head-ref }}
           else
             HEAD_REF=${{ needs.check-mergeable.outputs.head-ref }}
           fi
+          
+          # Perform fast-forward merge
           if ! git merge $HEAD_REF --ff-only; then
-            echo "Fast-forward merge failed. Aborting..."
+            echo "Fast-forward merge failed. This shouldn't happen if mergeability was checked properly."
             exit 1
           fi
-          git push
+          
+          # Push merged changes to base branch
+          git push origin ${{ needs.check-mergeable.outputs.base-ref }}
