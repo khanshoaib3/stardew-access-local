@@ -129,7 +129,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
           
-      - id: prepare-branch
+      - id: checkout-head
         run: |
           echo '${{ needs.check-mergeable.outputs.clone-url }}'
           git config --global user.name 'GitHub Actions'
@@ -146,6 +146,14 @@ jobs:
           else
             # git pull origin ${{ needs.check-mergeable.outputs.head-ref }}
             git checkout ${{ needs.check-mergeable.outputs.head-ref }}
+          fi
+      
+      - id: rebase-head
+        if: ${{ inputs.method == 'rebase_fast_forward' }}
+        run: |
+          if ! git rebase ${{ needs.check-mergeable.outputs.base-ref }}; then
+            echo "Rebase failed due to conflicts. Aborting..."
+            exit 1
           fi
           
       - id: gen-changelog
@@ -169,7 +177,7 @@ jobs:
       - id: update-contrib
         if: inputs.update-contributors
         run: |
-          echo `${{ needs.check-mergeable.outputs.pr-message }}`
+          echo "${{ needs.check-mergeable.outputs.pr-message }}"
           echo HELLO 2
           
       - id: push-commits
@@ -179,4 +187,17 @@ jobs:
           else
             git push
           fi
-          
+      
+      - id: merge-n-push-base
+        run: |
+          git checkout ${{ needs.check-mergeable.outputs.base-ref }}
+          if ${{ needs.check-mergeable.outputs.is-fork }}; then
+            HEAD_REF=${{ needs.check-mergeable.outputs.username }}-${{ needs.check-mergeable.outputs.head-ref }}
+          else
+            HEAD_REF=${{ needs.check-mergeable.outputs.head-ref }}
+          fi
+          if ! git merge $HEAD_REF --ff-only; then
+            echo "Fast-forward merge failed. Aborting..."
+            exit 1
+          fi
+          git push
