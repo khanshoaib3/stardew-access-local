@@ -166,17 +166,6 @@ jobs:
             git checkout ${{ needs.check-mergeable.outputs.head-ref }}
           fi
       
-      # Rebase head branch onto base if rebase method is selected
-      - name: Rebase Head Branch
-        id: rebase-head
-        if: ${{ inputs.method == 'rebase_fast_forward' }}
-        run: |
-          echo "Rebasing head branch onto base..."
-          if ! git rebase ${{ needs.check-mergeable.outputs.base-ref }}; then
-            echo "Rebase failed due to conflicts. Aborting..."
-            exit 1
-          fi
-      
       # Generate changelog from PR message
       - name: Generate Changelog
         id: gen-changelog
@@ -214,7 +203,7 @@ jobs:
           echo "PR Message: ${{ needs.check-mergeable.outputs.pr-message }}"
           # TODO: Implement contributor update logic here
           echo "Contributor update functionality not yet implemented"
-      
+  
       # Push changes back to head branch
       - name: Push Changes to Head Branch
         id: push-commits
@@ -225,6 +214,17 @@ jobs:
             git push ${{ needs.check-mergeable.outputs.username }} HEAD:${{ needs.check-mergeable.outputs.head-ref }}
           else
             git push origin HEAD:${{ needs.check-mergeable.outputs.head-ref }}
+          fi
+
+      # Rebase head branch onto base if rebase method is selected
+      - name: Rebase Head Branch
+        id: rebase-head
+        if: ${{ inputs.method == 'rebase_fast_forward' }}
+        run: |
+          echo "Rebasing head branch onto base..."
+          if ! git rebase ${{ needs.check-mergeable.outputs.base-ref }}; then
+            echo "Rebase failed due to conflicts. Aborting..."
+            exit 1
           fi
       
       # Merge head branch into base branch and push
@@ -249,3 +249,28 @@ jobs:
           
           # Push merged changes to base branch
           git push origin ${{ needs.check-mergeable.outputs.base-ref }}
+      
+      # Close the PR after successful merge
+      - name: Close Pull Request
+        if: ${{ inputs.method == 'rebase_fast_forward' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner
+            const repo = context.repo.repo
+            const pull_number = ${{ inputs.pull-request-number }}
+
+            try {
+              // Close the PR by updating its state
+              await github.rest.pulls.update({
+                owner: owner,
+                repo: repo,
+                pull_number: pull_number,
+                state: 'closed'
+              })
+
+              console.log(`Successfully closed PR #${pull_number}`)
+            } catch (error) {
+              console.error('Failed to close PR:', error.message)
+              core.setFailed(`Failed to close PR #${pull_number}: ${error.message}`)
+            }
