@@ -35,11 +35,6 @@ on:
         required: false
         default: false
         type: boolean
-      nexus-main-vortex:
-        description: 'Set as main vortex file on nexus'
-        required: false
-        default: false
-        type: boolean
       github-upload:
         description: 'Whether to upload on github or not'
         required: false
@@ -49,6 +44,11 @@ on:
         description: 'Whether to upload on nexus or not'
         required: false
         default: true
+        type: boolean
+      nexus-main-vortex:
+        description: 'Set as main vortex file on nexus'
+        required: false
+        default: false
         type: boolean
 
 jobs:
@@ -92,7 +92,7 @@ jobs:
           echo NEXUSMOD_NAME=Stardew Access $RELEASE_TAG >> $GITHUB_ENV
           echo "NEXUSMOD_VERSION=$( echo $RELEASE_TAG | cut -c 2- )" >> $GITHUB_ENV
           echo "GH_TITLE=$( if $PRE_RELEASE; then echo 'Beta '; fi )Release ${RELEASE_TAG}" >> $GITHUB_ENV
-          echo "NEXUSMOD_DESC=Uploaded to nexus by github actions at: $( date ).$( if ${{ inputs.github-upload }}; then echo Checkout the changelog at: https://github.com/stardew-access/stardew-access/releases/tag/$( echo $RELEASE_TAG ); fi )" >> $GITHUB_ENV
+          echo "NEXUSMOD_DESC=Uploaded to nexus by github actions at: $( date ). $( if ${{ inputs.github-upload }}; then echo Checkout the changelog at: https://github.com/stardew-access/stardew-access/releases/tag/$( echo $RELEASE_TAG ); fi )" >> $GITHUB_ENV
 
       - name: Rename build zips if necessary
         if: inputs.version != 'auto-fetch'
@@ -122,8 +122,8 @@ jobs:
       # git --no-pager log --oneline -10
       - name: Commit and push docs changes
         run: |
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'actions@github.com'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add docs/changelogs/
           git status
           git commit -m "docs: Generated final changelog file for ${{ env.RELEASE_TAG }}"
