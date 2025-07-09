@@ -21,7 +21,7 @@ on:
         default: true
         type: boolean
       skip-mergeable-state:
-        description: "Skip checking mergeable_state as it's value is sometimes 'unknown'"
+        description: "Skip checking mergeable_state (only enable this if the workflow is failing due to mergeable_state being 'unknown' for no reason)"
         required: false
         default: false
         type: boolean
@@ -189,6 +189,32 @@ jobs:
             echo 'Successfully copied changelogs from PR body to docs/changelogs/latest.md'
           fi
       
+      - name: Check if Fast-Forward Merge is Possible
+        if: ${{ inputs.method == 'fast_forward' }}
+        run: |
+          git checkout ${{ needs.check-mergeable.outputs.base-ref }}
+          if ${{ needs.check-mergeable.outputs.is-fork }}; then
+            HEAD_REF=${{ needs.check-mergeable.outputs.username }}-${{ needs.check-mergeable.outputs.head-ref }}
+          else
+            HEAD_REF=${{ needs.check-mergeable.outputs.head-ref }}
+          fi
+          if ! git merge $HEAD_REF --ff-only --no-commit; then
+            echo "Fast-forward merge not possible. Aborting..."
+            exit 1
+          fi
+          git checkout -
+      
+      - name: Check if Rebase is Possible
+        if: ${{ inputs.method == 'rebase_fast_forward' }}
+        run: |
+          git checkout -b rebase-check
+          if ! git rebase ${{ needs.check-mergeable.outputs.base-ref }}; then
+            echo "Rebase not possible. Aborting..."
+            exit 1
+          fi
+          git checkout -
+          git branch -D rebase-check
+    
       # Push changes back to head branch
       - name: Push Changes to Head Branch
         id: push-commits
@@ -228,7 +254,7 @@ jobs:
           
           # Perform fast-forward merge
           if ! git merge $HEAD_REF --ff-only; then
-            echo "Fast-forward merge failed. This shouldn't happen if mergeability was checked properly."
+            echo "Fast-forward merge failed."
             exit 1
           fi
           
