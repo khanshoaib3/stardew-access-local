@@ -5,8 +5,6 @@ Nearby objects, monsters, and favorite locations are only a few keystrokes away 
 Planting, harvesting, construction, and mining are all made easy via narration of tiles and the tile reader.
 To interact with the active screen reader, Stardew Access uses the [Tolk](https://github.com/ndarilek/tolk) library on windows, [libspeechdwrapper](https://github.com/khanshoaib3/libspeechdwrapper) on Linux, and [libspeak](https://github.com/Flameborn/libspeak) on Mac OS.
 
-<!--todo: add this link to the wiki once there's info for developers. https://github.com/stardew-access/stardew-access/wiki-->
-
 ## Features
 
 Below is an overview of what Stardew Access can do. Check out [the features page](features.md) for a full list.
@@ -43,6 +41,7 @@ Check out the [official guide](guides/guides-home.md) for tutorials on creating 
     - post any bug or feature request here.
 - [Source Code](https://github.com/stardew-access/stardew-access)
     - contributions are always welcome!
+- [Developer's wiki](https://github.com/stardew-access/stardew-access/wiki)
 - [Stardew Access on Nexus Mods](https://www.nexusmods.com/stardewvalley/mods/16205)
 - [Latest Release](https://github.com/stardew-access/stardew-access/releases/latest)
 - [Our Discord Server](https://discord.gg/yQjjsDqWQX)
@@ -57,22 +56,20 @@ If you find this project helpful and would like to support its development, you 
 
 Your support will help us dedicate more time to this project as well as other future gaming accessibility projects. 
 
-## Contributors
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
 ## Translations
 
-As of v1.5.0, the mod has been fully internationalised.
-Follow [the language translations issue page](https://github.com/stardew-access/stardew-access/issues/182) to track the progress of
-translations currently in the works and/or if you want to provide translation for your language.
+The translations are provided as separate mods that need to be installed along with the base mod and its requirements.
+If you want to translate the mod in your language, [this template repo](https://github.com/darkade-games/stardew-access-i18n/) will give you some instructions,
+and you can always ask your queries in our discord server or additionally in [issue#182](https://github.com/stardew-access/stardew-access/issues/182).
+
+Here's the list of the translations so far.
+
+| Language   | Mod Link                                                    | Author                                                                               |
+|------------|-------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| Chinese    | [Link](https://www.nexusmods.com/stardewvalley/mods/21784)  | [Rizumu85](https://github.com/Rizumu85), [wu2002jian](https://github.com/wu2002jian) |
+| French     | [Link](https://www.nexusmods.com/stardewvalley/mods/20621/) | [ZenqFR](https://github.com/ZenqFR)                                                  |
+| Indonesian | [Link](https://www.nexusmods.com/stardewvalley/mods/24788)  | [fz0308](https://github.com/fz0308)                                                  |
+| Italian    | [Link](https://www.nexusmods.com/stardewvalley/mods/28459)  | [Vabax_Yt](https://www.nexusmods.com/stardewvalley/users/207459300)                  |
 
 ## Contact Us
 
