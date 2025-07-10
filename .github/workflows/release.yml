@@ -160,4 +160,4 @@ jobs:
         run: |
           dotnet tool install -g Digitalroot.ModUploader
           drmu nexusmods check
-          drmu nexusmods upload ${{ env.NEXUSMOD_MODID }} "${{ env.MAIN_FILE }}" -f "${{ env.NEXUSMOD_NAME }}" -v "${{ env.NEXUSMOD_VERSION }}" -g stardewvalley -t Main -d "${{ env.NEXUSMOD_DESC }}" -dmfu ${{ inputs.set-latest && '' || '-dvu' }} ${{ inputs.nexus-main-vortex && '' || '-dmv' }}
+          drmu nexusmods upload ${{ env.NEXUSMOD_MODID }} "${{ env.MAIN_FILE }}" -f "${{ env.NEXUSMOD_NAME }}" -v "${{ env.NEXUSMOD_VERSION }}" -g stardewvalley -t Main -d "${{ env.NEXUSMOD_DESC }}" -dmfu ${{ inputs.set-latest && ' ' || '-dvu' }} ${{ inputs.nexus-main-vortex && ' ' || '-dmv' }}
