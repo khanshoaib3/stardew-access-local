@@ -50,7 +50,7 @@ public class AccessibleLocation
             Tiles = new OverlayedDictionary<Vector2, AccessibleTile>(DefaultLayerName);
         }
         #if DEBUG
-        Log.Verbose($"AccessibleLocation: initialized \"{(Location.currentEvent is not null ? Location.currentEvent.FestivalName : Location.NameOrUniqueName)}\"");
+        Log.Verbose($"AccessibleLocation: initialized \"{(Location.currentEvent is not null ? Location.currentEvent.FestivalName : Location.Name)}\"");
         #endif
     }
 
@@ -147,12 +147,12 @@ public class AccessibleLocation
             {
                 result = Tiles.TryAdd(coordinate, tile, layerName);
                 #if DEBUG
-                Log.Verbose($"Adding tile {tile} to layer {layerName} of location {(Location.currentEvent is not null ? Location.currentEvent.FestivalName : Location.NameOrUniqueName)} at ({coordinate.X}, {coordinate.Y})");
+                Log.Verbose($"Adding tile {tile} to layer {layerName} of location {(Location.currentEvent is not null ? Location.currentEvent.FestivalName : Location.Name)} at ({coordinate.X}, {coordinate.Y})");
                 #endif
             } else {
                 result = Tiles.TryAdd(coordinate, tile);
                 #if DEBUG
-                Log.Verbose($"Adding tile {tile} to location {(Location.currentEvent is not null ? Location.currentEvent.FestivalName : Location.NameOrUniqueName)} at ({coordinate.X}, {coordinate.Y})");
+                Log.Verbose($"Adding tile {tile} to location {(Location.currentEvent is not null ? Location.currentEvent.FestivalName : Location.Name)} at ({coordinate.X}, {coordinate.Y})");
                 #endif
             }
             if (result) AddTileToCategoryMap(tile, layerName ?? "");

@@ -41,7 +41,7 @@ public class UserTilesUtils
             root = [];
         }
 
-        string locationName = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.NameOrUniqueName;
+        string locationName = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.Name;
         if (!root.TryGetValue(locationName, out JToken? locationToken))
         {
             // Creates the location property if not exists

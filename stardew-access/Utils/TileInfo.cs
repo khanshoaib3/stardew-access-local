@@ -465,7 +465,7 @@ public class TileInfo
     /// <returns>The name of the Junimo bundle if one is found at the specified coordinates, otherwise null.</returns>
     public static string? GetJunimoBundleAt(GameLocation currentLocation, int x, int y)
     {
-        string locationName = currentLocation.NameOrUniqueName;
+        string locationName = currentLocation.Name;
 
         if (BundleLocations.TryGetValue(locationName, out Dictionary<(int, int), string>? bundleCoords))
         {

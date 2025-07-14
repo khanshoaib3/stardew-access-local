@@ -575,7 +575,7 @@ internal class ObjectTracker : FeatureBase
 
     public void SaveToFavorites(int hotkey)
     {
-        string location = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.NameOrUniqueName;
+        string location = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.Name;
         string currentSaveFileName = MainClass.GetCurrentSaveFileName();
         if (!favorites.ContainsKey(currentSaveFileName))
         {
@@ -597,7 +597,7 @@ internal class ObjectTracker : FeatureBase
 
     public (string?, string?) GetFromFavorites(int hotkey)
     {
-        string location = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.NameOrUniqueName;
+        string location = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.Name;
         if (!favorites.TryGetValue(MainClass.GetCurrentSaveFileName(), out var _saveFileFavorites) || _saveFileFavorites != null)
         {
             LoadDefaultFavorites();
@@ -627,7 +627,7 @@ internal class ObjectTracker : FeatureBase
 
     public void DeleteFavorite(int favoriteNumber)
     {
-        string currentLocation = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.NameOrUniqueName;
+        string currentLocation = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.Name;
 
         // Try to get the sub-dictionary for the current location
         if (favorites.TryGetValue(MainClass.GetCurrentSaveFileName(), out var saveFileFavorites) && saveFileFavorites != null)
@@ -759,7 +759,7 @@ internal class ObjectTracker : FeatureBase
                                 new
                                 {
                                     coordinates = Vector2ToString(CurrentPlayer.FacingTile),
-                                    location_name = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.NameOrUniqueName,
+                                    location_name = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.Name,
                                     favorite_number
                                 }
                             );
@@ -769,7 +769,7 @@ internal class ObjectTracker : FeatureBase
                                 {
                                     selected_object = SelectedObject,
                                     selected_category = SelectedCategory,
-                                    location_name = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.NameOrUniqueName,
+                                    location_name = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.Name,
                                     favorite_number
                                 }
                             );
@@ -789,7 +789,7 @@ internal class ObjectTracker : FeatureBase
                 MainClass.ScreenReader.TranslateAndSay("feature-object_tracker-favorite_cleared", true,
                     new
                     {
-                        location_name = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.NameOrUniqueName,
+                        location_name = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.Name,
                         favorite_number
                     }
                 );

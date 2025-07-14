@@ -89,7 +89,7 @@ public class TileDataEntryMenu : IClickableMenu
         }
 
         AddLabel(Translator.Instance.Translate("menu-tile_data_entry-heading_label",
-                new { tile_x = _tileX, tile_y = _tileY, location_name = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.NameOrUniqueName },
+                new { tile_x = _tileX, tile_y = _tileY, location_name = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.Name },
                 TranslationCategory.Menu),
             (int)OptionsIdentifiers.HeadingLabel);
 
@@ -269,7 +269,7 @@ public class TileDataEntryMenu : IClickableMenu
 
         GetEnteredTileInformation(out var tileInfo);
         if (tileInfo == null) return;
-        if (_defaultData != null) UserTilesUtils.RemoveTileDataAt(_tileX, _tileY, Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.NameOrUniqueName);
+        if (_defaultData != null) UserTilesUtils.RemoveTileDataAt(_tileX, _tileY, Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.Name);
         UserTilesUtils.AddTileData(tileInfo);
         MainClass.TileManager.Initialize();
         exitThisMenu();

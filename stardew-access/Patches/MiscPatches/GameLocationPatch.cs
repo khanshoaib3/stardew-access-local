@@ -37,9 +37,9 @@ namespace stardew_access.Patches
             // Update the map in the TileUtils dictionary
             if (__instance.map != null)
             {
-                TileUtils.MapNames[__instance.map] = __instance.NameOrUniqueName;
+                TileUtils.MapNames[__instance.map] = __instance.Name;
                 #if DEBUG
-                Log.Verbose($"GameLocationPatch: Updated map and name for {__instance.NameOrUniqueName}");
+                Log.Verbose($"GameLocationPatch: Updated map and name for {__instance.Name}");
                 #endif
             }
         }

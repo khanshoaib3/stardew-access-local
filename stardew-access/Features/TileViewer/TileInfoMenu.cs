@@ -113,7 +113,7 @@ public class TileInfoMenu(int tileX, int tileY) : DialogueBox("", [MarkTileRespo
                 }
             case DeleteExistingI18NKey:
                 {
-                    UserTilesUtils.RemoveTileDataAt(_tileX, _tileY, Game1.currentLocation.NameOrUniqueName);
+                    UserTilesUtils.RemoveTileDataAt(_tileX, _tileY, Game1.currentLocation.Name);
                     MainClass.TileManager.Initialize();
                     break;
                 }

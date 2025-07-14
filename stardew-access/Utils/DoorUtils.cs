@@ -361,7 +361,7 @@ public static class DoorUtils
         Dictionary<(int x, int y), string> doorIndexes     = [];
         
         // Strip trailing digits from location name
-        string strippedName = Regex.Replace(location.NameOrUniqueName, @"\d+$", "");
+        string strippedName = Regex.Replace(location.Name, @"\d+$", "");
 
         // Look for the location in the DoorTileIndexes
         DoorTileIndexes.TryGetValue(strippedName, out var locationIndexes);

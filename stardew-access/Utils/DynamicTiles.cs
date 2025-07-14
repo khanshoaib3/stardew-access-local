@@ -265,7 +265,7 @@ public class DynamicTiles
         // Decide which name to use based on whether an event is running
         var locationOrEventName =
             currentLocation.currentEvent is null
-                ? currentLocation.NameOrUniqueName
+                ? currentLocation.Name
                 : !string.IsNullOrEmpty(currentLocation.currentEvent.FestivalName)
                     ? currentLocation.currentEvent.FestivalName
                     : currentLocation.currentEvent.id;
@@ -1660,7 +1660,7 @@ public class DynamicTiles
             toReturn = GetDefaultTileActionInfo(currentLocation, x, y, tileAction, lessInfo);
             #if DEBUG
             if (toReturn.translationKeyOrName == null)
-                Log.Verbose($"Unhandled tile action \"{tileAction}\" at ({x}, {y}) of \"{currentLocation.currentEvent?.id ?? currentLocation.NameOrUniqueName}\".", true); 
+                Log.Verbose($"Unhandled tile action \"{tileAction}\" at ({x}, {y}) of \"{currentLocation.currentEvent?.id ?? currentLocation.Name}\".", true); 
             #endif
         }
 
