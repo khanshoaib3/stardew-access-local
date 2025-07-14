@@ -70,6 +70,7 @@ Here's the list of the translations so far.
 | French     | [Link](https://www.nexusmods.com/stardewvalley/mods/20621/) | [ZenqFR](https://github.com/ZenqFR)                                                  |
 | Indonesian | [Link](https://www.nexusmods.com/stardewvalley/mods/24788)  | [fz0308](https://github.com/fz0308)                                                  |
 | Italian    | [Link](https://www.nexusmods.com/stardewvalley/mods/28459)  | [Vabax_Yt](https://www.nexusmods.com/stardewvalley/users/207459300)                  |
+| Vietnamese | [Link](https://www.nexusmods.com/stardewvalley/mods/35729)  | [Daoductrung](https://github.com/Daoductrung)                                        |
 
 ## Contact Us
 
