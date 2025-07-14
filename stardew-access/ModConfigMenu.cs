@@ -79,7 +79,7 @@ internal static class ModConfigMenu
 
     private static void AddChatSectionPage(IGenericModConfigMenuApi configMenu, IManifest manifest, ModConfig config)
     {
-        configMenu.AddPage( manifest, pageId: "stardew-access-chat-menu", pageTitle: () => "Chat menu settings" );
+        configMenu.AddPage( manifest, pageId: "stardew-access-chat", pageTitle: () => "Chat menu settings" );
 
         configMenu.AddKeybindList(
             manifest,

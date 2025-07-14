@@ -104,6 +104,9 @@ public class API : IStardewAccessApi
         => MainClass.ScreenReader.TranslateAndSayWithMenuChecker(translationCategory, interrupt, translationTokens,
             ToTranslationCategory(translationCategory), customQuery, disableTranslationWarnings);
 
+    public bool SayMenuElement(IScreenReadable element, bool interrupt = true, bool excludeFromBuffer = false)
+        => MainClass.ScreenReader.SayMenuElement(element.ScreenReaderText, element.ScreenReaderDescription, interrupt, excludeFromBuffer);
+    
     public bool SayMenuElement(string text, string description = "", bool interrupt = true, bool excludeFromBuffer = false)
         => MainClass.ScreenReader.SayMenuElement(text, description, interrupt, excludeFromBuffer);
     
@@ -241,8 +244,32 @@ public class API : IStardewAccessApi
             return;
         }
 
-        Log.Debug($"Added `{fullNameOfClass}` to the list of maually patched custom menus.");
+        Log.Debug($"Added `{fullNameOfClass}` to the list of manually patched custom menus.");
         IClickableMenuPatch.ManuallyPatchedCustomMenus.Add(fullNameOfClass);
+    }
+
+    public void IgnoreHoverTextInMenu(string? fullNameOfClass)
+    {
+        if (string.IsNullOrWhiteSpace(fullNameOfClass))
+        {
+            Log.Error("fullNameOfClass cannot be null or empty!");
+            return;
+        }
+        
+        Log.Debug($"Added `{fullNameOfClass}` to the list of menus that ignore speaking hover texts.");
+        IClickableMenuPatch.IgnoreHoverTextInMenus.Add(fullNameOfClass);
+    }
+
+    public void IgnoreClickableComponentsInMenu(string? fullNameOfClass)
+    {
+        if (string.IsNullOrWhiteSpace(fullNameOfClass))
+        {
+            Log.Error("fullNameOfClass cannot be null or empty!");
+            return;
+        }
+        
+        Log.Debug($"Added `{fullNameOfClass}` to the list of menus that ignore speaking clickable components.");
+        IClickableMenuPatch.IgnoreClickableComponentsInMenus.Add(fullNameOfClass);
     }
 
     public void RegisterLanguageHelper(string locale, Type helperType)

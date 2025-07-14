@@ -110,6 +110,8 @@ public interface IStardewAccessApi
     
     public bool TranslateAndSayWithMenuChecker(string translationKey, bool interrupt, object? translationTokens = null, string translationCategory = "Menu", string? customQuery = null, bool disableTranslationWarnings = false);
 
+    public bool SayMenuElement(IScreenReadable element, bool interrupt = true, bool excludeFromBuffer = false);
+    
     public bool SayMenuElement(string text, string description = "", bool interrupt = true, bool excludeFromBuffer = false);
 
     /// <summary>Speaks the text via the loaded screen reader (if any).
@@ -339,11 +341,15 @@ public interface IStardewAccessApi
     /// </param>
     public void RegisterCustomMenuAsAccessible(string? fullNameOfClass);
 
+    public void IgnoreHoverTextInMenu(string? fullNameOfClass);
+
+    public void IgnoreClickableComponentsInMenu(string? fullNameOfClass);
+
     /// <summary>
     /// Registers a language helper to be used for a specific locale.
     /// </summary>
     /// <param name="locale">The locale for which the helper should be used (e.g., "en", "fr", "es-es").</param>
-    /// <param name="helper">An instance of the language helper class implementing <see cref="ILanguageHelper"/>.</param>
+    /// <param name="helperType">An instance of the language helper class implementing <see cref="ILanguageHelper"/>.</param>
     /// <remarks>
     /// The provided helper class should ideally derive from <see cref="LanguageHelperBase"/> for optimal compatibility, though this is not strictly required as long as it implements <see cref="ILanguageHelper"/>.
     /// </remarks>

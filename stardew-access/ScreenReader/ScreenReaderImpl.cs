@@ -163,7 +163,7 @@ public class ScreenReaderImpl : IScreenReader
         prevMenuText = text;
         prevMenuSuffixText = MenuSuffixText;
         prevMenuPrefixText = MenuPrefixText;
-        bool re = Say($"{MenuPrefixNoQueryText}{MenuPrefixText}{text}{(prevMenuElementDescription != description ? description : "")}{MenuSuffixText}{MenuSuffixNoQueryText}", interrupt, excludeFromBuffer: excludeFromBuffer);
+        bool re = Say($"{MenuPrefixNoQueryText}{MenuPrefixText}{text}\n{(prevMenuElementDescription != description ? description : "")}{MenuSuffixText}{MenuSuffixNoQueryText}", interrupt, excludeFromBuffer: excludeFromBuffer);
         MenuPrefixNoQueryText = "";
         MenuSuffixNoQueryText = "";
         prevMenuElementDescription = description;

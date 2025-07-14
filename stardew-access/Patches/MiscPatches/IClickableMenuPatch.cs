@@ -113,6 +113,12 @@ internal class IClickableMenuPatch : IPatch
 
     // ReSharper disable once FieldCanBeMadeReadOnly.Global
     internal static HashSet<string> ManuallyPatchedCustomMenus = [];
+    
+    // ReSharper disable once FieldCanBeMadeReadOnly.Global
+    internal static HashSet<string> IgnoreHoverTextInMenus = [];
+    
+    // ReSharper disable once FieldCanBeMadeReadOnly.Global
+    internal static HashSet<string> IgnoreClickableComponentsInMenus = [];
 
     internal static string? CurrentMenu;
     internal static bool ManuallyCallingDrawPatch = false;
@@ -199,15 +205,17 @@ internal class IClickableMenuPatch : IPatch
             else ManuallyCallingDrawPatch = false;
 
             var activeMenuType = activeMenu.GetType();
-            if ((SkipMenuTypes.Contains(activeMenuType) || ManuallyPatchedCustomMenus.Contains(activeMenuType.FullName ?? "")))
+            if (SkipMenuTypes.Contains(activeMenuType)
+                || ManuallyPatchedCustomMenus.Contains(activeMenuType.FullName ?? "")
+                || IgnoreClickableComponentsInMenus.Contains(activeMenuType.FullName ?? ""))
             {
-                Log.Debug($"Skipping menu {activeMenuType.FullName}", once: true);
+                Log.Debug($"[IClickableMenuPatch::DrawPatch] Skipping menu {activeMenuType.FullName}", once: true);
                 return;
             }
             
             
             bool allowFallback = AllowFallbackInMenuTypes.Contains(activeMenuType);
-            Log.Debug($"allowFallback: {allowFallback} ActiveMenuType: {activeMenuType}", once: true);
+            Log.Debug($"[IClickableMenuPatch::DrawPatch] allowFallback: {allowFallback} ActiveMenuType: {activeMenuType}", once: true);
 
             #if DEBUG
             if (_justOpened)
@@ -255,7 +263,12 @@ internal class IClickableMenuPatch : IPatch
                                            Item? hoveredItem = null,
                                            CraftingRecipe? craftingIngredients = null)
     {
-        if (!_tryHoverPatch) return;
+        if (!_tryHoverPatch && ActiveMenuOrSubMenu != null && !IgnoreClickableComponentsInMenus.Contains(ActiveMenuOrSubMenu.GetType().FullName ?? "")) return;
+        if (ActiveMenuOrSubMenu != null && IgnoreHoverTextInMenus.Contains(ActiveMenuOrSubMenu.GetType().FullName ?? ""))
+        {
+            Log.Debug($"[IClickableMenuPatch::DrawHoverTextPatch] Skipping menu {ActiveMenuOrSubMenu.GetType().FullName}", once: true);
+            return;
+        }
 
         try
         {
