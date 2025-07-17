@@ -2,6 +2,7 @@
 
 ### New Features
 
+- Vietnamese translation mod by @Daoductrung. Can be found [here](https://www.nexusmods.com/stardewvalley/mods/35729)
 
 ### Feature Updates
 
