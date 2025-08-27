@@ -41,6 +41,7 @@ Check out the [official guide](guides/guides-home.md) for tutorials on creating 
     - post any bug or feature request here.
 - [Source Code](https://github.com/stardew-access/stardew-access)
     - contributions are always welcome!
+- [Contributing guide for developers](https://github.com/stardew-access/stardew-access/CONTRIBUTING.md)
 - [Developer's wiki](https://github.com/stardew-access/stardew-access/wiki)
 - [Stardew Access on Nexus Mods](https://www.nexusmods.com/stardewvalley/mods/16205)
 - [Latest Release](https://github.com/stardew-access/stardew-access/releases/latest)
