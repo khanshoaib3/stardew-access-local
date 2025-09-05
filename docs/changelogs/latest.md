@@ -17,6 +17,7 @@
 
 - Removed contributors section and added translation section in the readme.
 - Guides are now published in the docs folder
+- Added contributing guide for developers
 
 ### Misc
 
