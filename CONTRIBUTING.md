@@ -31,6 +31,12 @@ To set up Stardew Access locally:
 		 ```sh
 		 gem install kramdown
 		 ```
+	 - You need [Project Fluent](https://www.nexusmods.com/stardewvalley/mods/12638) (required for translations/localization).
+			 Download and extract it so your folder structure looks like:
+			 ```
+			 <GamePath>/Mods/ProjectFluent/ProjectFluent.dll
+			 ```
+			 Where `<GamePath>` is the location of your Stardew Valley installation.
 
 3. **Build the project:**
 	```sh
