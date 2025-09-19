@@ -558,9 +558,9 @@ internal class ModConfig
     }
 
     /// <summary>
-    /// The time window (in seconds) to suppress duplicate HUD messages. If a duplicate message occurs within this interval, it will be ignored. Default is 5 seconds. <see langword="set"/> to 0 to disable this feature.
+    /// The time window (in miliseconds) to suppress duplicate HUD messages. If a duplicate message occurs within this interval, it will be ignored. Default is 5 miliseconds. <see langword="set"/> to 0 to disable this feature.
     /// </summary>
-    public int HudDuplicateMessageTimeoutSeconds { get; set; } = 5;
+    public int HudDuplicateMessageTimeout { get; set; } = 5000;
 
     // TODO Add the exclusion and focus list too
     // public String ExclusionList { get; set; } = "test";

@@ -129,7 +129,7 @@ internal class GameStateNarrator : FeatureBase
             var searchQuery = (Regex.Replace(toSpeak, @"[\d+]", string.Empty)).Trim();
             var now = DateTime.Now;            
             bool isDuplicate = hudMessageQueryKey == searchQuery;
-            bool withinTimeout = (now - lastHudMessageTime).TotalSeconds < MainClass.Config.HudDuplicateMessageTimeoutSeconds;
+            bool withinTimeout = (now - lastHudMessageTime) < TimeSpan.FromMilliseconds(MainClass.Config.HudDuplicateMessageTimeout);
 
             if (!isDuplicate || !withinTimeout)
             {
