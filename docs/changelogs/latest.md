@@ -6,6 +6,7 @@
 
 ### Feature Updates
 
+- You can now set a timeout for ignoring duplicated hud messages. Previously duplicate messages were always ignored but now you can configure the timeout between allowing them. The default is 5000 (5 seconds) and you can set it to 0 to disable it. Messages where the only difference is a number are considered duplicates.
 
 ### Bug Fixes
 
