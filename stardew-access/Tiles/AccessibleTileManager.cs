@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using stardew_access.Translation;
 using stardew_access.Utils;
+using StardewModdingAPI;
 using StardewValley;
 
 namespace stardew_access.Tiles;
@@ -20,6 +21,9 @@ public class AccessibleTileManager
 
     // Dictionary to map location names to Accessiblelocations
     private Dictionary<string, AccessibleLocation> Locations { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    
+    // Dictionary to store third party mods' translations
+    private Dictionary<string, ITranslationHelper> ModTranslation { get; } = new();
 
     // Private instance variable
     private static AccessibleTileManager? _instance;
@@ -247,21 +251,49 @@ public class AccessibleTileManager
                     if (tileArray[x, y] == null) continue;
                     if (!tileArray[x, y].Properties.TryGetValue(TilePropertyName, out var val)) continue;
 
-                    // <category>,<name>,<optional:translation-key>
-                    var valArray = ((string)val).Split(",");
+                    // <category>,<name>,<optional:translation-key>,<optional:unique-id>
+                    var parts = ((string)val).Split(",");
 
-                    CATEGORY category = CATEGORY.FromString(valArray[0]);
-                    string name = valArray.Count() >= 3 && Translator.Instance.IsAvailable(valArray[2], translationCategory: TranslationCategory.StaticTiles)
-                        ? Translator.Instance.Translate(valArray[2], translationCategory: TranslationCategory.StaticTiles)
-                        : valArray.Count() >= 3 && Translator.Instance.IsAvailable(valArray[2])
-                            ? Translator.Instance.Translate(valArray[2])
-                            : valArray[1];
+                    CATEGORY category = CATEGORY.FromString(parts[0]);
+                    if (parts.Count() == 4)
+                    {
+                        EnsureModTranslationAdded(parts[3]);
+                        if (ModTranslation.TryGetValue((parts[3]), out var translationHelper) && translationHelper.ContainsKey(parts[2]))
+                        {
+#if DEBUG
+                            Log.Debug($"[AccessibleTileManager::AddFromTileProperties {{{(Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.NameOrUniqueName)}}}] Adding a tile: {translationHelper.Get(parts[2])}, {x}x {y}y, category={category.Value}, layer={layer.Id}, from mod={parts[3]}");
+#endif
+                            location.AddTile(new(staticNameOrTranslationKey: translationHelper.Get(parts[2]),
+                                staticCoordinates: [new(x, y)],
+                                category: category
+                            ));
+                            continue;
+                        }
+                    }
+
+                    string name = parts.Count() >= 3 && Translator.Instance.IsAvailable(parts[2],
+                        translationCategory: TranslationCategory.StaticTiles)
+                        ? Translator.Instance.Translate(parts[2], translationCategory: TranslationCategory.StaticTiles)
+                        : parts.Count() >= 3 && Translator.Instance.IsAvailable(parts[2])
+                            ? Translator.Instance.Translate(parts[2])
+                            : parts[1];
 #if DEBUG
                     Log.Debug($"[AccessibleTileManager::AddFromTileProperties {{{(Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.NameOrUniqueName)}}}] Adding a tile: {name}, {x}x {y}y, category={category.Value}, layer={layer.Id}");
 #endif
-                    location.AddTile(new(staticNameOrTranslationKey: name, staticCoordinates: [new(x, y)], category: category));
+                    location.AddTile(new(staticNameOrTranslationKey: name,
+                        staticCoordinates: [new(x, y)],
+                        category: category
+                    ));
                 }
             }
         }
+    }
+
+    private void EnsureModTranslationAdded(string uniqueId)
+    {
+        if (ModTranslation.ContainsKey(uniqueId)) return;
+        IModInfo? modInfo = MainClass.ModHelper!.ModRegistry.Get(uniqueId);
+        var translationHelper = (ITranslationHelper?)modInfo?.GetType().GetProperty("Translations")?.GetValue(modInfo);
+        if (translationHelper is not null) ModTranslation.Add(uniqueId, translationHelper);
     }
 }
