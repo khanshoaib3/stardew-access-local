@@ -338,7 +338,6 @@ public class DynamicTiles
             );
         }
         
-        Log.Debug($"{x} {x is 23 or 24}");
         if (x is 23 or 24 && y == 7 && Game1.IsWinter && Game1.dayOfMonth is 12 or 13)
         {
             return ("dynamic_tile-squid_fest-billboard", CATEGORY.Decor);
