@@ -430,6 +430,9 @@ internal class ModConfig
     /// </summary>
     public KeybindList TimeNSeasonKey { get; set; } = KeybindList.Parse("Q");
 
+    /// <summary>
+    /// Repeat the last spoken text; Double press to speak 2nd last, triple press to speak 3rd last and so on.
+    /// </summary>
     public KeybindList RepeatLastTextKey { get; set; } = KeybindList.Parse("LeftAlt + Space, RightAlt + Space");
 
     /// <summary>
@@ -557,7 +560,7 @@ internal class ModConfig
     }
 
     /// <summary>
-    /// The time window (in miliseconds) to suppress duplicate HUD messages. If a duplicate message occurs within this interval, it will be ignored. Default is 5 miliseconds. <see langword="set"/> to 0 to disable this feature.
+    /// The time window (in milliseconds) to suppress duplicate HUD messages. If a duplicate message occurs within this interval, it will be ignored. Default is 5 miliseconds. <see langword="set"/> to 0 to disable this feature.
     /// </summary>
     public int HudDuplicateMessageTimeout { get; set; } = 5000;
 

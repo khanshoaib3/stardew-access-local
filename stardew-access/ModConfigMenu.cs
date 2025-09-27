@@ -925,6 +925,13 @@ internal static class ModConfigMenu
             () => "Enable Cheats",
             () => "Toggles in-game cheat/debug commands."
         );
+        configMenu.AddNumberOption(
+            manifest,
+            () => config.HudDuplicateMessageTimeout,
+            value => config.HudDuplicateMessageTimeout = value,
+            () => "HUD Duplicate Message Timeout (ms)",
+            () => "The time window (in milliseconds) to suppress duplicate HUD messages. If a duplicate message occurs within this interval, it will be ignored. Default is 5 miliseconds. <see langword=\"set\"/> to 0 to disable this feature."
+        );
 
         // Fishing tweaks
         configMenu.AddNumberOption(

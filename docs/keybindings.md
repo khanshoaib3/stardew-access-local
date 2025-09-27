@@ -16,21 +16,22 @@ All keybindings may be modified in the config except for escape (esc).
 
 ## Global Keys
 
-| Key                | Description                                                                                                           |
-|--------------------|-----------------------------------------------------------------------------------------------------------------------|
-| left ctrl + enter  | primary left mouse click                                                                                              |
-| left shift + enter | primary right mouse click                                                                                             |
-| [                  | secondary left mouse click                                                                                            |
-| ]                  | secondary right mouse click                                                                                           |
-| h                  | narrate health and stamina -- also speaks active buffs and debuffs when used in the inventory page                    |
-| left alt + k       | narrate current map                                                                                                   |
-| k                  | narrate current coordinates.                                                                                          |
-| q                  | narrate time, date, and season                                                                                        |
-| r                  | Narrate current money -- also speaks currency info and festival/event related items when used in the inventory page   |
-| left alt + j       | narrate the tile the player is standing on                                                                            |
-| j                  | narrate the tile the player is facing                                                                                 |
-| c                  | primary info key -- see [Primary Info Key](#primary-info-key) for details                                             |
-| esc                | closing menus -- stop interacting with text boxes                                                                     |
+| Key                    | Description                                                                                                           |
+|------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| left ctrl + enter      | primary left mouse click                                                                                              |
+| left shift + enter     | primary right mouse click                                                                                             |
+| [                      | secondary left mouse click                                                                                            |
+| ]                      | secondary right mouse click                                                                                           |
+| h                      | narrate health and stamina -- also speaks active buffs and debuffs when used in the inventory page                    |
+| left alt + k           | narrate current map                                                                                                   |
+| k                      | narrate current coordinates.                                                                                          |
+| q                      | narrate time, date, and season                                                                                        |
+| r                      | Narrate current money -- also speaks currency info and festival/event related items when used in the inventory page   |
+| left alt + j           | narrate the tile the player is standing on                                                                            |
+| j                      | narrate the tile the player is facing                                                                                 |
+| c                      | primary info key -- see [Primary Info Key](#primary-info-key) for details                                             |
+| esc                    | closing menus -- stop interacting with text boxes                                                                     |
+| left/right alt + space | repeat last spoken text -- double press to speak 2nd last, triple press to speak 3rd last and so on                   |
 
 ## Tile Viewer Keys
 

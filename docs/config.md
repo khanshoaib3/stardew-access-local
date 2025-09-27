@@ -8,7 +8,7 @@ You can edit the config with any text editor of your choice. It is **strongly** 
 - [Config Directories](#config-directories)
 - [More Info About JSON](#more-info-about-json)
 - [Text Editors](#text-editors)
-- [Muse Sim Keys Config](#mouse-sim-keys-config)
+- [Mouse Sim Keys Config](#mouse-sim-keys-config)
 - [Read Tile Configs](#read-tile-configs)
 - [Tile Viewer Configs](#tile-viewer-configs)
 - [Grid Movement Configs](#grid-movement-configs)
@@ -229,126 +229,18 @@ For a full list of key names, refer to the [Key Bindings List](https://stardewva
 
 ## miscellaneous Configs
 
-| Name               | Default Value  | Description                                                  |
-|--------------------|----------------|--------------------------------------------------------------|
-| YouveGotMailSound  | true           | Sets playing a sound when there is new mail in your mailbox  |
-| EnableCheats       | false          | Sets whether Stardew Access enables debug mode on startup    |
+| Name                                | Default Value | Description                                                                                                                                                                                                                 |
+|-------------------------------------|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| YouveGotMailSound                   | true          | Sets playing a sound when there is new mail in your mailbox                                                                                                                                                                 |
+| EnableCheats                        | false         | Sets whether Stardew Access enables debug mode on startup                                                                                                                                                                   |
+| HudDuplicateMessageTimeout (in ms)  | 5000          | The time window (in milliseconds) to suppress duplicate HUD messages. If a duplicate message occurs within this interval, it will be ignored. Default is 5 miliseconds. <see langword="set"/> to 0 to disable this feature. |
 
 ## Default Config
 
 This config is current as of [Beta Release v1.6.0-beta.4](https://github.com/stardew-access/stardew-access/releases/tag/v1.6.0-beta.4)
 
 ```json
-{
-  "LeftClickMainKey": "LeftControl + Enter",
-  "RightClickMainKey": "LeftShift + Enter",
-  "LeftClickAlternateKey": "OemOpenBrackets",
-  "RightClickAlternateKey": "OemCloseBrackets",
-  "ChatMenuNextKey": "PageUp",
-  "ChatMenuPreviousKey": "PageDown",
-  "ReadTile": true,
-  "ReadTileKey": "J",
-  "ReadStandingTileKey": "LeftAlt + J",
-  "ReadFlooring": false,
-  "DisableDescriptiveFlooring": false,
-  "WateredToggle": true,
-  "ReadTileDebug": false,
-  "ReadHoedDirtInMineShafts": false,
-  "TileCursorUpKey": "Up",
-  "TileCursorRightKey": "Right",
-  "TileCursorDownKey": "Down",
-  "TileCursorLeftKey": "Left",
-  "TileCursorPreciseUpKey": "LeftShift + Up",
-  "TileCursorPreciseRightKey": "LeftShift + Right",
-  "TileCursorPreciseDownKey": "LeftShift + Down",
-  "TileCursorPreciseLeftKey": "LeftShift + Left",
-  "ToggleRelativeCursorLockKey": "L",
-  "AutoWalkToTileKey": "LeftControl + Enter",
-  "OpenTileInfoMenuKey": "LeftShift + Enter",
-  "LimitTileCursorToScreen": false,
-  "TileCursorPreciseMovementDistance": 8,
-  "Radar": false,
-  "RadarStereoSound": true,
-  "PrimaryInfoKey": "C",
-  "CharacterCreationMenuNextKey": "Right",
-  "CharacterCreationMenuPreviousKey": "Left",
-  "CharacterCreationMenuSliderIncreaseKey": "Up",
-  "CharacterCreationMenuSliderLargeIncreaseKey": "PageUp",
-  "CharacterCreationMenuSliderDecreaseKey": "Down",
-  "CharacterCreationMenuSliderLargeDecreaseKey": "PageDown",
-  "CharacterCreationMenuDesignToggleKey": "LeftControl + Space, RightControl + Space",
-  "CharacterCreationMenuDesignDefaultEnabled": true,
-  "BundleMenuIngredientsKey": "I",
-  "BundleMenuInventoryItemsKey": "C",
-  "BundleMenuPurchaseButtonKey": "P",
-  "BundleMenuIngredientsInputSlotKey": "V",
-  "BundleMenuBackButtonKey": "Back",
-  "SnapToFirstInventorySlotKey": "I",
-  "SnapToFirstSecondaryInventorySlotKey": "LeftShift + I",
-  "CraftingMenuCycleThroughRecipesKey": "C",
-  "GridMovementActive": true,
-  "ToggleGridMovementKey": "I",
-  "GridMovementOverrideKey": "LeftControl",
-  "GridMovementSpeedPercent": 100.0,
-  "GridMovementTilesPerStep": 1,
-  "GridMovementDelayAfterFirstStep": 300,
-  "OTCycleUpCategory": "LeftControl + PageUp",
-  "OTCycleDownCategory": "LeftControl + PageDown",
-  "OTFavorite1": "LeftAlt + D1, RightAlt + D1",
-  "OTFavorite2": "LeftAlt + D2, RightAlt + D2",
-  "OTFavorite3": "LeftAlt + D3, RightAlt + D3",
-  "OTFavorite4": "LeftAlt + D4, RightAlt + D4",
-  "OTFavorite5": "LeftAlt + D5, RightAlt + D5",
-  "OTFavorite6": "LeftAlt + D6, RightAlt + D6",
-  "OTFavorite7": "LeftAlt + D7, RightAlt + D7",
-  "OTFavorite8": "LeftAlt + D8, RightAlt + D8",
-  "OTFavorite9": "LeftAlt + D9, RightAlt + D9",
-  "OTFavorite10": "LeftAlt + D0, RightAlt + D0",
-  "OTFavoriteDecreaseStack": "LeftAlt + OemMinus, RightAlt + OemMinus",
-  "OTFavoriteIncreaseStack": "LeftAlt + OemPlus, RightAlt + OemPlus",
-  "OTFavoriteSaveCoordinatesToggle": "LeftAlt + OemTilde, RightAlt + OemTilde",
-  "OTFavoriteSaveDefault": "LeftAlt + Back, RightAlt + Back",
-  "OTCycleUpObject": "PageUp",
-  "OTCycleDownObject": "PageDown",
-  "OTMoveToSelectedObject": "LeftControl + Home",
-  "OTReadSelectedObject": "Home",
-  "OTReadSelectedObjectTileLocation": "End",
-  "OTCancelAutoWalking": "Escape",
-  "OTSwitchSortingMode": "OemTilde",
-  "OTAutoRefreshing": true,
-  "OTSortByProximity": true,
-  "OTWrapLists": false,
-  "OTRememberPosition": true,
-  "HealthNStaminaKey": "H",
-  "HealthNStaminaInPercentage": true,
-  "PositionKey": "K",
-  "LocationKey": "LeftAlt + K",
-  "MoneyKey": "R",
-  "TimeNSeasonKey": "Q",
-  "RepeatLastTextKey": "LeftAlt + Space, RightAlt + Space",
-  "VerboseCoordinates": true,
-  "SnapMouse": true,
-  "Warning": true,
-  "TTS": true,
-  "AutoReadCharacterBubbles": true,
-  "AutoReadCharacterDialog": true,
-  "AutoReadQuestionDialog": true,
-  "AutoReadBasicDialog": true,
-  "ManualReadDialogKey": "R",
-  "TrackDroppedItems": true,
-  "DisableInventoryVerbosity": false,
-  "DisableBushVerbosity": false,
-  "DisableDescriptiveDebris": false,
-  "DisableColorfulSlime": false,
-  "ExtraColors": false,
-  "DisableInventoryFluentPluralization": false,
-  "YouveGotMailSound": true,
-  "EnableCheats": false,
-  "MacSpeechRate": 220.0,
-  "MaximumFishingDifficulty": 999,
-  "FixFishingMotionType": 999,
-  "Use24HourFormat": false
-}
+
 ```
 
 ## Other Pages
