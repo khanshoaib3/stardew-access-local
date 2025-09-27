@@ -104,11 +104,11 @@ public class API : IStardewAccessApi
         => MainClass.ScreenReader.TranslateAndSayWithMenuChecker(translationCategory, interrupt, translationTokens,
             ToTranslationCategory(translationCategory), customQuery, disableTranslationWarnings);
 
-    public bool SayMenuElement(IScreenReadable element, bool interrupt = true, bool excludeFromBuffer = false)
-        => MainClass.ScreenReader.SayMenuElement(element.ScreenReaderText, element.ScreenReaderDescription, interrupt, excludeFromBuffer);
+    public bool SayMenuElement(IScreenReadable element, bool interrupt = true)
+        => MainClass.ScreenReader.SayMenuElement(element.ScreenReaderText, element.ScreenReaderDescription, interrupt, excludeFromBuffer: false);
     
-    public bool SayMenuElement(string text, string description = "", bool interrupt = true, bool excludeFromBuffer = false)
-        => MainClass.ScreenReader.SayMenuElement(text, description, interrupt, excludeFromBuffer);
+    public bool SayMenuElement(string text, string description = "", bool interrupt = true)
+        => MainClass.ScreenReader.SayMenuElement(text, description, interrupt, excludeFromBuffer: false);
     
     public bool SayWithChatChecker(string text, bool interrupt)
         => MainClass.ScreenReader.SayWithChatChecker(text, interrupt);
