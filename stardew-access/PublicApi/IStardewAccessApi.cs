@@ -103,6 +103,34 @@ public interface IStardewAccessApi
     
     #endregion
 
+    #region Commands
+
+    /// <summary>
+    /// Simulates a left mouse click at the current cursor position.
+    /// <para>
+    /// This method will trigger a left click on the currently active menu or minigame, if present.
+    /// It abstracts away internal details, so callers do not need to know the current game context.
+    /// </para>
+    /// <remarks>
+    /// If no menu or minigame is active, this method does nothing.
+    /// </remarks>
+    /// </summary>
+    public void SimulateLeftClick();
+
+    /// <summary>
+    /// Simulates a right mouse click at the current cursor position.
+    /// <para>
+    /// This method will trigger a right click on the currently active menu or minigame, if present.
+    /// It abstracts away internal details, so callers do not need to know the current game context.
+    /// </para>
+    /// <remarks>
+    /// If no menu or minigame is active, this method does nothing.
+    /// </remarks>
+    /// </summary>
+    public void SimulateRightClick();
+
+    #endregion
+
     #region Tiles related
 
     /// <summary>

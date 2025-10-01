@@ -100,6 +100,26 @@ public class API : IStardewAccessApi
     
     #endregion
 
+    #region Commands
+
+    public void SimulateLeftClick()
+    {
+        if (Game1.activeClickableMenu != null)
+            MouseUtils.SimulateMouseClicks((x, y) => Game1.activeClickableMenu.receiveLeftClick(x, y), null);
+        else if (Game1.currentMinigame != null)
+            MouseUtils.SimulateMouseClicks((x, y) => Game1.currentMinigame.receiveLeftClick(x, y), null);
+    }
+
+    public void SimulateRightClick()
+    {
+        if (Game1.activeClickableMenu != null)
+            MouseUtils.SimulateMouseClicks(null, (x, y) => Game1.activeClickableMenu.receiveRightClick(x, y));
+        else if (Game1.currentMinigame != null)
+            MouseUtils.SimulateMouseClicks(null, (x, y) => Game1.currentMinigame.receiveRightClick(x, y));
+    }
+
+    #endregion
+
     #region Tiles related
 
     public Dictionary<Vector2, (string name, string category)> SearchNearbyTiles(Vector2 center, int limit)
