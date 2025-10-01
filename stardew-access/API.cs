@@ -31,6 +31,22 @@ public class API : IStardewAccessApi
     }
 #pragma warning disable CA1822 // Mark members as static
 
+    #region Keybinds
+    public KeybindList LeftClickMainKey => MainClass.Config.LeftClickMainKey;
+    public KeybindList RightClickMainKey => MainClass.Config.RightClickMainKey;
+    public KeybindList LeftClickAlternateKey => MainClass.Config.LeftClickAlternateKey;
+    public KeybindList RightClickAlternateKey => MainClass.Config.RightClickAlternateKey;
+    public KeybindList ChatMenuNextKey => MainClass.Config.ChatMenuNextKey;
+    public KeybindList ChatMenuPreviousKey => MainClass.Config.ChatMenuPreviousKey;
+    public KeybindList ReadTileKey => MainClass.Config.ReadTileKey;
+    public KeybindList ReadStandingTileKey => MainClass.Config.ReadStandingTileKey;
+    public KeybindList ReadFlooringKey => MainClass.Config.ReadFlooringKey;
+    public KeybindList TileCursorUpKey => MainClass.Config.TileCursorUpKey;
+    public KeybindList TileCursorRightKey => MainClass.Config.TileCursorRightKey;
+    public KeybindList TileCursorDownKey => MainClass.Config.TileCursorDownKey;
+    public KeybindList TileCursorLeftKey => MainClass.Config.TileCursorLeftKey;
+    #endregion
+
     #region Screen reader related
 
     public string PrevMenuQueryText

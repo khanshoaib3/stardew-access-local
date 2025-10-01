@@ -9,6 +9,35 @@ namespace stardew_access;
 // TODO: Update doc comments
 public interface IStardewAccessApi
 {
+    #region Keybinds
+    /// <summary>Primary key to simulate mouse left click.</summary>
+    KeybindList LeftClickMainKey { get; }
+    /// <summary>Primary key to simulate mouse right click.</summary>
+    KeybindList RightClickMainKey { get; }
+    /// <summary>Secondary key to simulate mouse left click.</summary>
+    KeybindList LeftClickAlternateKey { get; }
+    /// <summary>Secondary key to simulate mouse right click.</summary>
+    KeybindList RightClickAlternateKey { get; }
+    /// <summary>Key to read previous chat message.</summary>
+    KeybindList ChatMenuNextKey { get; }
+    /// <summary>Key to read next chat message.</summary>
+    KeybindList ChatMenuPreviousKey { get; }
+    /// <summary>Key to manually trigger read tile for the tile player is looking at.</summary>
+    KeybindList ReadTileKey { get; }
+    /// <summary>Key to manually trigger read tile for the tile player is standing on.</summary>
+    KeybindList ReadStandingTileKey { get; }
+    /// <summary>Key to toggle reading floorings.</summary>
+    KeybindList ReadFlooringKey { get; }
+    /// <summary>Key to move the cursor one tile up.</summary>
+    KeybindList TileCursorUpKey { get; }
+    /// <summary>Key to move the cursor one tile right.</summary>
+    KeybindList TileCursorRightKey { get; }
+    /// <summary>Key to move the cursor one tile down.</summary>
+    KeybindList TileCursorDownKey { get; }
+    /// <summary>Key to move the cursor one tile left.</summary>
+    KeybindList TileCursorLeftKey { get; }
+    #endregion
+
     #region Screen reader related
 
     /// <summary>
