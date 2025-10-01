@@ -36,6 +36,11 @@ public interface IStardewAccessApi
     KeybindList TileCursorDownKey { get; }
     /// <summary>Key to move the cursor one tile left.</summary>
     KeybindList TileCursorLeftKey { get; }
+    /// <summary>
+    /// (Default to `C`) Mainly used to speak some visual information in a menu like some label(s) which isn't
+    /// reachable by gamepad navigation.
+    /// </summary>
+    KeybindList PrimaryInfoKey { get; }
     #endregion
 
     #region Screen reader related
@@ -75,11 +80,6 @@ public interface IStardewAccessApi
     /// </summary>
     public string MenuSuffixNoQueryText { get; set; }
 
-    /// <summary>
-    /// (Default to `C`) Mainly used to speak some visual information in a menu like some label(s) which isn't
-    /// reachable by gamepad naviagtion.
-    /// </summary>
-    public KeybindList PrimaryInfoKey { get; }
 
     /// <summary>Speaks the text via the loaded screen reader (if any).</summary>
     /// <param name="text">The text to be narrated.</param>

@@ -45,6 +45,7 @@ public class API : IStardewAccessApi
     public KeybindList TileCursorRightKey => MainClass.Config.TileCursorRightKey;
     public KeybindList TileCursorDownKey => MainClass.Config.TileCursorDownKey;
     public KeybindList TileCursorLeftKey => MainClass.Config.TileCursorLeftKey;
+    public KeybindList PrimaryInfoKey => MainClass.Config.PrimaryInfoKey;
     #endregion
 
     #region Screen reader related
@@ -79,7 +80,6 @@ public class API : IStardewAccessApi
         set => MainClass.ScreenReader.MenuSuffixNoQueryText = value;
     }
 
-    public KeybindList PrimaryInfoKey => MainClass.Config.PrimaryInfoKey;
 
     public bool Say(string text, bool interrupt)
         => MainClass.ScreenReader.Say(text, interrupt);
