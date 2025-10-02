@@ -141,7 +141,7 @@ internal class IClickableMenuPatch : IPatch
                 return null;
             }
 
-            if (activeMenu.GetChildMenu() != null && activeMenu.GetChildMenu().IsActive())
+            while (activeMenu.GetChildMenu() != null)
             {
                 activeMenu = activeMenu.GetChildMenu();
             }
