@@ -39,7 +39,7 @@ internal class InventoryPagePatch : IPatch
                 return;
             }
 
-            if (InventoryUtils.NarrateHoveredSlot(__instance.inventory, giveExtraDetails: true))
+            if (InventoryUtils.NarrateHoveredSlot(__instance.inventory, giveExtraDetails: true, isHoveredItemBundleItem: GameMenu.bundleItemHovered))
             {
                 return;
             }
