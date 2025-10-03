@@ -22,6 +22,7 @@
 
 ### Misc
 
+- Exposed keybindings some keybindings to the api, including the mouse sim keybinds,  primary info keybind and some others - by @paulGeoghegan
 
 ### Translation Changes
 
