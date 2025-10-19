@@ -1,3 +1,4 @@
+using stardew_access.Patches;
 using StardewValley;
 
 namespace stardew_access.Utils;
@@ -24,7 +25,7 @@ internal static class MouseUtils
         if (leftClickHandler != null && (MainClass.Config.LeftClickMainKey.JustPressed() || MainClass.Config.LeftClickAlternateKey.JustPressed()))
         {
 #if DEBUG
-            Log.Debug($"Simulating left mouse click at {mouseX}x {mouseY}y");
+            Log.Debug($"Simulating left mouse click at {mouseX}x {mouseY}y in menu {IClickableMenuPatch.ActiveMenuOrSubMenu}");
 #endif
             leftClickHandler(mouseX, mouseY);
             return true;
