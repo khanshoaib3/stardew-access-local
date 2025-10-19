@@ -19,7 +19,7 @@ internal class GameMenuPatch : IPatch
         try
         {
             // Skip speaking if GMCM menu is active
-            if (IClickableMenuPatch.ManuallyPatchedCustomMenus.Contains(IClickableMenuPatch.ActiveMenuOrSubMenu?.GetType().FullName ?? string.Empty))
+            if (__instance.pages[__instance.currentTab].GetType() != IClickableMenuPatch.ActiveMenuOrSubMenu?.GetType())
                 return;
 
             // Skip if in map page

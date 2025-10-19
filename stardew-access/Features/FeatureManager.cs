@@ -2,6 +2,7 @@ using stardew_access.Patches;
 using stardew_access.Utils;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.Menus;
 
 namespace stardew_access.Features;
 
@@ -40,18 +41,27 @@ public class FeatureManager
     public static void OnButtonPressedEvent(object? sender, ButtonPressedEventArgs e)
     {
 #if DEBUG
-        Log.Verbose($"[OnButtonPressedEvent]: {e.Button} was pressed in menu {IClickableMenuPatch.ActiveMenuOrSubMenu}");
+        Log.Verbose(
+            $"[OnButtonPressedEvent]: {e.Button} was pressed in menu {IClickableMenuPatch.ActiveMenuOrSubMenu}");
 #endif
 
         #region Simulate left and right clicks
 
         if (!TextBoxPatch.IsAnyTextBoxActive)
         {
-            if (Game1.activeClickableMenu != null)
+            if (Game1.activeClickableMenu is GameMenu gameMenu &&
+                gameMenu.pages[gameMenu.currentTab].GetType() == IClickableMenuPatch.ActiveMenuOrSubMenu?.GetType())
             {
                 MouseUtils.SimulateMouseClicks(
                     (x, y) => Game1.activeClickableMenu.receiveLeftClick(x, y),
                     (x, y) => Game1.activeClickableMenu.receiveRightClick(x, y)
+                );
+            }
+            else if (IClickableMenuPatch.ActiveMenuOrSubMenu != null)
+            {
+                MouseUtils.SimulateMouseClicks(
+                    (x, y) => IClickableMenuPatch.ActiveMenuOrSubMenu.receiveLeftClick(x, y),
+                    (x, y) => IClickableMenuPatch.ActiveMenuOrSubMenu.receiveRightClick(x, y)
                 );
             }
             else if (Game1.currentMinigame != null)
