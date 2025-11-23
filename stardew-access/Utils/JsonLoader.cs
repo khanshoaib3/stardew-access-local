@@ -85,6 +85,23 @@ public static class JsonLoader
         return false;
 	}
 
+	public static bool TryLoadJsonHashSet<T>(string fileName, out HashSet<T> result, string subdir = DefaultDir)
+	{
+		bool loaded = TryLoadJsonFile(fileName, out JToken? token, subdir);
+
+		if (loaded && token != null)
+		{
+			result = token.ToObject<HashSet<T>>() ?? [];
+			return true;
+		}
+
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+		// ReSharper disable once PreferConcreteValueOverDefault
+		result = default;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+		return false;	
+	}
+
 	/// <summary>
 	/// Attempts to load a JSON file into a generic dictionary with integer keys.
 	/// </summary>

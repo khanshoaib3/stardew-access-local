@@ -1,61 +1,8 @@
 [
-  // Vanilla Machines
   // IDs can be searched from this site: https://mateusaquino.github.io/stardewids/
-  "(BC)HeavyFurnace",
   "(BC)MiniForge",
-  "(BC)Anvil",
-  "(BC)10", // Bee House
-  "(BC)90", // Bone Mill
-  "(BC)163", // Cask 
-  "(O)710", // Crab Pot
-  "(BC)21", // Crystalarium
-  "(BC)265", // Deconstructor
-  "(BC)Dehydrator",
-  "(BC)FishSmoker",
-  "(BC)13", // Furnace
-  "(BC)182", // Geode Crusher
-  "(BC)101", // Incubator
-  "(BC)254", // Ostrich Incubator
-  "(BC)12", // Keg
-  "(BC)114", // Charcoal Kiln
-  "(BC)9", // Lightning Rod
-  "(BC)17", // Loom
-  "(BC)20", // Recycling Machine
-  "(BC)24", // Mayonnaise Machine
-  "(BC)117", // Soda Machine
-  "(BC)247", // Sewing Machine
-  "(BC)19", // Oil Maker
-  "(BC)25", // Seed Maker
-  "(BC)246", // Coffee Maker
-  "(BC)BaitMaker",
-  "(BC)19", // Oil Maker
-  "(BC)128", // Mushroom Box
-  "(BC)MushroomLog",
-  "(BC)15", // Preserves Jar
-  "(BC)16", // Cheese Press
-  "(BC)158", // Slime Egg Press
-  "(BC)231", // Solar Panel
-  "(BC)127", // Statue of Endless Fortune
-  "(BC)160", // Statue of Perfection
-  "(BC)280", // Statue of True Perfection
-  "(BC)105", // Tapper
-  "(BC)264", // Heavy Tapper
-  "(BC)211", // Wood Chipper
-  "(BC)154", // Worm Bin
-  "(BC)DeluxeWormBin", // Deluxe Worm Bin
-  
-  
-  // Cornucopia - Artisan Machines
-  // Mod: https://www.nexusmods.com/stardewvalley/mods/24842
-  // Object Ids: https://github.com/MizuJakkaru/Cornucopia/blob/main/%5BCP%5D%20Cornucopia%20Artisan%20Machines/data/bigcraftables.json
-  "(BC)Cornucopia_Alembic",
-  "(BC)Cornucopia_ButterChurn",
-  "(BC)Cornucopia_DryingRack",
-  "(BC)Cornucopia_Extruder",
-  "(BC)Cornucopia_CompactMill",
-  "(BC)Cornucopia_DeluxeSmoker",
-  "(BC)Cornucopia_WaxBarrel",
-  "(BC)Cornucopia_YogurtJar",
-  "(BC)Cornucopia_VinegarKeg",
-  "(BC)Cornucopia_Juicer"
+  // Crab Pot
+  "(O)710",
+  // Sewing Machine
+  "(BC)247"
 ]

@@ -12,13 +12,12 @@ using StardewValley.Monsters;
 using StardewValley.Objects;
 using StardewValley.TerrainFeatures;
 using StardewValley.TokenizableStrings;
-using System.ComponentModel;
 
 namespace stardew_access.Utils;
 
 public class TileInfo
 {
-    private static readonly string[] trackable_machines;
+    private static readonly HashSet<string> trackable_machines;
     private static readonly Dictionary<int, string> ResourceClumpNameTranslationKeys = [];
     private static readonly Dictionary<string, (string category, string itemName)> QualifiedItemIds = [];
     private static readonly Dictionary<string, Dictionary<(int, int), string>> BundleLocations = [];
@@ -61,7 +60,7 @@ public class TileInfo
 
     static TileInfo()
     {
-        JsonLoader.TryLoadJsonArray("trackable_machines.json", out trackable_machines, subdir: "assets/TileData");
+        JsonLoader.TryLoadJsonHashSet("trackable_machines.json", out trackable_machines, subdir: "assets/TileData");
         JsonLoader.TryLoadJsonDictionary("resource_clump_name_translation_keys.json", out ResourceClumpNameTranslationKeys, subdir: "assets/TileData");
         JsonLoader.TryLoadNestedJson<string, (string, string)>(
             "QualifiedItemIds.json",
@@ -818,18 +817,12 @@ public class TileInfo
                 }
             }
         }
-        else if ((obj.Type == "Crafting" && obj.bigCraftable.Value) ||
-                 obj.QualifiedItemId == "(O)710") // (O)710 == crab pot
+        else if (obj.GetMachineData() != null || trackable_machines.Contains(obj.QualifiedItemId))
         {
-            foreach (var machineIds in trackable_machines)
-            {
-                if (!obj.QualifiedItemId.Equals(machineIds)) continue;
-
-                toReturn.name = obj.heldObject.Value is not null
-                    ? $"{obj.DisplayName}, {InventoryUtils.GetItemDetails(obj.heldObject.Value)}"
-                    : obj.DisplayName;
-                toReturn.category = GetMachineState(obj) == MachineState.Ready ? CATEGORY.Ready : CATEGORY.Machines;
-            }
+            toReturn.name = obj.heldObject.Value is not null
+                ? $"{obj.DisplayName}, {InventoryUtils.GetItemDetails(obj.heldObject.Value)}"
+                : obj.DisplayName;
+            toReturn.category = GetMachineState(obj) == MachineState.Ready ? CATEGORY.Ready : CATEGORY.Machines;
         }
         else if (obj is Fence fence && fence.isGate.Value)
         {
