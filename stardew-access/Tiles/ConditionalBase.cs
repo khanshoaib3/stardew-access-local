@@ -1,11 +1,3 @@
-using Microsoft.Xna.Framework;
-using stardew_access.Translation;
-using stardew_access.Utils;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-
 namespace stardew_access.Tiles;
 
 public abstract class ConditionalBase

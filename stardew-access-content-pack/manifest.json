@@ -1,0 +1,16 @@
+{
+  "Name": "[CP] Stardew Access",
+  "Author": "Mohammad Shoaib Khan and Katalina Tudela",
+  "Version": "%ProjectVersion%",
+  "Description": "One or two sentences about the mod.",
+  "UniqueID": "shoaib.stardewaccess.cp",
+  "UpdateKeys": [],
+  "ContentPackFor": {
+    "UniqueID": "Pathoschild.ContentPatcher"
+  },
+  "Dependencies": [
+    {
+      "UniqueID": "shoaib.stardewaccess"
+    }
+  ]
+}

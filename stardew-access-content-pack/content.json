@@ -1,0 +1,39 @@
+{
+  "Format": "2.8.0",
+  "Changes": [
+    {
+      "Action": "EditData",
+      "Target": "shoaib.stardewaccess/TrackedMachinesData",
+      "Entries": {
+        "shoaib.stardewaccess.cp": {
+          "QualifiedObjectIds": [
+            "(O)710",
+            "(BC)247",
+            "(BC)MiniForge"
+          ]
+        }
+      }
+    },
+    {
+      "Action": "EditData",
+      "Target": "shoaib.stardewaccess/AccessibleTilesData",
+      "Entries": {
+        "shoaib.stardewaccess.cp": {
+          "Maps": [
+            {
+              "Id": "BusStop",
+              "Tiles": [
+                {
+                  "DisplayName": "Test",
+                  "X": [ 18 ],
+                  "Y": [ 9, 10 ],
+                  "Category": "decor"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

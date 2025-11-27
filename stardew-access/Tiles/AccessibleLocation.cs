@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using stardew_access.Utils;
 using StardewValley;

@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using stardew_access.Translation;
 using stardew_access.Utils;
@@ -26,6 +25,7 @@ public class AccessibleTile : ConditionalBase
     private readonly string? StaticNameOrTranslationKey;
     private readonly string? DynamicNameOrTranslationKey;
     private readonly Func<ConditionalBase, string>? DynamicNameOrTranslationKeyFunc;
+
     public string NameOrTranslationKey
     {
         get
@@ -48,6 +48,7 @@ public class AccessibleTile : ConditionalBase
     private readonly Vector2[] StaticCoordinates;
     private readonly string? DynamicCoordinates;
     private readonly Func<ConditionalBase, Vector2[]>? DynamicCoordinatesFunc;
+
     public Vector2[] Coordinates
     {
         get
@@ -68,7 +69,7 @@ public class AccessibleTile : ConditionalBase
     private readonly string[]? _withMods;
     private readonly string[]? _conditions;
     public readonly CATEGORY Category;
-    public readonly bool IsEvent ;
+    public readonly bool IsEvent;
     public readonly string? Suffix;
 
     public (string NameOrTranslationKey, CATEGORY Category) NameAndCategory
@@ -77,7 +78,7 @@ public class AccessibleTile : ConditionalBase
         {
             return (
                 Translator.Instance.Translate(
-                    NameOrTranslationKey, 
+                    NameOrTranslationKey,
                     translationCategory: TranslationCategory.StaticTiles,
                     disableWarning: true
                 ),
@@ -115,9 +116,11 @@ public class AccessibleTile : ConditionalBase
         DynamicNameOrTranslationKey = dynamicNameOrTranslationKey;
         if (DynamicNameOrTranslationKey != null)
         {
-            if (!AccessibleTileHelpers.TryGetNameHelper(DynamicNameOrTranslationKey, out DynamicNameOrTranslationKeyFunc))
+            if (!AccessibleTileHelpers.TryGetNameHelper(DynamicNameOrTranslationKey,
+                    out DynamicNameOrTranslationKeyFunc))
             {
-                throw new ArgumentException($"No helper function found for name or translation key: {DynamicNameOrTranslationKey}");
+                throw new ArgumentException(
+                    $"No helper function found for name or translation key: {DynamicNameOrTranslationKey}");
             }
         }
 
@@ -130,7 +133,7 @@ public class AccessibleTile : ConditionalBase
                 throw new ArgumentException($"No helper function found for coordinates: {DynamicCoordinates}");
             }
         }
-        
+
         Category = category ?? CATEGORY.Other;
         IsEvent = isEvent;
         Suffix = suffix;
@@ -155,9 +158,11 @@ public class AccessibleTile : ConditionalBase
                 {
                     sb.Append(", ");
                 }
+
                 first = false;
                 sb.Append($"{coordinate.X}, {coordinate.Y}");
             }
+
             sb.Append(')');
         }
 
@@ -183,9 +188,9 @@ public class AccessibleTile : ConditionalBase
     public static AccessibleTile FromJObject(JObject jObject)
     {
         // Attempt to get string values, handling nulls
-        #pragma warning disable CA1507 // Use nameof to express symbol names
+#pragma warning disable CA1507 // Use nameof to express symbol names
         string? staticNameOrTranslationKey = jObject["NameOrTranslationKey"]?.Value<string>();
-        #pragma warning restore CA1507 // Use nameof to express symbol names
+#pragma warning restore CA1507 // Use nameof to express symbol names
         string? dynamicNameOrTranslationKey = jObject["DynamicNameOrTranslationKey"]?.Value<string>();
         string? dynamicCoordinates = jObject["DynamicCoordinates"]?.Value<string>();
         string? categoryKey = jObject["Category"]?.Value<string>();
@@ -204,22 +209,13 @@ public class AccessibleTile : ConditionalBase
         Vector2[]? staticCoordinates = null;
         if (xValues != null && yValues != null)
         {
-            int totalCoordinates = xValues.Length * yValues.Length;
-            staticCoordinates = new Vector2[totalCoordinates];
-            int index = 0;
-            foreach (int y in yValues)
-            {
-                foreach (int x in xValues)
-                {
-                    staticCoordinates[index++] = new Vector2(x, y);
-                }
-            }
+            staticCoordinates = generateCoordinatesCombination(xValues, yValues);
         }
 
         // CATEGORY handling
         CATEGORY category = (!string.IsNullOrEmpty(categoryKey))
-                            ? CATEGORY.FromString(categoryKey)
-                            : CATEGORY.Other;
+            ? CATEGORY.FromString(categoryKey)
+            : CATEGORY.Other;
 
         // Pass parsed values to the constructor, which will handle invalid combinations
         return new AccessibleTile(
@@ -235,4 +231,19 @@ public class AccessibleTile : ConditionalBase
         );
     }
 
+    public static Vector2[] generateCoordinatesCombination(int[] xValues, int[] yValues)
+    {
+        int totalCoordinates = xValues.Length * yValues.Length;
+        var coordinates = new Vector2[totalCoordinates];
+        int index = 0;
+        foreach (int y in yValues)
+        {
+            foreach (int x in xValues)
+            {
+                coordinates[index++] = new Vector2(x, y);
+            }
+        }
+
+        return coordinates;
+    }
 }

@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using stardew_access.Framework;
 using stardew_access.Translation;
 using stardew_access.Utils;
 using StardewModdingAPI;
@@ -52,6 +53,8 @@ public class AccessibleTileManager
         if (ConvertOldCustomTilesFormat())
             Log.Alert($"Your custom-tiles.json file was updated to the new format,. You can find the new file under assets/TileData/tiles_user.json. Your original file was renamed to custom-tiles.old.json.");
         LoadTileData();
+        Log.Debug($"Initialized tiles from CP: {AssetHandler.AccessibleTilesData.Count}");
+        Log.Debug($"Initialized machines from CP: {AssetHandler.TrackedMachines.Count}");
     }
 
     public void LoadTileData()
@@ -177,6 +180,17 @@ public class AccessibleTileManager
 
         // Detect and add tiles having "TileDesc" tile property.
         AddFromTileProperties(location, gameLocation);
+
+        Log.Debug($"YOLO Found a map! {AssetHandler.AccessibleTilesData.Count}");
+        Log.Debug($"YOLO Found a map! {string.Join(',', AssetHandler.AccessibleTilesData.Keys)}");
+        if (AssetHandler.AccessibleTilesData.ContainsKey(locationName)
+            && AssetHandler.AccessibleTilesData.TryGetValue(locationName, out var madData))
+        {
+            foreach (var accessibleTileData in madData.Tiles)
+            {
+                location.AddTile(accessibleTileData.toAccessibleTile());
+            }
+        }
 
         // Add the location to the Locations dictionary
         Locations.Add(isEvent ? eventName : locationName, location);

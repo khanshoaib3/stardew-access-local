@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json.Linq;
+using stardew_access.Framework;
 using stardew_access.Translation;
 using static stardew_access.Utils.ColorMatcher;
 using static stardew_access.Utils.MachineUtils;
@@ -817,7 +818,7 @@ public class TileInfo
                 }
             }
         }
-        else if (obj.GetMachineData() != null || trackable_machines.Contains(obj.QualifiedItemId))
+        else if (obj.GetMachineData() != null || AssetHandler.TrackedMachines.Contains(obj.QualifiedItemId))
         {
             toReturn.name = obj.heldObject.Value is not null
                 ? $"{obj.DisplayName}, {InventoryUtils.GetItemDetails(obj.heldObject.Value)}"

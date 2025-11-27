@@ -2,6 +2,7 @@ using HarmonyLib;
 using Microsoft.Xna.Framework;
 using stardew_access.Commands;
 using stardew_access.Features;
+using stardew_access.Framework;
 using stardew_access.Patches;
 using stardew_access.ScreenReader;
 using stardew_access.Tiles;
@@ -103,6 +104,8 @@ public class MainClass : Mod
         helper.Events.GameLoop.UpdateTicked += OnUpdateTicked;
         helper.Events.GameLoop.DayStarted += OnDayStarted;
         helper.Events.Display.MenuChanged += OnMenuChanged;
+        helper.Events.Content.AssetRequested += AssetHandler.OnAssetRequested;
+        helper.Events.Content.AssetsInvalidated += AssetHandler.OnAssetsInvalidated;
         AppDomain.CurrentDomain.DomainUnload += OnExit;
         AppDomain.CurrentDomain.ProcessExit += OnExit;
     }
