@@ -13,27 +13,6 @@
           ]
         }
       }
-    },
-    {
-      "Action": "EditData",
-      "Target": "shoaib.stardewaccess/AccessibleTilesData",
-      "Entries": {
-        "shoaib.stardewaccess.cp": {
-          "Maps": [
-            {
-              "Id": "BusStop",
-              "Tiles": [
-                {
-                  "DisplayName": "Test",
-                  "X": [ 18 ],
-                  "Y": [ 9, 10 ],
-                  "Category": "decor"
-                }
-              ]
-            }
-          ]
-        }
-      }
     }
   ]
 }
