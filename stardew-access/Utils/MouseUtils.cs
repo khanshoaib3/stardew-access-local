@@ -1,4 +1,5 @@
 using stardew_access.Patches;
+using StardewModdingAPI;
 using StardewValley;
 
 namespace stardew_access.Utils;
@@ -22,21 +23,39 @@ internal static class MouseUtils
         int mouseX = Game1.getMouseX(true);
         int mouseY = Game1.getMouseY(true);
 
-        if (leftClickHandler != null && (MainClass.Config.LeftClickMainKey.JustPressed() || MainClass.Config.LeftClickAlternateKey.JustPressed()))
+        if (leftClickHandler != null)
         {
 #if DEBUG
             Log.Debug($"Simulating left mouse click at {mouseX}x {mouseY}y in menu {IClickableMenuPatch.ActiveMenuOrSubMenu}");
 #endif
-            leftClickHandler(mouseX, mouseY);
-            return true;
+            if (MainClass.Config.LeftClickMainKey.JustPressed())
+            {
+                MainClass.ModHelper!.Input.Press(SButton.MouseLeft);
+                return true;
+            }
+            if (MainClass.Config.LeftClickAlternateKey.JustPressed())
+            {
+                leftClickHandler(mouseX, mouseY);
+                return true;
+            }
         }
-        else if (rightClickHandler != null && (MainClass.Config.RightClickMainKey.JustPressed() || MainClass.Config.RightClickAlternateKey.JustPressed()))
+        
+        if (rightClickHandler != null)
         {
 #if DEBUG
             Log.Debug($"Simulating right mouse click at {mouseX}x {mouseY}y");
 #endif
-            rightClickHandler(mouseX, mouseY);
-            return true;
+            if (MainClass.Config.RightClickMainKey.JustPressed())
+            {
+                MainClass.ModHelper!.Input.Press(SButton.MouseRight);
+                return true;
+            }
+
+            if (MainClass.Config.RightClickAlternateKey.JustPressed())
+            {
+                rightClickHandler(mouseX, mouseY);
+                return true;
+            }
         }
 
         return false;
