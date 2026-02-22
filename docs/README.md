@@ -65,14 +65,15 @@ and you can always ask your queries in our discord server or additionally in [is
 
 Here's the list of the translations so far.
 
-| Language     | Mod Link                                                    | Author                                                                                 |
-|--------------|-------------------------------------------------------------|----------------------------------------------------------------------------------------|
-| Chinese      | [Link](https://www.nexusmods.com/stardewvalley/mods/21784)  | [Rizumu85](https://github.com/Rizumu85), [wu2002jian](https://github.com/wu2002jian)   |
-| French       | [Link](https://www.nexusmods.com/stardewvalley/mods/20621/) | [ZenqFR](https://github.com/ZenqFR)                                                    |
-| Indonesian   | [Link](https://www.nexusmods.com/stardewvalley/mods/24788)  | [fz0308](https://github.com/fz0308)                                                    |
-| Italian      | [Link](https://www.nexusmods.com/stardewvalley/mods/28459)  | [Vabax_Yt](https://www.nexusmods.com/stardewvalley/users/207459300)                    |
-| Vietnamese   | [Link](https://www.nexusmods.com/stardewvalley/mods/35729)  | [Daoductrung](https://github.com/Daoductrung)                                          |
-| Portuguese   | [Link](https://www.nexusmods.com/stardewvalley/mods/38072]) | [Edimirson a.k.a. SAMU](https://github.com/Edimirson)                                  |
+| Language   | Mod Link                                                    | Author                                                                               |
+|------------|-------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| Chinese    | [Link](https://www.nexusmods.com/stardewvalley/mods/21784)  | [Rizumu85](https://github.com/Rizumu85), [wu2002jian](https://github.com/wu2002jian) |
+| French     | [Link](https://www.nexusmods.com/stardewvalley/mods/20621/) | [ZenqFR](https://github.com/ZenqFR)                                                  |
+| Indonesian | [Link](https://www.nexusmods.com/stardewvalley/mods/24788)  | [fz0308](https://github.com/fz0308)                                                  |
+| Italian    | [Link](https://www.nexusmods.com/stardewvalley/mods/28459)  | [Vabax_Yt](https://www.nexusmods.com/stardewvalley/users/207459300)                  |
+| Vietnamese | [Link](https://www.nexusmods.com/stardewvalley/mods/35729)  | [Daoductrung](https://github.com/Daoductrung)                                        |
+| Portuguese | [Link](https://www.nexusmods.com/stardewvalley/mods/38072]) | [Edimirson a.k.a. SAMU](https://github.com/Edimirson)                                |
+| Spanish    | [Link](https://www.nexusmods.com/stardewvalley/mods/41759)  | [Jesús Pavón Abián](https://github.com/jpavonabian)                                  |
 
 ## Contact Us
 
