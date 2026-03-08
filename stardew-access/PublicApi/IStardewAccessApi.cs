@@ -184,6 +184,24 @@ public interface IStardewAccessApi
     #endregion
 
     #region Tiles related
+    
+    /// <summary>
+    /// Adds a tile to the object tracker.
+    /// Note that this does not persist, so the tile will be removed from the tracker after object tracker refreshes.
+    /// </summary>
+    /// <param name="category">The category of the tile. <see cref="Utils.CATEGORY"/></param>
+    /// <param name="name">Translated name of the tile.</param>
+    /// <param name="tile">Tile's position.</param>
+    /// <param name="character">(Optional) The NPC at the tile.</param>
+    public void AddTileToObjectTracker(string category, string name, Vector2 tile, NPC? character = null);
+    
+    /// <summary>
+    /// Attempts to remove a tile with the given name and in the given category.
+    /// </summary>
+    /// <param name="category">The category of the tile. <see cref="Utils.CATEGORY"/></param>
+    /// <param name="name">Translated name of the tile.</param>
+    /// <returns>true if the tile was found and removed, else false.</returns>
+    public bool RemoveTileFromObjectTracker(string category, string name);
 
     /// <summary>
     /// Search the area using Breadth First Search algorithm(BFS).

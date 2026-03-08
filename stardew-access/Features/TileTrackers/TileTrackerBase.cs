@@ -32,7 +32,6 @@ internal class TileTrackerBase
 
     public void AddFocusableObject(string category, string name, Vector2 tile, NPC? character = null)
     {
-
         if (!Objects.ContainsKey(category)) {
             Objects.Add(category, []);
         }
@@ -48,7 +47,6 @@ internal class TileTrackerBase
         }
 
         Objects[category][name] = sObject;
-
     }
 
     public static SpecialObject GetClosest(SpecialObject item1, SpecialObject item2)
@@ -64,5 +62,4 @@ internal class TileTrackerBase
         }
         return item2;
     }
-
 }

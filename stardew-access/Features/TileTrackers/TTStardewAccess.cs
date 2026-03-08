@@ -28,5 +28,4 @@ internal class TTStardewAccess(object? arg = null) : TileTrackerBase(arg)
 
         base.FindObjects(arg);
     }
-
 }

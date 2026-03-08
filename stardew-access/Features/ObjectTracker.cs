@@ -20,13 +20,13 @@ using static Utils.NPCUtils;
 internal class ObjectTracker : FeatureBase
 {
     private  bool SortByProximity;
-    private  TrackedObjects? trackedObjects;
+    internal TrackedObjects? trackedObjects;
     private  Pathfinder? pathfinder;
     internal string? SelectedCategory;
     internal string? SelectedObject;
     internal Vector2? SelectedCoordinates;
-    private Dictionary<string, Dictionary<string, Dictionary<int, (string? name, string? category)>>>
-    favorites = new(StringComparer.OrdinalIgnoreCase);
+    private Dictionary<string, Dictionary<string, Dictionary<int, (string? name, string? category)>>> favorites =
+        new(StringComparer.OrdinalIgnoreCase);
     private const int PressInterval = 500; // Milliseconds
     private readonly Timer lastPressTimer = new(PressInterval);
     private readonly Timer navigationTimer = new(PressInterval);

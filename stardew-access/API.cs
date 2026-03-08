@@ -6,6 +6,7 @@ using stardew_access.Utils;
 using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Menus;
+
 // ReSharper disable UnusedMember.Global
 
 namespace stardew_access;
@@ -32,6 +33,7 @@ public class API : IStardewAccessApi
 #pragma warning disable CA1822 // Mark members as static
 
     #region Keybinds
+
     public KeybindList LeftClickMainKey => MainClass.Config.LeftClickMainKey;
     public KeybindList RightClickMainKey => MainClass.Config.RightClickMainKey;
     public KeybindList LeftClickAlternateKey => MainClass.Config.LeftClickAlternateKey;
@@ -46,6 +48,7 @@ public class API : IStardewAccessApi
     public KeybindList TileCursorDownKey => MainClass.Config.TileCursorDownKey;
     public KeybindList TileCursorLeftKey => MainClass.Config.TileCursorLeftKey;
     public KeybindList PrimaryInfoKey => MainClass.Config.PrimaryInfoKey;
+
     #endregion
 
     #region Screen reader related
@@ -106,10 +109,10 @@ public class API : IStardewAccessApi
 
     public bool SayMenuElement(IScreenReadable element, bool interrupt = true)
         => MainClass.ScreenReader.SayMenuElement(element.ScreenReaderText, element.ScreenReaderDescription, interrupt, excludeFromBuffer: false);
-    
+
     public bool SayMenuElement(string text, string description = "", bool interrupt = true)
         => MainClass.ScreenReader.SayMenuElement(text, description, interrupt, excludeFromBuffer: false);
-    
+
     public bool SayWithChatChecker(string text, bool interrupt)
         => MainClass.ScreenReader.SayWithChatChecker(text, interrupt);
 
@@ -119,7 +122,7 @@ public class API : IStardewAccessApi
     public string Translate(string translationKey, object? tokens = null,
         string translationCategory = "Default", bool disableWarning = false)
         => Translator.Instance.Translate(translationKey, tokens, ToTranslationCategory(translationCategory), disableWarning);
-    
+
     #endregion
 
     #region Commands
@@ -138,6 +141,18 @@ public class API : IStardewAccessApi
             MouseUtils.SimulateMouseClicks(null, (x, y) => Game1.activeClickableMenu.receiveRightClick(x, y));
         else if (Game1.currentMinigame != null)
             MouseUtils.SimulateMouseClicks(null, (x, y) => Game1.currentMinigame.receiveRightClick(x, y));
+    }
+
+    public void AddTileToObjectTracker(string category, string name, Vector2 tile, NPC? character = null)
+    {
+        string resolvedCategoryName = CATEGORY.FromString(category).ToString();
+        ObjectTracker.Instance.trackedObjects?.AddObject(resolvedCategoryName, name, tile, character);
+    }
+
+    public bool RemoveTileFromObjectTracker(string category, string name)
+    {
+        string resolvedCategoryName = CATEGORY.FromString(category).ToString();
+        return ObjectTracker.Instance.trackedObjects?.RemoveObject(resolvedCategoryName, name) ?? false;
     }
 
     #endregion
@@ -255,7 +270,7 @@ public class API : IStardewAccessApi
             Log.Error("fullNameOfClass cannot be null or empty!");
             return;
         }
-        
+
         Log.Debug($"Added `{fullNameOfClass}` to the list of menus that ignore speaking hover texts.");
         IClickableMenuPatch.IgnoreHoverTextInMenus.Add(fullNameOfClass);
     }
@@ -267,7 +282,7 @@ public class API : IStardewAccessApi
             Log.Error("fullNameOfClass cannot be null or empty!");
             return;
         }
-        
+
         Log.Debug($"Added `{fullNameOfClass}` to the list of menus that ignore speaking clickable components.");
         IClickableMenuPatch.IgnoreClickableComponentsInMenus.Add(fullNameOfClass);
     }
