@@ -186,6 +186,30 @@ public interface IStardewAccessApi
     #region Tiles related
     
     /// <summary>
+    /// Adds a tile to the given location that will be detected by ReadTile and all other features.
+    /// </summary>
+    /// <param name="category">The category name of the tile. Find category names here: <see cref="Utils.CATEGORY"/></param>
+    /// <param name="name">Translated name of the tile</param>
+    /// <param name="tile">The tile's position</param>
+    /// <param name="location">The location of the tile</param>
+    /// <param name="modId">Your mod's modid</param>
+    /// <param name="addToObjectTracker">If true, will add the tile to the object tracker but only if the given location is the current location.</param>
+    public void AddTile(string category, string name, Vector2 tile, GameLocation location, string modId, bool addToObjectTracker = false);
+    // public void RemoveTile(string category, string name, Vector2 tile, GameLocation location);
+    
+    /// <summary>
+    /// Adds a tile to the given location that will be detected by ReadTile and all other features.
+    /// </summary>
+    /// <param name="category">The category name of the tile. Find category names here: <see cref="Utils.CATEGORY"/></param>
+    /// <param name="name">Translated name of the tile</param>
+    /// <param name="tile">The tile's position</param>
+    /// <param name="locationOrEventFestivalName">The location's name or the event's festival name (<see cref="Event.FestivalName"/>) of the tile. The event's festival name is matched first.</param>
+    /// <param name="modId">Your mod's modid</param>
+    /// <param name="addToObjectTracker">If true, will add the tile to the object tracker but only if the given location or event's festival name matches with the current location's.</param>
+    public void AddTile(string category, string name, Vector2 tile, string locationOrEventFestivalName, string modId, bool addToObjectTracker = false);
+    // public void RemoveTile(string category, string name, Vector2 tile, string locationOrEventFestivalName);
+    
+    /// <summary>
     /// Adds a tile to the object tracker.
     /// Note that this does not persist, so the tile will be removed from the tracker after object tracker refreshes.
     /// </summary>

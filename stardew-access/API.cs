@@ -27,9 +27,7 @@ public class API : IStardewAccessApi
 
     // Note to future self, don't make these static, it won't give errors in sv access but it will in other mods if they try to use the stardew access api.
     //Setting Pragma to disable warning CA1822 prompting to make fields static.
-    public API()
-    {
-    }
+    public API() { }
 #pragma warning disable CA1822 // Mark members as static
 
     #region Keybinds
@@ -143,6 +141,37 @@ public class API : IStardewAccessApi
             MouseUtils.SimulateMouseClicks(null, (x, y) => Game1.currentMinigame.receiveRightClick(x, y));
     }
 
+    #endregion
+
+    #region Tiles related
+
+    public void AddTile(string category, string name, Vector2 tile, GameLocation location, string modId, bool addToObjectTracker = false)
+    {
+        MainClass.TileManager.AddModTile(category, name, tile, location, modId);
+        
+        if (!addToObjectTracker) return;
+        
+        if (Game1.currentLocation.Equals(location))
+        {
+            string resolvedCategoryName = CATEGORY.FromString(category).ToString();
+            ObjectTracker.Instance.trackedObjects?.AddObject(resolvedCategoryName, name, tile);
+        }
+    }
+
+    public void AddTile(string category, string name, Vector2 tile, string locationOrEventFestivalName, string modId, bool addToObjectTracker = false)
+    {
+        MainClass.TileManager.AddModTile(category, name, tile, locationOrEventFestivalName, modId);
+
+        if (!addToObjectTracker) return;
+        
+        string currentLocationName = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.NameOrUniqueName;
+        if (locationOrEventFestivalName.Equals(currentLocationName))
+        {
+            string resolvedCategoryName = CATEGORY.FromString(category).ToString();
+            ObjectTracker.Instance.trackedObjects?.AddObject(resolvedCategoryName, name, tile);
+        }
+    }
+
     public void AddTileToObjectTracker(string category, string name, Vector2 tile, NPC? character = null)
     {
         string resolvedCategoryName = CATEGORY.FromString(category).ToString();
@@ -155,10 +184,6 @@ public class API : IStardewAccessApi
         return ObjectTracker.Instance.trackedObjects?.RemoveObject(resolvedCategoryName, name) ?? false;
     }
 
-    #endregion
-
-    #region Tiles related
-
     public Dictionary<Vector2, (string name, string category)> SearchNearbyTiles(Vector2 center, int limit)
         => new Radar().SearchNearbyTiles(center, limit, false);
 
@@ -168,7 +193,7 @@ public class API : IStardewAccessApi
     public (string? name, string? category) GetNameWithCategoryNameAtTile(Vector2 tile)
         => TileInfo.GetNameWithCategoryNameAtTile(tile, null);
 
-    public string? GetNameAtTile(Vector2 tile) => TileInfo.GetNameAtTile(tile, null);
+    public string? GetNameAtTile(Vector2 tile) => TileInfo.GetNameAtTile(tile);
 
     #endregion
 

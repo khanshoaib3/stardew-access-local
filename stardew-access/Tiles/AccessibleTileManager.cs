@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using stardew_access.Framework;
 using stardew_access.Utils;
-using StardewModdingAPI;
 using StardewValley;
 
 namespace stardew_access.Tiles;
@@ -17,13 +16,12 @@ public class AccessibleTileManager
     private const string TileDataPath = "assets/TileData";
     private const string TileFileName = "tiles.json";
     private const string UserTileFileName = "tiles_user.json";
-    private const string TilePropertyName = "TileDesc";
 
     // Dictionary to map location names to Accessiblelocations
     private Dictionary<string, AccessibleLocation> Locations { get; set; } = new(StringComparer.OrdinalIgnoreCase);
     
-    // Dictionary to store third party mods' translations
-    private Dictionary<string, ITranslationHelper> ModTranslation { get; } = new();
+    // <mop_id, <mod_id, tile>>
+    private Dictionary<string, Dictionary<string, List<AccessibleTile>>> ModTiles { get; } = new();
 
     // Private instance variable
     private static AccessibleTileManager? _instance;
@@ -57,8 +55,6 @@ public class AccessibleTileManager
         if (ConvertOldCustomTilesFormat())
             Log.Alert($"Your custom-tiles.json file was updated to the new format,. You can find the new file under assets/TileData/tiles_user.json. Your original file was renamed to custom-tiles.old.json.");
         LoadTileData();
-        Log.Debug($"Initialized tiles from CP: {AssetHandler.AccessibleTilesData.Count}");
-        Log.Debug($"Initialized machines from CP: {AssetHandler.TrackedMachines.Count}");
     }
 
     public void LoadTileData()
@@ -194,6 +190,18 @@ public class AccessibleTileManager
             }
         }
 
+        if (ModTiles.TryGetValue(locationName, out var modData1))
+        {
+            foreach (var tiles in modData1.Values)
+            {
+                foreach (var accessibleTile in tiles)
+                {
+                    // Using force so mods can override tiles without needing to use CP to modify it.
+                    location.AddTile(accessibleTile, force: true);
+                }
+            }
+        }
+
         // Add the location to the Locations dictionary
         Locations.Add(isEvent ? eventName : locationName, location);
 
@@ -254,4 +262,26 @@ public class AccessibleTileManager
     public HashSet<AccessibleTile> GetTilesByCategory(CATEGORY category, string? layerName = null) => GetLocation()?.GetTilesByCategory(category, layerName) ?? [];
     public HashSet<AccessibleTile> GetTilesByCategory(CATEGORY category, string? layerName = null, string? locationName = null) => GetLocation(locationName)?.GetTilesByCategory(category, layerName) ?? [];
     public HashSet<AccessibleTile> GetTilesByCategory(CATEGORY category, string? layerName = null, GameLocation? location = null) => GetLocation(location)?.GetTilesByCategory(category, layerName) ?? [];
+
+    public void AddModTile(string category, string name, Vector2 tile, GameLocation location, string modId)
+    {
+        // TODO Create a helper function to get the location name
+        string locationName = location.currentEvent is not null ? location.currentEvent.FestivalName : location.NameOrUniqueName;
+        AddModTile(category, name, tile, locationName, modId);
+    }
+
+    public void AddModTile(string category, string name, Vector2 tile, string locationName, string modId)
+    {
+        var accessibleTile = new AccessibleTile(
+            staticNameOrTranslationKey: name,
+            category: CATEGORY.FromString(category),
+            staticCoordinates: [tile]
+        );
+        
+        if (ModTiles[locationName].ContainsKey(modId)) ModTiles[locationName][modId].Add(accessibleTile);
+        else ModTiles[locationName][modId] = [accessibleTile];
+
+        // Refresh the location
+        Locations.Remove(locationName);
+    }
 }
