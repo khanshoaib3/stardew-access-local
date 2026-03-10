@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Newtonsoft.Json.Linq;
 using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Locations;
@@ -8,9 +7,10 @@ using StardewValley.TokenizableStrings;
 
 namespace stardew_access.Utils;
 
-using Translation;
-using StardewValley.TerrainFeatures;
 using StardewValley.Menus;
+using StardewValley.TerrainFeatures;
+using Translation;
+using HandlerAlias = (string ModId, Func<int, int, (string name, string category)?> Handler);
 
 /// <summary>
 /// Provides methods to locate tiles of interest in various game locations that are conditional or unpredictable (I.E. not static).
@@ -165,7 +165,12 @@ public class DynamicTiles
     // Generated DynamicTile token cache
     private static readonly Dictionary<(string? loc, string tile), string> _dynamic_token_cache = [];
     // Maps dynamic keys to categories
-    private static readonly Dictionary<string, string> DynamicTileCategories = [];
+    private static readonly Dictionary<string, string> DynamicTileCategories;
+    
+    private static readonly List<HandlerAlias> UnconstrainedHandlers = new();
+    private static readonly Dictionary<GameLocation, List<HandlerAlias>> LocationHandlers = new();
+    private static readonly Dictionary<string, List<HandlerAlias>> LocationNameHandlers = new();
+    private static readonly Dictionary<string, List<HandlerAlias>> EventIdHandlers = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DynamicTiles"/> class.
@@ -1280,7 +1285,7 @@ public class DynamicTiles
         if (currentLocation.currentEvent is null || currentLocation.currentEvent.id != "festival_spring13")
             throw new InvalidOperationException("GetEggFestivalInfo requires an active event");
         var currentEvent = currentLocation.currentEvent!;
-        // Check if the event actually has festival props. If none, we eggsit
+        // Check if the event actually has festival props. If none, we eggsit (lol)
         if (currentEvent.festivalProps.Count > 0)
         {
             if (eggs == null)
@@ -1288,7 +1293,7 @@ public class DynamicTiles
                 Log.Trace("Copying eggs list");
                 // Make a local copy of the eggs list while it's full
                 eggs = new(currentEvent.festivalProps);
-                // Potentiallly extend the timer based on config value
+                // Potentially extend the timer based on config value
                 currentEvent.festivalTimer = (int)(52000f * MainClass.Config.EggHuntTimerMultiplier);
             }
             // Create a rectangle corresponding to the tile in question
@@ -1358,7 +1363,7 @@ public class DynamicTiles
                         int number = Convert.ToInt32(char.GetNumericValue(tileAction[^2]));
                         if (number > 1)
                             number -= 2;
-                    object token = new{ number };
+                        object token = new{ number };
                     return (Translator.Instance.Translate("dynamic_tile-stardew_valley_fair-tourist", token, TranslationCategory.DynamicTiles), CATEGORY.NPCs);
                 }
             }
@@ -1409,7 +1414,7 @@ public class DynamicTiles
             throw new InvalidOperationException("GetFestivalOfIceInfo requires an active event");
         if (currentLocation.doesTileHaveProperty(x - 3, y, "Action", "Buildings") == "Shop Festival_FestivalOfIce_TravelingMerchant")
             // Pig is x+3 offset from the cart. Cart is found via tile actions.
-        return ("tile_name-traveling_cart_pig", CATEGORY.NPCs);
+            return ("tile_name-traveling_cart_pig", CATEGORY.NPCs);
         return (null, null);
     }
 
@@ -1432,7 +1437,7 @@ public class DynamicTiles
     /// or <c>(null, null)</c> if nothing is found.
     /// </returns>
     /// <exception cref="InvalidOperationException">
-    /// Thrown if <paramref name="currentLocation"/> doesn't have an active event</c>).
+    /// Thrown if <paramref name="currentLocation"/> doesn't have an active event).
     /// </exception>
     private static (string? translationKeyOrName, CATEGORY? category) GetUnknownEventInfo(GameLocation currentLocation,  int x,  int y,  string? tileAction, bool lessInfo)
     {
@@ -1568,7 +1573,83 @@ public class DynamicTiles
         (string? translationKeyOrName, CATEGORY? category) = GetDynamicTileWithTranslationKeyOrNameAt(currentLocation, x, y, lessInfo);
 
         if (translationKeyOrName == null)
+        {
+            if (LocationHandlers.TryGetValue(currentLocation, out var locHandlers))
+            {
+                foreach (var (modId, handler) in locHandlers)
+                {
+#if DEBUG
+                    Log.Verbose($"Found dynamic tile handler for GameLocation, {currentLocation.Name}, by mod, {modId}");
+#endif
+                    var result = handler(x, y);
+                    if (result != null)
+                    {
+#if DEBUG
+                        Log.Trace($"Found dynamic tile. GameLocation, {currentLocation.Name}, by mod, {modId}");
+#endif
+                        return (result.Value.Item1, CATEGORY.FromString(result.Value.Item2));
+                    }
+                }
+            }
+
+            if (LocationNameHandlers.TryGetValue(currentLocation.NameOrUniqueName, out var locNameHandlers))
+            {
+                foreach (var (modId, handler) in locNameHandlers)
+                {
+#if DEBUG
+                    Log.Verbose($"Found dynamic tile handler for location name (or unique name), {currentLocation.NameOrUniqueName}, by mod, {modId}");
+#endif
+                    var result = handler(x, y);
+                    if (result != null)
+                    {
+#if DEBUG
+                        Log.Trace($"Found dynamic tile. Location name (or unique name), {currentLocation.NameOrUniqueName}, by mod, {modId}");
+#endif
+                        return (result.Value.Item1, CATEGORY.FromString(result.Value.Item2));
+                    }
+                }               
+            }
+
+            if (currentLocation.currentEvent != null
+                && currentLocation.currentEvent.id != "-1" 
+                && EventIdHandlers.TryGetValue(currentLocation.currentEvent.id, out var eventHandlers))
+            {
+                foreach (var (modId, handler) in eventHandlers)
+                {
+#if DEBUG
+                    Log.Verbose($"Found dynamic tile handler for event id, {currentLocation.currentEvent.id}, by mod, {modId}");
+#endif
+                    var result = handler(x, y);
+                    if (result != null)
+                    {
+#if DEBUG
+                        Log.Trace($"Found dynamic tile. Event id, {currentLocation.currentEvent.id}, by mod, {modId}");
+#endif
+                        return (result.Value.Item1, CATEGORY.FromString(result.Value.Item2));
+                    }
+                }                              
+            }
+
+#if DEBUG
+            Log.Verbose($"Could not found tile info with location/event id handlers, falling back to unconstrained handlers (if any)");
+#endif
+            foreach (var item in UnconstrainedHandlers)
+            {
+#if DEBUG
+                Log.Verbose($"Executing unconstrained handler from modid {item.ModId}");
+#endif
+                var result = item.Handler(x, y);
+                if (result != null)
+                {
+#if DEBUG
+                    Log.Verbose($"Tile found. Unconstrained handler from modid {item.ModId}");
+#endif
+                    return (result.Value.Item1, CATEGORY.FromString(result.Value.Item2));
+                }
+            }
+            
             return (null, null);
+        }
 
         translationKeyOrName = Translator.Instance.Translate(translationKeyOrName, TranslationCategory.DynamicTiles, disableWarning: true);
 
@@ -1622,6 +1703,7 @@ public class DynamicTiles
         // 3. No early tile action match, so we fall back to location- or event-specific logic.
         toReturn = currentLocation switch
         {
+            // TODO Migrate these to the handlers
             // No event; handle real location
             { currentEvent: null } => currentLocation switch
             {
@@ -1667,5 +1749,41 @@ public class DynamicTiles
         // Return the final result, which might be recognized from location/event checks,
         // or from the default tile action fallback, or null if truly unhandled.
         return toReturn;
+    }
+    
+    internal static void RegisterHandler(string modId,
+        Func<int, int, (string name, string category)?> handler,
+        GameLocation? location = null,
+        string? locationNameOrUniqueName = null,
+        string? eventId = null)
+    {
+        if (location != null)
+        {
+            Log.Debug($"Registering {modId} handler for location {location}");
+            if (LocationHandlers.ContainsKey(location)) LocationHandlers[location].Add((modId, handler));
+            else LocationHandlers[location] = [(modId, handler)];
+            return;
+        }
+
+        if (locationNameOrUniqueName != null)
+        {
+            Log.Debug($"Registering {modId} handler for location name {locationNameOrUniqueName}");
+            if (LocationNameHandlers.ContainsKey(locationNameOrUniqueName)) LocationNameHandlers[locationNameOrUniqueName].Add((modId, handler));
+            else LocationNameHandlers[locationNameOrUniqueName] = [(modId, handler)];
+            return;
+        }
+
+        if (eventId != null)
+        {
+            Log.Debug($"Registering {modId} handler for event id {eventId}");
+            if (EventIdHandlers.ContainsKey(eventId)) EventIdHandlers[eventId].Add((modId, handler));
+            else EventIdHandlers[eventId] = [(modId, handler)];
+        }
+        
+        Log.Debug($"Registering {modId} global/unconstrained handler");
+        if (UnconstrainedHandlers.Any(e => e.ModId == modId))
+            throw new InvalidOperationException($"Mod '{modId}' has already registered an unconstrained handler.");
+
+        UnconstrainedHandlers.Add((modId, handler));
     }
 }

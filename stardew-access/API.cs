@@ -184,6 +184,18 @@ public class API : IStardewAccessApi
         return ObjectTracker.Instance.trackedObjects?.RemoveObject(resolvedCategoryName, name) ?? false;
     }
 
+    public void AddTileLocationHandler(GameLocation? location, Func<int, int, (string name, string category)?> handler, string modId) 
+        => DynamicTiles.RegisterHandler(modId, handler, location: location);
+
+    public void AddTileLocationNameHandler(string? locationNameOrUniqueName, Func<int, int, (string name, string category)?> handler, string modId)
+        => DynamicTiles.RegisterHandler(modId, handler, locationNameOrUniqueName: locationNameOrUniqueName);
+
+    public void AddTileEventIdHandler(string? eventId, Func<int, int, (string name, string category)?> handler, string modId)
+        => DynamicTiles.RegisterHandler(modId, handler, eventId: eventId);
+
+    public void AddTileHandler(Func<int, int, (string name, string category)?> handler, string modId)
+        => DynamicTiles.RegisterHandler(modId, handler);
+
     public Dictionary<Vector2, (string name, string category)> SearchNearbyTiles(Vector2 center, int limit)
         => new Radar().SearchNearbyTiles(center, limit, false);
 

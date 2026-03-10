@@ -228,6 +228,114 @@ public interface IStardewAccessApi
     public bool RemoveTileFromObjectTracker(string category, string name);
 
     /// <summary>
+    /// Registers a dynamic tile handler that allows your mod to announce custom tiles
+    /// within a specific <see cref="GameLocation"/> instance to Stardew Access.
+    /// When a tile lookup occurs in the given location, your handler will be called with
+    /// the tile's coordinates. Return the tile's name and category if your mod has something
+    /// to announce at those coordinates, or <c>null</c> if not.
+    /// </summary>
+    /// <remarks>
+    /// Handlers are invoked in registration order (FIFO). The first handler to return a non-null
+    /// result wins; remaining handlers for this location are skipped.
+    /// This handler is checked first (priority 0), before location name, event, and unconstrained handlers.
+    /// </remarks>
+    /// <param name="location">The <see cref="GameLocation"/> instance to constrain this handler to.</param>
+    /// <param name="handler">
+    /// A function that receives the tile's X and Y coordinates and returns a tuple of
+    /// (<c>name</c>, <c>category</c>) if your mod has something to announce at those coordinates, or <c>null</c> if not.
+    /// See <see cref="Utils.CATEGORY"/> for valid category values.
+    /// </param>
+    /// <param name="modId">Your mod's unique ID, used for tracing.</param>
+    public void AddTileLocationHandler(
+        GameLocation location,
+        Func<int, int, (string name, string category)?> handler,
+        string modId
+    );
+
+    /// <summary>
+    /// Registers a dynamic tile handler that allows your mod to announce custom tiles
+    /// within a location matched by its name or unique name to Stardew Access.
+    /// When a tile lookup occurs in the matching location, your handler will be called with
+    /// the tile's coordinates. Return the tile's name and category if your mod has something
+    /// to announce at those coordinates, or <c>null</c> if not.
+    /// Prefer this over <see cref="AddTileLocationHandler"/> when you don't have a direct
+    /// <see cref="GameLocation"/> reference, such as when the location may not be loaded yet.
+    /// </summary>
+    /// <remarks>
+    /// Handlers are invoked in registration order (FIFO). The first handler to return a non-null
+    /// result wins; remaining handlers for this location name are skipped.
+    /// This handler is checked second (priority 1), after location handlers but before event and unconstrained handlers.
+    /// </remarks>
+    /// <param name="locationNameOrUniqueName">
+    /// The name or unique name of the location to constrain this handler to. Use <see cref="GameLocation.NameOrUniqueName"/> to retrieve this value.
+    /// </param>
+    /// <param name="handler">
+    /// A function that receives the tile's X and Y coordinates and returns a tuple of
+    /// (<c>name</c>, <c>category</c>) if your mod has something to announce at those coordinates, or <c>null</c> if not.
+    /// See <see cref="Utils.CATEGORY"/> for valid category values.
+    /// </param>
+    /// <param name="modId">Your mod's unique ID, used for tracing.</param>
+    public void AddTileLocationNameHandler(
+        string locationNameOrUniqueName,
+        Func<int, int, (string name, string category)?> handler,
+        string modId
+    );
+
+    /// <summary>
+    /// Registers a dynamic tile handler that allows your mod to announce custom tiles
+    /// during a specific event to Stardew Access.
+    /// When a tile lookup occurs while the given event is active, your handler will be called with
+    /// the tile's coordinates. Return the tile's name and category if your mod has something
+    /// to announce at those coordinates, or <c>null</c> if not.
+    /// </summary>
+    /// <remarks>
+    /// Handlers are invoked in registration order (FIFO). The first handler to return a non-null
+    /// result wins; remaining handlers for this event are skipped.
+    /// This handler is checked third (priority 2), after location and location name handlers but before unconstrained handlers.
+    /// </remarks>
+    /// <param name="eventId">
+    /// The ID of the event to constrain this handler to. Use <see cref="Event.id"/> to retrieve this value.
+    /// </param>
+    /// <param name="handler">
+    /// A function that receives the tile's X and Y coordinates and returns a tuple of
+    /// (<c>name</c>, <c>category</c>) if your mod has something to announce at those coordinates, or <c>null</c> if not.
+    /// See <see cref="Utils.CATEGORY"/> for valid category values.
+    /// </param>
+    /// <param name="modId">Your mod's unique ID, used for tracing.</param>
+    public void AddTileEventIdHandler(
+        string eventId,
+        Func<int, int, (string name, string category)?> handler,
+        string modId
+    );
+
+    /// <summary>
+    /// Registers an unconstrained dynamic tile handler that allows your mod to announce custom tiles
+    /// anywhere in the game to Stardew Access, regardless of location or active event.
+    /// On every tile lookup, your handler will be called with the tile's coordinates.
+    /// Return the tile's name and category if your mod has something to announce at those coordinates,
+    /// or <c>null</c> if not. Only one handler per mod is allowed.
+    /// </summary>
+    /// <remarks>
+    /// Handlers are invoked in registration order (FIFO). The first handler to return a non-null
+    /// result wins; remaining unconstrained handlers are skipped.
+    /// This handler is checked last (priority 3), after all constrained handlers.
+    /// Use constrained handlers (<see cref="AddTileLocationHandler"/>, <see cref="AddTileLocationNameHandler"/>,
+    /// <see cref="AddTileEventIdHandler"/>) where possible, as this handler only runs when no constrained
+    /// handler has already returned a result.
+    /// </remarks>
+    /// <param name="handler">
+    /// A function that receives the tile's X and Y coordinates and returns a tuple of
+    /// (<c>name</c>, <c>category</c>) if your mod has something to announce at those coordinates, or <c>null</c> if not.
+    /// See <see cref="Utils.CATEGORY"/> for valid category values.
+    /// </param>
+    /// <param name="modId">Your mod's unique ID, used for tracing. Only one handler per mod is permitted.</param>
+    /// <exception cref="InvalidOperationException">Thrown if <paramref name="modId"/> has already registered an unconstrained handler.</exception>
+    public void AddTileHandler(
+        Func<int, int, (string name, string category)?> handler,
+        string modId
+    );
+
+    /// <summary>
     /// Search the area using Breadth First Search algorithm(BFS).
     /// </summary>
     /// <param name="center">The starting point.</param>
@@ -417,7 +525,7 @@ public interface IStardewAccessApi
 
     /// <summary>
     /// Ignores speaking clickable components of the menu.
-    /// <br/>The clickable components are found with <see cref="IClickableMenu.allClickableCompnents"/>
+    /// <br/>The clickable components are found with <see cref="IClickableMenu.allClickableComponents"/>
     /// as well as by using reflection to get the fields of type <see cref="ClickableComponent"/> 
     /// </summary>
     /// <param name="fullNameOfClass">
