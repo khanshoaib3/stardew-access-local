@@ -321,6 +321,8 @@ namespace stardew_access.Utils
             sb.Append('}');
             return sb.ToString();
         }
+        
+        public void ForceAdd(TKey key, TValue value, string layerName) => GetReadableLayer(layerName)[key] = value;
 
         public bool TryAdd(TKey key, TValue value, string layerName) => GetReadableLayer(layerName).TryAdd(key, value);
 

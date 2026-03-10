@@ -137,19 +137,35 @@ public class AccessibleLocation
         Tiles.RemoveLayer(layerName);
     }
 
-    public void AddTile(AccessibleTile tile, string? layerName = null)
+    public void AddTile(AccessibleTile tile, string? layerName = null, bool force = false)
     {
         foreach (var coordinate in tile.Coordinates)
         {
             bool result = false;
             if (layerName != null)
             {
-                result = Tiles.TryAdd(coordinate, tile, layerName);
+                if (force)
+                {
+                    Tiles.ForceAdd(coordinate, tile, layerName);
+                    result = true;
+                } else
+                {
+                    result = Tiles.TryAdd(coordinate, tile, layerName);
+                }
                 #if DEBUG
                 Log.Verbose($"Adding tile {tile} to layer {layerName} of location {(Location.currentEvent is not null ? Location.currentEvent.FestivalName : Location.NameOrUniqueName)} at ({coordinate.X}, {coordinate.Y})");
                 #endif
             } else {
-                result = Tiles.TryAdd(coordinate, tile);
+                if (force)
+                {
+                    
+                    Tiles.ForceAdd(coordinate, tile);
+                    result = true;
+                }
+                else
+                { 
+                    result = Tiles.TryAdd(coordinate, tile);
+                }
                 #if DEBUG
                 Log.Verbose($"Adding tile {tile} to location {(Location.currentEvent is not null ? Location.currentEvent.FestivalName : Location.NameOrUniqueName)} at ({coordinate.X}, {coordinate.Y})");
                 #endif

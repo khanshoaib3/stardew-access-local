@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace stardew_access.Utils
@@ -23,12 +21,10 @@ namespace stardew_access.Utils
                 {
                     return value;
                 }
+
                 throw new KeyNotFoundException();
             }
-            set
-            {
-                Add(key, value);
-            }
+            set => Add(key, value);
         }
 
         public ICollection<TKey> Keys
@@ -40,6 +36,7 @@ namespace stardew_access.Utils
                 {
                     keys.Add(kvp.Key);
                 }
+
                 return new ReadOnlyCollection<TKey>(keys);
             }
         }
@@ -53,6 +50,7 @@ namespace stardew_access.Utils
                 {
                     values.Add(kvp.Value);
                 }
+
                 return new ReadOnlyCollection<TValue>(values);
             }
         }
@@ -77,6 +75,7 @@ namespace stardew_access.Utils
             {
                 return EqualityComparer<TValue>.Default.Equals(value, item.Value);
             }
+
             return false;
         }
 
@@ -89,6 +88,7 @@ namespace stardew_access.Utils
         }
 
         public int Count => Keys.Count;
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -102,8 +102,11 @@ namespace stardew_access.Utils
             {
                 return Remove(item.Key);
             }
+
             return false;
         }
+
+        public virtual void ForceAdd(TKey key, TValue value) => this[key] = value;
 
         public virtual bool TryAdd(TKey key, TValue value)
         {
@@ -112,6 +115,7 @@ namespace stardew_access.Utils
                 Add(key, value);
                 return true;
             }
+
             return false;
         }
 
@@ -120,4 +124,4 @@ namespace stardew_access.Utils
             return TryAdd(kvp.Key, kvp.Value);
         }
     }
-    }
+}

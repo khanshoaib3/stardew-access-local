@@ -8,6 +8,8 @@ public static class AssetHandler
 {
     private const string TrackedMachinesDataAssetName = "shoaib.stardewaccess/TrackedMachinesData";
     private const string AccessibleTilesDataAssetName = "shoaib.stardewaccess/AccessibleTilesData";
+    
+    public static event EventHandler? OnAccessibleTilesDataAssetInvalidated;
 
     private static HashSet<string>? _trackedMachines;
 
@@ -23,29 +25,41 @@ public static class AssetHandler
                     .Values
                     .SelectMany(m => m.QualifiedObjectIds)
             );
-            Log.Trace($"Loaded asset {TrackedMachinesDataAssetName} with {modsData.Count} entries.");
+            Log.Info($"Loaded asset {TrackedMachinesDataAssetName} with {modsData.Count} mod entries.");
             return _trackedMachines;
         }
     }
 
-    private static Dictionary<string, AccessibleMapData>? _accessibleTilesData;
+    // <map_id, <mod_id, map_data>>
+    private static Dictionary<string, Dictionary<string, AccessibleMapData>>? _accessibleTilesData;
 
-    public static Dictionary<string, AccessibleMapData> AccessibleTilesData
+    public static Dictionary<string, Dictionary<string, AccessibleMapData>> AccessibleTilesData
     {
         get
         {
             if (_accessibleTilesData != null) return _accessibleTilesData;
 
             var modsData = Game1.content.Load<Dictionary<string, AccessibleTilesData>>(AccessibleTilesDataAssetName);
-            _accessibleTilesData = new Dictionary<string, AccessibleMapData>();
+            _accessibleTilesData = new Dictionary<string, Dictionary<string, AccessibleMapData>>();
             foreach (var accessibleTilesData in modsData)
             {
                 foreach (var accessibleTileMapData in accessibleTilesData.Value.Maps)
                 {
-                    _accessibleTilesData.Add(accessibleTileMapData.Id, accessibleTileMapData);
+                    if (_accessibleTilesData.ContainsKey(accessibleTileMapData.Id))
+                    {
+                        _accessibleTilesData[accessibleTileMapData.Id].Add(accessibleTilesData.Key, accessibleTileMapData);
+                    }
+                    else
+                    {
+                        _accessibleTilesData.Add(accessibleTileMapData.Id, new Dictionary<string, AccessibleMapData>()
+                        {
+                            { accessibleTilesData.Key, accessibleTileMapData }
+                        });
+                    }
                 }
             }
             
+            Log.Info($"Loaded assetOnTilesAssetInvalidated {AccessibleTilesDataAssetName} with {modsData.Count} mod entries. Loaded {_accessibleTilesData.Count} maps.");
             return _accessibleTilesData;
         }
     }
@@ -70,13 +84,14 @@ public static class AssetHandler
         {
             if (name.IsEquivalentTo(TrackedMachinesDataAssetName))
             {
-                Log.Trace($"Asset {TrackedMachinesDataAssetName} invalidated, reloading.");
+                Log.Debug($"Asset {TrackedMachinesDataAssetName} invalidated, reloading.");
                 _trackedMachines = null;
             }
             if (name.IsEquivalentTo(AccessibleTilesDataAssetName))
             {
-                Log.Trace($"Asset {AccessibleTilesDataAssetName} invalidated, reloading.");
+                Log.Debug($"Asset {AccessibleTilesDataAssetName} invalidated, reloading.");
                 _accessibleTilesData = null;
+                OnAccessibleTilesDataAssetInvalidated?.Invoke(sender, e);
             }
         }
     }
