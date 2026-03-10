@@ -341,14 +341,19 @@ internal class ModConfig
     public KeybindList OTFavoriteSaveDefault { get; set; } = KeybindList.Parse("LeftAlt + Back, RightAlt + Back");
 
     /// <summary>
-    /// Cycle Up Object
+    /// Cycle Up Object Group
     /// </summary>
-    public KeybindList OTCycleUpObject { get; set; } = KeybindList.Parse("PageUp");
+    public KeybindList OTCycleUpObjectGroup { get; set; } = KeybindList.Parse("PageUp");
 
     /// <summary>
-    /// Cycle Down Object
+    /// Cycle Down Object Group
     /// </summary>
-    public KeybindList OTCycleDownObject { get; set; } = KeybindList.Parse("PageDown");
+    public KeybindList OTCycleDownObjectGroup { get; set; } = KeybindList.Parse("PageDown");
+    
+    // TODO Add to GMCM
+    public KeybindList OTCycleUpInGroup { get; set; } = KeybindList.Parse("LeftShift + PageUp");
+    // TODO Add to GMCM
+    public KeybindList OTCycleDownInGroup { get; set; } = KeybindList.Parse("LeftShift + PageDown");
 
     /// <summary>
     /// Move to the currently selected object.

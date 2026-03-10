@@ -654,16 +654,16 @@ internal static class ModConfigMenu
             manifest,
             name: () => "Cycle Up Object",
             tooltip: () => "Cycle up through objects.",
-            getValue: () => config.OTCycleUpObject,
-            setValue: value => config.OTCycleUpObject = value
+            getValue: () => config.OTCycleUpObjectGroup,
+            setValue: value => config.OTCycleUpObjectGroup = value
         );
 
         configMenu.AddKeybindList(
             manifest,
             name: () => "Cycle Down Object",
             tooltip: () => "Cycle down through objects.",
-            getValue: () => config.OTCycleDownObject,
-            setValue: value => config.OTCycleDownObject = value
+            getValue: () => config.OTCycleDownObjectGroup,
+            setValue: value => config.OTCycleDownObjectGroup = value
         );
 
         configMenu.AddKeybindList(

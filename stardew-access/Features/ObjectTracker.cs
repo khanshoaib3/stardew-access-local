@@ -23,7 +23,8 @@ internal class ObjectTracker : FeatureBase
     internal TrackedObjects? trackedObjects;
     private  Pathfinder? pathfinder;
     internal string? SelectedCategory;
-    internal string? SelectedObject;
+    internal string? SelectedObjectGroup;
+    internal int? SelectedObjectIndex;
     internal Vector2? SelectedCoordinates;
     private Dictionary<string, Dictionary<string, Dictionary<int, (string? name, string? category)>>> favorites =
         new(StringComparer.OrdinalIgnoreCase);
@@ -54,6 +55,11 @@ internal class ObjectTracker : FeatureBase
             instance ??= new ObjectTracker();
             return instance;
         }
+    }
+    
+    private enum CycleType
+    {
+        CATEGORY, OBJECT_GROUP, IN_GROUP
     }
 
     public ObjectTracker()
@@ -256,8 +262,12 @@ internal class ObjectTracker : FeatureBase
             {
                 foreach (var kvp in characters)
                 {
-                    NPC? character = kvp.Value.character;
-                    GhostNPC(character, sameTile: true);
+                    // NPCs don't usually have the same name so the list should only really contain one item.
+                    foreach (var kvp2 in kvp.Value)
+                    {
+                        NPC? character = kvp2.character;
+                        GhostNPC(character, sameTile: true);
+                    }
                 }
             }
             return true;
@@ -275,22 +285,27 @@ internal class ObjectTracker : FeatureBase
         pathfinder?.Dispose();
     }
 
+    // TODO Check what this does
     private bool IsFocusValid()
     {
-        if (SelectedCategory != null && SelectedObject != null)
-            return trackedObjects?.GetObjects().ContainsKey(SelectedCategory) == true && trackedObjects.GetObjects()[SelectedCategory].ContainsKey(SelectedObject);
+        if (SelectedCategory != null && SelectedObjectGroup != null)
+            return trackedObjects?.GetObjects().ContainsKey(SelectedCategory) == true && trackedObjects.GetObjects()[SelectedCategory].ContainsKey(SelectedObjectGroup);
         return false;
     }
 
+    // TODO Check what this does
     private bool IsValidSelection()
     {
-        return trackedObjects != null && SelectedCategory != null && SelectedObject != null;
+        return trackedObjects != null && SelectedCategory != null && SelectedObjectGroup != null;
     }
 
     private SpecialObject? GetCurrentlySelectedObject()
     {
-        return SelectedCategory != null && SelectedObject != null && trackedObjects?.GetObjects()?.TryGetValue(SelectedCategory, out var categoryObjects) == true
-            ? categoryObjects.TryGetValue(SelectedObject, out var selectedObject) ? selectedObject : null
+        return SelectedCategory != null && SelectedObjectGroup != null && SelectedObjectIndex != null
+               && trackedObjects?.GetObjects()?.TryGetValue(SelectedCategory, out var categoryObjects) == true
+            ? categoryObjects.TryGetValue(SelectedObjectGroup, out var selectedObjectGroup)
+                ? selectedObjectGroup[SelectedObjectIndex ?? throw new ArgumentNullException("SelectedObjectIndex cannot be null.")]
+                : null
             : null;
     }
 
@@ -325,7 +340,7 @@ internal class ObjectTracker : FeatureBase
                 } else {
                     object? translationTokens = new
                     {
-                        object_name = SelectedObject ??
+                        object_name = SelectedObjectGroup ??
                                       Translator.Instance.Translate("feature-object_tracker-no_selected_object"),
                         only_tile = readTileOnly ? 1 : 0,
                         object_x = (int)sObjectTile.Value.X,
@@ -361,22 +376,24 @@ internal class ObjectTracker : FeatureBase
         if (string.IsNullOrEmpty(SelectedCategory) || resetCategory || !objects.ContainsKey(SelectedCategory))
         {
             SelectedCategory = objects.Keys.First();
-            SelectedObject = null;
+            SelectedObjectGroup = null;
         }
 
         // Set SelectedObject to the first item in the current category
         if (SelectedCategory != null && objects.TryGetValue(SelectedCategory, out var catObjects) && catObjects.Any())
         {
-            SelectedObject = catObjects.Keys.First();
+            SelectedObjectGroup = catObjects.Keys.First();
+            SelectedObjectIndex = 0;
         }
         else
         {
-            SelectedObject = null;
+            SelectedObjectGroup = null;
+            SelectedObjectIndex = null;
         }
 
         string outputCategory = SelectedCategory ?? "No Category";
-        string outputObject = SelectedObject ?? "No Object";
-        Log.Debug($"Category: {outputCategory} | Object: {outputObject}");
+        string outputObjectGroup = SelectedObjectGroup ?? "No Object Group";
+        Log.Debug($"Category: {outputCategory} | Object Group: {outputObjectGroup} | Index: {SelectedObjectIndex}");
     }
 
     internal void GetLocationObjects(bool resetFocus = true)
@@ -397,18 +414,18 @@ internal class ObjectTracker : FeatureBase
             SetFocusToFirstObject();
         }
 
-        if (trackedObjects == null || SelectedCategory == null || SelectedObject == null)
+        if (trackedObjects == null || SelectedCategory == null || SelectedObjectGroup == null || SelectedObjectIndex == null)
         {
             return;
         }
 
-        if (!objects.TryGetValue(SelectedCategory, out var categoryObjects) || !categoryObjects.ContainsKey(SelectedObject))
+        if (!objects.TryGetValue(SelectedCategory, out var categoryObjects) || !categoryObjects.ContainsKey(SelectedObjectGroup))
         {
             SetFocusToFirstObject(false);
         }
     }
 
-    private void Cycle(bool cycleCategories, bool back = false, bool wrapAround = false)
+    private void Cycle(CycleType cycleType, bool back = false, bool wrapAround = false)
     {
         if (!IsValidSelection())
             return;
@@ -419,42 +436,73 @@ internal class ObjectTracker : FeatureBase
         string startOfList = Translator.Instance.Translate("feature-object_tracker-start_of_list");
         string noObject = Translator.Instance.Translate("feature-object_tracker-no_object");
         string noCategory = Translator.Instance.Translate("feature-object_tracker-no_category");
+        SpecialObject? selectedObject = null;
 
         void CycleHelper(ref string? selectedItem, string[] items)
         {
-            if (selectedItem is not null)
+            if (selectedItem is null) return;
+            
+            int index = Array.IndexOf(items, selectedItem);
+            if (index == -1)
             {
-                int index = Array.IndexOf(items, selectedItem);
-                if (index == -1)
-                {
-                    SetFocusToFirstObject(cycleCategories);
-                    index = 0; // Reset index to 0 after setting focus to first object
-                }
-
-                var (selected, edgeOfList) = MiscUtils.Cycle(items, ref index, back, wrapAround);
-                selectedItem = selected;
-                suffixText = edgeOfList ? (wrapAround ? (back ? endOfList : startOfList) : (back ? startOfList : endOfList)) : string.Empty;
+                SetFocusToFirstObject(cycleType == CycleType.CATEGORY);
+                index = 0; // Reset index to 0 after setting focus to first object
             }
+
+            var (selected, edgeOfList) = MiscUtils.Cycle(items, ref index, back, wrapAround);
+            selectedItem = selected;
+            suffixText = edgeOfList ? (wrapAround ? (back ? endOfList : startOfList) : (back ? startOfList : endOfList)) : string.Empty;
         }
 
-        if (cycleCategories)
+        switch (cycleType)
         {
-            string[] categories = objects?.Keys.ToArray() ?? [];
-            CycleHelper(ref SelectedCategory, categories);
-            SetFocusToFirstObject(false);
-        }
-        else
-        {
-            string[] objectKeys = SelectedCategory != null && objects?.ContainsKey(SelectedCategory) == true
-                ? [.. objects[SelectedCategory].Keys]
-                : [];
-            CycleHelper(ref SelectedObject, objectKeys);
+            case CycleType.CATEGORY:
+                string[] categories = objects?.Keys.ToArray() ?? [];
+                CycleHelper(ref SelectedCategory, categories);
+                SetFocusToFirstObject(false);
+                break;
+            case CycleType.OBJECT_GROUP:
+                string[] objectKeys = SelectedCategory != null && objects?.ContainsKey(SelectedCategory) == true
+                    ? [.. objects[SelectedCategory].Keys]
+                    : [];
+                CycleHelper(ref SelectedObjectGroup, objectKeys);
+                SelectedObjectIndex = 0;
+                break;
+            case CycleType.IN_GROUP:
+                // TODO Organize
+                var groupItems = SelectedCategory != null
+                                 && SelectedObjectGroup != null
+                                 && objects?.ContainsKey(SelectedCategory) == true
+                                 && objects[SelectedCategory]?.ContainsKey(SelectedObjectGroup) == true
+                    ? objects[SelectedCategory][SelectedObjectGroup]
+                    : [];
+                var index = SelectedObjectIndex ?? 0;
+                var (selected, edgeOfList) = MiscUtils.Cycle(groupItems, ref index, back, wrapAround);
+                selectedObject = selected;
+                SelectedObjectIndex = index;
+                suffixText = edgeOfList
+                    ? (wrapAround ? (back ? endOfList : startOfList) : (back ? startOfList : endOfList))
+                    : string.Empty;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(cycleType), cycleType, null);
         }
 
         suffixText = suffixText.Length > 0 ? ", " + suffixText : string.Empty;
-        string spokenText = cycleCategories
-            ? $"{SelectedCategory ?? noCategory}, {SelectedObject ?? noObject}" + suffixText
-            : $"{SelectedObject ?? noObject}" + suffixText;
+        string spokenText = cycleType switch
+        {
+            // TODO I18n
+            CycleType.CATEGORY => $"{SelectedCategory ?? noCategory}, {SelectedObjectGroup ?? noObject}" + suffixText,
+            CycleType.OBJECT_GROUP => $"{SelectedObjectGroup ?? noObject}" +
+                                      (SelectedObjectGroup != null && objects != null && SelectedCategory != null &&
+                                       objects[SelectedCategory][SelectedObjectGroup].Count > 1
+                                          ? $", group of {objects[SelectedCategory][SelectedObjectGroup].Count}"
+                                          : "") + suffixText,
+            CycleType.IN_GROUP => selectedObject == null
+                ? $"{SelectedObjectGroup ?? noObject}"
+                : $"{selectedObject.TileLocation.X}x {selectedObject.TileLocation.Y}y" + suffixText,
+            _ => throw new ArgumentOutOfRangeException(nameof(cycleType), cycleType, null)
+        };
 
         MainClass.ScreenReader.Say(spokenText, true);
     }
@@ -463,8 +511,10 @@ internal class ObjectTracker : FeatureBase
     {
         bool cycleUpCategoryPressed = MainClass.Config.OTCycleUpCategory.JustPressed();
         bool cycleDownCategoryPressed = MainClass.Config.OTCycleDownCategory.JustPressed();
-        bool cycleUpObjectPressed = MainClass.Config.OTCycleUpObject.JustPressed();
-        bool cycleDownObjectPressed = MainClass.Config.OTCycleDownObject.JustPressed();
+        bool cycleUpInGroupPressed = MainClass.Config.OTCycleUpInGroup.JustPressed();
+        bool cycleDownInGroupPressed = MainClass.Config.OTCycleDownInGroup.JustPressed();
+        bool cycleUpObjectGroupPressed = MainClass.Config.OTCycleUpObjectGroup.JustPressed();
+        bool cycleDownObjectGroupPressed = MainClass.Config.OTCycleDownObjectGroup.JustPressed();
         bool readSelectedObjectPressed = MainClass.Config.OTReadSelectedObject.JustPressed();
         bool switchSortingModePressed = MainClass.Config.OTSwitchSortingMode.JustPressed();
         bool moveToSelectedObjectPressed = MainClass.Config.OTMoveToSelectedObject.JustPressed();
@@ -498,19 +548,27 @@ internal class ObjectTracker : FeatureBase
             if (e.Pressed.Any()) FavoriteKeysReset();
             if (cycleUpCategoryPressed)
             {
-                Cycle(cycleCategories: true, back: true, wrapAround: MainClass.Config?.OTWrapLists ?? false);
+                Cycle(cycleType: CycleType.CATEGORY, back: true, wrapAround: MainClass.Config?.OTWrapLists ?? false);
             }
             else if (cycleDownCategoryPressed)
             {
-                Cycle(cycleCategories: true, wrapAround: MainClass.Config?.OTWrapLists ?? false);
+                Cycle(cycleType: CycleType.CATEGORY, wrapAround: MainClass.Config?.OTWrapLists ?? false);
             }
-            else if (cycleUpObjectPressed)
+            else if (cycleUpInGroupPressed)
             {
-                Cycle(cycleCategories: false, back: true, wrapAround: MainClass.Config?.OTWrapLists ?? false);
+                Cycle(cycleType: CycleType.IN_GROUP, back: true, wrapAround: MainClass.Config?.OTWrapLists ?? false);
             }
-            else if (cycleDownObjectPressed)
+            else if (cycleDownInGroupPressed)
             {
-                Cycle(cycleCategories: false, wrapAround: MainClass.Config?.OTWrapLists ?? false);
+                Cycle(cycleType: CycleType.IN_GROUP, wrapAround: MainClass.Config?.OTWrapLists ?? false);
+            }
+            else if (cycleUpObjectGroupPressed)
+            {
+                Cycle(cycleType: CycleType.OBJECT_GROUP, back: true, wrapAround: MainClass.Config?.OTWrapLists ?? false);
+            }
+            else if (cycleDownObjectGroupPressed)
+            {
+                Cycle(cycleType: CycleType.OBJECT_GROUP, wrapAround: MainClass.Config?.OTWrapLists ?? false);
             }
 
             if (readSelectedObjectPressed || moveToSelectedObjectPressed || readSelectedObjectTileLocationPressed || switchSortingModePressed)
@@ -590,7 +648,7 @@ internal class ObjectTracker : FeatureBase
         {
             favorites[MainClass.GetCurrentSaveFileName()][location][hotkey] = (Vector2ToString(CurrentPlayer.FacingTile), "coordinates");
         } else {
-            favorites[MainClass.GetCurrentSaveFileName()][location][hotkey] = (SelectedObject, SelectedCategory);
+            favorites[MainClass.GetCurrentSaveFileName()][location][hotkey] = (SelectedObjectGroup, SelectedCategory);
         }
         SaveFavorites();
     }
@@ -621,7 +679,8 @@ internal class ObjectTracker : FeatureBase
         {
             SelectedCategory = category;
             SelectedCoordinates = StringToVector2(obj);
-            SelectedObject = obj;
+            SelectedObjectGroup = obj;
+            SelectedObjectIndex = 0;
         }
     }
 
@@ -750,7 +809,7 @@ internal class ObjectTracker : FeatureBase
                 {
                     // this slot is unset; save current tracker target here
                     // Only if `SelectedObject` and `SelectedCategory` are both not null
-                    if (SelectedObject != null && SelectedCategory != null)
+                    if (SelectedObjectGroup != null && SelectedCategory != null)
                     {
                         SaveToFavorites(favorite_number);
                         if (SaveCoordinatesToggle)
@@ -767,7 +826,7 @@ internal class ObjectTracker : FeatureBase
                             MainClass.ScreenReader.TranslateAndSay("feature-object_tracker-favorite_save", true,
                                 new
                                 {
-                                    selected_object = SelectedObject,
+                                    selected_object = SelectedObjectGroup,
                                     selected_category = SelectedCategory,
                                     location_name = Game1.currentLocation.currentEvent is not null ? Game1.currentLocation.currentEvent.FestivalName : Game1.currentLocation.NameOrUniqueName,
                                     favorite_number

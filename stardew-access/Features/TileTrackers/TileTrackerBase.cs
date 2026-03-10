@@ -8,7 +8,7 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 internal class TileTrackerBase
 {
 
-    public SortedList<string, Dictionary<string, SpecialObject>> Objects = [];
+    public SortedList<string, Dictionary<string, List<SpecialObject>>> Objects = [];
 
     public TileTrackerBase(object? arg = null)
     {
@@ -25,7 +25,7 @@ internal class TileTrackerBase
         return Objects.Any();
     }
 
-    public SortedList<string, Dictionary<string, SpecialObject>> GetObjects()
+    public SortedList<string, Dictionary<string, List<SpecialObject>>> GetObjects()
     {
         return Objects;
     }
@@ -42,16 +42,12 @@ internal class TileTrackerBase
             sObject.character = character;
         }
 
-        if(Objects[category].ContainsKey(name)) {
-            sObject = GetClosest(sObject, Objects[category][name]);
-        }
-
-        Objects[category][name] = sObject;
+        if(Objects[category].ContainsKey(name)) Objects[category][name].Add(sObject);
+        else Objects[category][name] = [sObject];
     }
 
     public static SpecialObject GetClosest(SpecialObject item1, SpecialObject item2)
     {
-
         Vector2 player_tile = Game1.player.Tile;
 
         double collide_distance = GetDistance(player_tile, item2.TileLocation);

@@ -12,9 +12,9 @@ class TrackedObjects
     /// <summary>
     /// {column:[{Name, SpecialObject}]}
     /// </summary>
-    private readonly SortedList<string, Dictionary<string, SpecialObject>> Objects = [];
+    private readonly SortedList<string, Dictionary<string, List<SpecialObject>>> Objects = [];
 
-    public SortedList<string, Dictionary<string, SpecialObject>> GetObjects()
+    public SortedList<string, Dictionary<string, List<SpecialObject>>> GetObjects()
     {
         return Objects;
     }
@@ -43,8 +43,10 @@ class TrackedObjects
         }
     }
 
-    public void AddObjects(SortedList<string, Dictionary<string, SpecialObject>> objectsToAdd)
+    public void AddObjects(SortedList<string, Dictionary<string, List<SpecialObject>>> objectsToAdd)
     {
+        Vector2 playerTile = Game1.player.Tile;
+        
         foreach (var kvp in objectsToAdd)
         {
             string category = kvp.Key;
@@ -56,8 +58,14 @@ class TrackedObjects
 
             foreach (var obj in kvp.Value)
             {
-                if (!Objects.GetValueOrDefault(category!)!.ContainsKey(obj!.Key))
-                    Objects.GetValueOrDefault(category)!.Add(obj!.Key, obj!.Value);
+                if (!Objects[category].ContainsKey(obj.Key))
+                    Objects[category][obj.Key] = obj.Value;
+                else
+                    Objects[category][obj.Key].AddRange(obj.Value);
+
+                Objects[category][obj.Key].Sort((a, b) =>
+                    Vector2.Distance(a.TileLocation, playerTile).CompareTo(Vector2.Distance(b.TileLocation, playerTile))
+                );
             }
         }
     }
@@ -71,6 +79,8 @@ class TrackedObjects
     /// <param name="character">(Optional) The NPC at the tile</param>
     public void AddObject(string category, string name, Vector2 tile, NPC? character = null)
     {
+        Vector2 playerTile = Game1.player.Tile;
+        
         if (!Objects.ContainsKey(category))
         {
             Objects.Add(category, []);
@@ -85,11 +95,15 @@ class TrackedObjects
 
         if (Objects[category].ContainsKey(name))
         {
-            // This logic will go away as we will be implementing scrolling through multiple objects with same name
-            sObject = TileTrackerBase.GetClosest(sObject, Objects[category][name]);
+            Objects[category][name].Add(sObject);
+            Objects[category][name].Sort((a, b) =>
+                Vector2.Distance(a.TileLocation, playerTile).CompareTo(Vector2.Distance(b.TileLocation, playerTile))
+            );
         }
-
-        Objects[category][name] = sObject;
+        else
+        {
+            Objects[category][name] = [sObject];
+        }
     }
 
     /// <summary>
