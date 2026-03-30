@@ -114,6 +114,7 @@ class TrackedObjects
     /// <returns>True if the object was successfully removed else false.</returns>
     public bool RemoveObject(string category, string name)
     {
+        // TODO Check for tile and rename this to RemoveObjectGroup
         return Objects.TryGetValue(category, out var cat) && cat.Remove(name);
     }
 }

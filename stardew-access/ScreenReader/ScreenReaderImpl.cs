@@ -1,6 +1,7 @@
 using CrossSpeak;
 using stardew_access.Translation;
 using stardew_access.Utils;
+using StardewValley.Menus;
 
 namespace stardew_access.ScreenReader;
 
@@ -11,6 +12,7 @@ public class ScreenReaderImpl : IScreenReader
     private string menuPrefixText = "";
     private string prevMenuPrefixText = "";
     private string menuSuffixText = "";
+    private IScreenReadable? prevMenuElement = null;
     private string prevMenuSuffixText = "";
     private string prevMenuElementDescription = "";
     private string menuPrefixNoQueryText = "";
@@ -155,12 +157,33 @@ public class ScreenReaderImpl : IScreenReader
         return SayWithMenuChecker(Translator.Instance.Translate(translationKey, translationTokens, translationCategory, disableTranslationWarnings), interrupt, customQuery, excludeFromBuffer: excludeFromBuffer);
     }
 
-    public bool SayMenuElement(string text, string description = "", bool interrupt = true, bool excludeFromBuffer = false)
+    public bool SayMenuElement(IScreenReadable element, bool interrupt = true, bool excludeFromBuffer = false)
     {
-        if (prevMenuText == text && prevMenuSuffixText == MenuSuffixText && prevMenuPrefixText == MenuPrefixText)
+        string text = element.ScreenReaderText;
+        string description = element.ScreenReaderDescription;
+        
+        if (prevMenuElement != null && System.Object.ReferenceEquals(element, prevMenuElement) && prevMenuText == text && prevMenuSuffixText == MenuSuffixText && prevMenuPrefixText == MenuPrefixText)
             return false;
 
-        prevMenuText = text;
+        prevMenuElement = element;
+        prevMenuSuffixText = MenuSuffixText;
+        prevMenuPrefixText = MenuPrefixText;
+        bool re = Say($"{MenuPrefixNoQueryText}{MenuPrefixText}{text}\n{(prevMenuElementDescription != description || !System.Object.ReferenceEquals(element, prevMenuElement) ? description : "")}{MenuSuffixText}{MenuSuffixNoQueryText}", interrupt, excludeFromBuffer: excludeFromBuffer);
+        MenuPrefixNoQueryText = "";
+        MenuSuffixNoQueryText = "";
+        prevMenuElementDescription = description;
+
+        return re;
+    }
+
+    public bool SayMenuElement(string text, string description = "", bool interrupt = true, string? customQuery = null, bool excludeFromBuffer = false)
+    {
+        customQuery ??= text;
+
+        if (prevMenuText == customQuery && prevMenuSuffixText == MenuSuffixText && prevMenuPrefixText == MenuPrefixText)
+            return false;
+
+        prevMenuText = customQuery;
         prevMenuSuffixText = MenuSuffixText;
         prevMenuPrefixText = MenuPrefixText;
         bool re = Say($"{MenuPrefixNoQueryText}{MenuPrefixText}{text}\n{(prevMenuElementDescription != description ? description : "")}{MenuSuffixText}{MenuSuffixNoQueryText}", interrupt, excludeFromBuffer: excludeFromBuffer);

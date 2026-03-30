@@ -118,7 +118,7 @@ public interface IStardewAccessApi
     /// <summary>
     /// Speaks the content of the given element while using the menu query to prevent speaking multiple times in the menu.
     /// </summary>
-    /// <param name="element">The element to be spoken.</param>
+    /// <param name="element">The element to be spoken. The elements are compared by reference in addition to their ScreenReaderText value. The element's ScreenReaderDescription is only spoken once (unless changed).</param>
     /// <param name="interrupt">Whether to skip the currently speaking text or not.</param>
     /// <returns>true if the element was spoken otherwise false.</returns>
     public bool SayMenuElement(IScreenReadable element, bool interrupt = true);
@@ -127,10 +127,11 @@ public interface IStardewAccessApi
     /// Speaks the given element's contents while using the menu query to prevent speaking multiple times in the menu.
     /// </summary>
     /// <param name="text">The element's text (can be its name) to be spoken.</param>
-    /// <param name="description">The element's description to be spoken.</param>
+    /// <param name="description">The element's description to be spoken. The description is spoken only once (unless changed).</param>
     /// <param name="interrupt">Whether to skip the currently speaking text or not.</param>
+    /// <param name="customQuery">If set, uses this instead of <paramref name="text"/> as query to check whether to speak the text or not.</param>
     /// <returns>true if the element was spoken otherwise false.</returns>
-    public bool SayMenuElement(string text, string description = "", bool interrupt = true);
+    public bool SayMenuElement(string text, string description = "", bool interrupt = true, string? customQuery = null);
 
     /// <summary>Speaks the text via the loaded screen reader (if any).
     /// <br/>Skips the text narration if the previously narrated text was the same as the one provided.
