@@ -145,19 +145,16 @@ jobs:
           tag_name: ${{ env.RELEASE_TAG }}
           generate_release_notes: true
           make_latest: ${{ inputs.set-latest }}
-
-      - name: Install dotnet
+      
+      # Ref: https://github.com/Nexus-Mods/upload-action
+      - name: Upload to NexusMods
         if: inputs.nexus-upload
-        uses: actions/setup-dotnet@v4
+        uses: Nexus-Mods/upload-action@v1.0.0-beta.5
         with:
-          dotnet-version: '6.0.x'
-
-      # Refs
-      # DRMU: https://github.com/Digitalroot-Valheim/Digitalroot.ModUploader
-      # Github ternary expression: https://docs.github.com/en/actions/learn-github-actions/expressions#example
-      - name: Upload on Nexus
-        if: inputs.nexus-upload
-        run: |
-          dotnet tool install -g Digitalroot.ModUploader
-          drmu nexusmods check
-          drmu nexusmods upload ${{ env.NEXUSMOD_MODID }} "${{ env.MAIN_FILE }}" -f "${{ env.NEXUSMOD_NAME }}" -v "${{ env.NEXUSMOD_VERSION }}" -g stardewvalley -t Main -d "${{ env.NEXUSMOD_DESC }}" -dmfu ${{ inputs.set-latest && ' ' || '-dvu' }} ${{ inputs.nexus-main-vortex && ' ' || '-dmv' }}
+          api_key: ${{ secrets.NEXUSMODS_API_KEY }}
+          file_group_id: ${{ secrets.NEXUSMODS_FILE_GROUP_ID }}
+          filename: ${{ env.MAIN_FILE }}
+          version: ${{ env.NEXUSMOD_VERSION }}
+          file_category: main
+          description: ${{ env.NEXUSMOD_DESC }}
+          display_name: ${{ env.NEXUSMOD_NAME }}
