@@ -489,18 +489,39 @@ internal class ObjectTracker : FeatureBase
         }
 
         suffixText = suffixText.Length > 0 ? ", " + suffixText : string.Empty;
+        string groupInfo = cycleType == CycleType.OBJECT_GROUP
+            ? SelectedObjectGroup != null && objects != null && SelectedCategory != null &&
+              objects[SelectedCategory][SelectedObjectGroup].Count > 1
+                ? ", " + Translator.Instance.Translate(
+                    translationKey: "feature-object_tracker-group_info",
+                    tokens: new { count = objects[SelectedCategory][SelectedObjectGroup].Count }
+                )
+                : ""
+            : "";
+        string objectInGroup = cycleType == CycleType.IN_GROUP && SelectedObjectGroup != null && selectedObject != null
+            ? Translator.Instance.Translate("feature-object_tracker-read_selected_object_in_group",
+                tokens: new
+                {
+                    object_x = selectedObject.TileLocation.X,
+                    object_y = selectedObject.TileLocation.Y,
+                    read_position = string.IsNullOrEmpty(suffixText) && SelectedObjectGroup != null &&
+                                    objects != null && SelectedCategory != null
+                        ? 1
+                        : 0,
+                    pos_in_group = (SelectedObjectIndex ?? 0) + 1,
+                    count = SelectedObjectGroup != null && objects != null && SelectedCategory != null
+                        ? objects[SelectedCategory][SelectedObjectGroup].Count
+                        : 0,
+                })
+            : "";
+        
         string spokenText = cycleType switch
         {
-            // TODO I18n
             CycleType.CATEGORY => $"{SelectedCategory ?? noCategory}, {SelectedObjectGroup ?? noObject}" + suffixText,
-            CycleType.OBJECT_GROUP => $"{SelectedObjectGroup ?? noObject}" +
-                                      (SelectedObjectGroup != null && objects != null && SelectedCategory != null &&
-                                       objects[SelectedCategory][SelectedObjectGroup].Count > 1
-                                          ? $", group of {objects[SelectedCategory][SelectedObjectGroup].Count}"
-                                          : "") + suffixText,
+            CycleType.OBJECT_GROUP => $"{SelectedObjectGroup ?? noObject}" + groupInfo + suffixText,
             CycleType.IN_GROUP => selectedObject == null
                 ? $"{SelectedObjectGroup ?? noObject}"
-                : $"{selectedObject.TileLocation.X}x {selectedObject.TileLocation.Y}y" + suffixText,
+                : objectInGroup + suffixText,
             _ => throw new ArgumentOutOfRangeException(nameof(cycleType), cycleType, null)
         };
 

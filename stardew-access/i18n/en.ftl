@@ -14,7 +14,15 @@ feature-object_tracker-read_selected_coordinates = Coordinates {$coordinates} {$
     [0] is {$direction} {$distance}
     *[1] {EMPTYSTRING()}
   } player at {$player_x}-{$player_y}
+feature-object_tracker-read_selected_object_in_group = {$object_x}-{$object_y}{$read_position ->
+    [0] {EMPTYSTRING()}
+    *[1] , {$pos_in_group} of {$count}
+  }
 
+feature-object_tracker-group_info = Group, {$count ->
+    [one] 1 item
+    *[other] {$count} items
+  }
 feature-object_tracker-moving_to = Moving to {$object_x}-{$object_y}.
 feature-object_tracker-could_not_find_path = Could not find path to object.
 feature-object_tracker-no_objects_found = No objects found.
