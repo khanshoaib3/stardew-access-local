@@ -25,16 +25,19 @@ internal static class MouseUtils
 
         if (leftClickHandler != null)
         {
-#if DEBUG
-            Log.Debug($"Simulating left mouse click at {mouseX}x {mouseY}y in menu {IClickableMenuPatch.ActiveMenuOrSubMenu}");
-#endif
             if (MainClass.Config.LeftClickMainKey.JustPressed())
             {
+#if DEBUG
+                Log.Debug($"Simulating left mouse click at {mouseX}x {mouseY}y in menu {IClickableMenuPatch.ActiveMenuOrSubMenu}");
+#endif
                 MainClass.ModHelper!.Input.Press(SButton.MouseLeft);
                 return true;
             }
             if (MainClass.Config.LeftClickAlternateKey.JustPressed())
             {
+#if DEBUG
+                Log.Debug($"Simulating left mouse click at {mouseX}x {mouseY}y in menu {IClickableMenuPatch.ActiveMenuOrSubMenu}");
+#endif
                 leftClickHandler(mouseX, mouseY);
                 return true;
             }
@@ -42,17 +45,20 @@ internal static class MouseUtils
         
         if (rightClickHandler != null)
         {
-#if DEBUG
-            Log.Debug($"Simulating right mouse click at {mouseX}x {mouseY}y");
-#endif
             if (MainClass.Config.RightClickMainKey.JustPressed())
             {
+#if DEBUG
+                Log.Debug($"Simulating right mouse click at {mouseX}x {mouseY}y");
+#endif
                 MainClass.ModHelper!.Input.Press(SButton.MouseRight);
                 return true;
             }
 
             if (MainClass.Config.RightClickAlternateKey.JustPressed())
             {
+#if DEBUG
+                Log.Debug($"Simulating right mouse click at {mouseX}x {mouseY}y");
+#endif
                 rightClickHandler(mouseX, mouseY);
                 return true;
             }

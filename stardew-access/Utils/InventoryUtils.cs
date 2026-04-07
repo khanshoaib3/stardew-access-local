@@ -126,13 +126,22 @@ internal static class InventoryUtils
         string highlightedItemPrefix = "",
         string highlightedItemSuffix = "",
         string[]? customBuffs = null,
-        bool isHoveredItemBundleItem = false
+        bool isHoveredItemBundleItem = false,
+        bool ignoreCountIfNotStackable = true,
+        string? alternativeDisplayName = null,
+        string? alternativeDescription = null
     )
     {
         string namePrefix = HandleHighlightedItemPrefix(isHighlighted, highlightedItemPrefix);
         string nameSuffix =
             $"{HandleHighlightedItemSuffix(isHighlighted, highlightedItemSuffix)}{HandleUnHighlightedItem(isHighlighted, indexInInventory)}";
-        string name = GetPluralNameOfItem(item);
+        string name = string.IsNullOrWhiteSpace(alternativeDisplayName)
+            ? ignoreCountIfNotStackable && item.maximumStackSize() == 1
+                ? GetNameOfItem(item)
+                : GetPluralNameOfItem(item)
+            : ignoreCountIfNotStackable && item.maximumStackSize() == 1
+                ? alternativeDisplayName
+                : GetPluralNameOfItem(alternativeDisplayName, item.Stack);
         string donatableSuffix = isHoveredItemBundleItem
             ? Translator.Instance.Translate("inventory_util-donatable-suffix")
             : "";
@@ -142,11 +151,13 @@ internal static class InventoryUtils
         string buffs = (customBuffs is not null)
             ? string.Join(", ", customBuffs)
             : GetBuffsFromItem(item);
-        string description = item is Boots boots
-            ? boots.description +
-              (boots.defenseBonus.Value > 0 ? "\n" + Game1.content.LoadString("Strings\\UI:ItemHover_DefenseBonus", boots.defenseBonus.Value) : "") +
-              (boots.immunityBonus.Value > 0 ? "\n" + Game1.content.LoadString("Strings\\UI:ItemHover_ImmunityBonus", boots.immunityBonus.Value) : "")
-            : item.getDescription();
+        string description = !string.IsNullOrWhiteSpace(alternativeDescription)
+            ? alternativeDescription
+            : item is Boots boots 
+                ? boots.description
+                  + (boots.defenseBonus.Value > 0 ? "\n" + Game1.content.LoadString("Strings\\UI:ItemHover_DefenseBonus", boots.defenseBonus.Value) : "")
+                  + (boots.immunityBonus.Value > 0 ? "\n" + Game1.content.LoadString("Strings\\UI:ItemHover_ImmunityBonus", boots.immunityBonus.Value) : "") 
+                : item.getDescription();
         bool isShowingSellPrice = (Game1.player.stats.Get("Book_PriceCatalogue") != 0 && item is not Furniture && item.CanBeLostOnDeath() && item is not Clothing && item is not Wallpaper && (item is not StardewValley.Object || !(item as StardewValley.Object)!.bigCraftable.Value) && item.sellToStorePrice(-1L) > 0);
         string price = isShowingSellPrice ? GetPrice(item.sellToStorePrice() * item.Stack) : GetPrice(hoverPrice);
         string requirements = GetExtraItemInfo(extraItemToShowIndex, extraItemToShowAmount);

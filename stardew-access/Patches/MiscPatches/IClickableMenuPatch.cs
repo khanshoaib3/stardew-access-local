@@ -276,11 +276,17 @@ internal class IClickableMenuPatch : IPatch
 
             if (hoveredItem != null)
             {
-                toSpeak = InventoryUtils.GetItemDetails(hoveredItem,
-                                                        hoverPrice: moneyAmountToDisplayAtBottom,
-                                                        extraItemToShowIndex: extraItemToShowIndex,
-                                                        extraItemToShowAmount: extraItemToShowAmount,
-                                                        customBuffs: buffIconsToDisplay);
+                toSpeak = InventoryUtils.GetItemDetails(
+                    hoveredItem,
+                    hoverPrice: moneyAmountToDisplayAtBottom,
+                    extraItemToShowIndex: extraItemToShowIndex,
+                    extraItemToShowAmount: extraItemToShowAmount,
+                    customBuffs: buffIconsToDisplay,
+                    alternativeDisplayName: boldTitleText,
+                    alternativeDescription: text.ToString() == "???"
+                        ? Translator.Instance.Translate("common-unknown")
+                        : text.ToString()
+                );
                 toSpeak += (craftingIngredients is not null)
                     ? $", {InventoryUtils.GetIngredientsFromRecipe(craftingIngredients)}"
                     : "";
