@@ -168,15 +168,10 @@ For a full list of key names, refer to the [Key Bindings List](https://stardewva
 
 ### Character Creation Menu (New Game Menu) Keys
 
-| Name                                         | Default Value        | Description                                   |
-|----------------------------------------------|----------------------|-----------------------------------------------|
-| CharacterCreationMenuNextKey                 | Right                | Go to next element                            |
-| CharacterCreationMenuPreviousKey             | Left                 | Go to previous element                        |
-| CharacterCreationMenuDesignToggleKey         | LeftControl + Space  | Toggle displaying character creation options  |
-| CharacterCreationMenuSliderIncreaseKey       | Up                   | Increase the slider value by 1                |
-| CharacterCreationMenuSliderLargeIncreaseKey  | PageUp               | Increase the slider value by 10               |
-| CharacterCreationMenuSliderDecreaseKey       | Down                 | Decrease the slider value by 1                |
-| CharacterCreationMenuSliderLargeDecreaseKey  | PageDown             | Decrease the slider value by 10               |
+| Name                                  | Default Value                                        | Description                                                                         |
+|---------------------------------------|------------------------------------------------------|-------------------------------------------------------------------------------------|
+| CharacterCreationMenuDesignToggleKey  | LeftControl + Space, RightControl + Space, LeftStick | Toggle displaying character creation options                                        |
+| CharacterCreationMenuInputModifierKey | LeftShift, LeftShoulder                              | When pressed, the sliders are increased/decreased in multiples of 10 rather than 1. |
 
 ### Junimo Note or Community Center Menu Keys
 
@@ -272,13 +267,8 @@ This config is current as of [Beta Release v1.6.0-beta.4](https://github.com/sta
   "Radar": false,
   "RadarStereoSound": true,
   "PrimaryInfoKey": "C",
-  "CharacterCreationMenuNextKey": "Right",
-  "CharacterCreationMenuPreviousKey": "Left",
-  "CharacterCreationMenuSliderIncreaseKey": "Up",
-  "CharacterCreationMenuSliderLargeIncreaseKey": "PageUp",
-  "CharacterCreationMenuSliderDecreaseKey": "Down",
-  "CharacterCreationMenuSliderLargeDecreaseKey": "PageDown",
-  "CharacterCreationMenuDesignToggleKey": "LeftControl + Space, RightControl + Space",
+  "CharacterCreationMenuDesignToggleKey": "LeftControl + Space, RightControl + Space, LeftStick",
+  "CharacterCreationMenuInputModifierKey": "LeftShift, LeftShoulder",
   "CharacterCreationMenuDesignDefaultEnabled": true,
   "BundleMenuIngredientsKey": "I",
   "BundleMenuInventoryItemsKey": "C",
@@ -310,8 +300,10 @@ This config is current as of [Beta Release v1.6.0-beta.4](https://github.com/sta
   "OTFavoriteIncreaseStack": "LeftAlt + OemPlus, RightAlt + OemPlus",
   "OTFavoriteSaveCoordinatesToggle": "LeftAlt + OemTilde, RightAlt + OemTilde",
   "OTFavoriteSaveDefault": "LeftAlt + Back, RightAlt + Back",
-  "OTCycleUpObject": "PageUp",
-  "OTCycleDownObject": "PageDown",
+  "OTCycleUpObjectGroup": "PageUp",
+  "OTCycleDownObjectGroup": "PageDown",
+  "OTCycleUpInGroup": "LeftShift + PageUp",
+  "OTCycleDownInGroup": "LeftShift + PageDown",
   "OTMoveToSelectedObject": "LeftControl + Home",
   "OTReadSelectedObject": "Home",
   "OTReadSelectedObjectTileLocation": "End",

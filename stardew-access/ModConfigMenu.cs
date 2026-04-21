@@ -327,58 +327,18 @@ internal static class ModConfigMenu
 
         configMenu.AddKeybindList(
             manifest,
-            name: () => "Next Element",
-            tooltip: () => "Go to next element in character creation menu.",
-            getValue: () => config.CharacterCreationMenuNextKey,
-            setValue: value => config.CharacterCreationMenuNextKey = value
-        );
-
-        configMenu.AddKeybindList(
-            manifest,
-            name: () => "Previous Element",
-            tooltip: () => "Go to previous element in character creation menu.",
-            getValue: () => config.CharacterCreationMenuPreviousKey,
-            setValue: value => config.CharacterCreationMenuPreviousKey = value
-        );
-
-        configMenu.AddKeybindList(
-            manifest,
-            name: () => "Slider Increase (+1)",
-            tooltip: () => "Increase the slider value by 1.",
-            getValue: () => config.CharacterCreationMenuSliderIncreaseKey,
-            setValue: value => config.CharacterCreationMenuSliderIncreaseKey = value
-        );
-
-        configMenu.AddKeybindList(
-            manifest,
-            name: () => "Slider Increase (+10)",
-            tooltip: () => "Increase the slider value by 10.",
-            getValue: () => config.CharacterCreationMenuSliderLargeIncreaseKey,
-            setValue: value => config.CharacterCreationMenuSliderLargeIncreaseKey = value
-        );
-
-        configMenu.AddKeybindList(
-            manifest,
-            name: () => "Slider Decrease (-1)",
-            tooltip: () => "Decrease the slider value by 1.",
-            getValue: () => config.CharacterCreationMenuSliderDecreaseKey,
-            setValue: value => config.CharacterCreationMenuSliderDecreaseKey = value
-        );
-
-        configMenu.AddKeybindList(
-            manifest,
-            name: () => "Slider Decrease (-10)",
-            tooltip: () => "Decrease the slider value by 10.",
-            getValue: () => config.CharacterCreationMenuSliderLargeDecreaseKey,
-            setValue: value => config.CharacterCreationMenuSliderLargeDecreaseKey = value
-        );
-
-        configMenu.AddKeybindList(
-            manifest,
             name: () => "Design Toggle",
             tooltip: () => "Toggle displaying character design options.",
             getValue: () => config.CharacterCreationMenuDesignToggleKey,
             setValue: value => config.CharacterCreationMenuDesignToggleKey = value
+        );
+
+        configMenu.AddKeybindList(
+            manifest,
+            name: () => "Input Modifier",
+            tooltip: () => "When pressed, the sliders are increased/decreased in multiples of 10 rather than 1.",
+            getValue: () => config.CharacterCreationMenuInputModifierKey,
+            setValue: value => config.CharacterCreationMenuInputModifierKey = value
         );
 
         configMenu.AddBoolOption(

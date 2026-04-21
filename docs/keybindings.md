@@ -117,16 +117,11 @@ Active when the chat window is opened with `t`
 
 These keys are used in the context of the character creation/new game menu.
 
-| Key                   | Description                                 |
-|-----------------------|---------------------------------------------|
-| right arrow           | move to next element                        |
-| left arrow            | move to previous element                    |
-| left ctrl + space     | Toggle displaying character design options  |
-| up arrow              | increase control value by 1                 |
-| pageUp                | increase control value by 10                |
-| down arrow            | decrease control value by 1                 |
-| pageDown              | decrease control value by 10                |
-| esc                   | stop interacting with a text box            |
+| Key                                           | Description                                                                         |
+|-----------------------------------------------|-------------------------------------------------------------------------------------|
+| left/right ctrl + space or left gamepad stick | Toggle displaying character design options                                          |
+| left shift or left shoulder (bumper) button   | When held, incresing/decreasing slider value will be in multiple of 10 instead of 1 |
+| esc                                           | stop interacting with a text box                                                    |
 
 ## Menus With Inventory Keys
 

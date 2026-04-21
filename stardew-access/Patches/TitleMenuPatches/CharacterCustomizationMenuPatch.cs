@@ -4,6 +4,7 @@ using static stardew_access.Utils.ColorMatcher;
 using stardew_access.Translation;
 using HarmonyLib;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace stardew_access.Patches
 {
@@ -41,8 +42,36 @@ namespace stardew_access.Patches
         {
             harmony.Patch(
                 original: AccessTools.Method(typeof(CharacterCustomization), nameof(CharacterCustomization.draw), [typeof(SpriteBatch)]),
-                postfix: new HarmonyMethod(typeof(CharacterCustomizationMenuPatch), nameof(CharacterCustomizationMenuPatch.DrawPatch))
+                postfix: new HarmonyMethod(typeof(CharacterCustomizationMenuPatch), nameof(DrawPatch))
             );
+            harmony.Patch(
+                original: AccessTools.Method(typeof(CharacterCustomization), "gamePadButtonHeld"),
+                prefix: new HarmonyMethod(typeof(CharacterCustomizationMenuPatch), nameof(GamePadButtonHeldPatch))
+            );
+            harmony.Patch(
+                original: AccessTools.Method(typeof(CharacterCustomization), "receiveKeyPress"),
+                prefix: new HarmonyMethod(typeof(CharacterCustomizationMenuPatch), nameof(ReceiveKeyPressPatch))
+            );
+        }
+
+        internal static bool GamePadButtonHeldPatch(Buttons b)
+        {
+            return b switch
+            {
+                Buttons.DPadLeft or Buttons.LeftThumbstickLeft or
+                    Buttons.DPadRight or Buttons.LeftThumbstickRight => false,
+                _ => true
+            };
+        }
+
+        internal static bool ReceiveKeyPressPatch(Keys key)
+        {
+            if (Game1.options.moveUpButton.Any(e => e.key == key) ||
+                Game1.options.moveRightButton.Any(e => e.key == key) ||
+                Game1.options.moveDownButton.Any(e => e.key == key) ||
+                Game1.options.moveLeftButton.Any(e => e.key == key)) return false;
+
+            return true;
         }
 
         internal static void DrawPatch(CharacterCustomization __instance, bool ___skipIntro,
@@ -62,7 +91,10 @@ namespace stardew_access.Patches
                 string itemsToSpeak = "";
                 string changesToSpeak = "";
 
-                if (MainClass.Config.CharacterCreationMenuNextKey.JustPressed() && !isRunning)
+                if ((Game1.options.moveRightButton.Any(e => Game1.input.GetKeyboardState().IsKeyDown(e.key)) ||
+                     Game1.input.GetGamePadState().IsButtonDown(Buttons.LeftThumbstickRight) ||
+                     Game1.input.GetGamePadState().IsButtonDown(Buttons.DPadRight)) &&
+                    !isRunning)
                 {
                     isRunning = true;
                     itemsToSpeak = CycleThroughItems(true, __instance, ___skipIntro, ___startingCabinsLabel, ___difficultyModifierLabel, ___nameBox, ___farmnameBox, ___favThingBox);
@@ -70,38 +102,60 @@ namespace stardew_access.Patches
                         toSpeak = $"{itemsToSpeak} \n {toSpeak}";
                     Task.Delay(200).ContinueWith(_ => { isRunning = false; });
                 }
-                else if (MainClass.Config.CharacterCreationMenuPreviousKey.JustPressed() && !isRunning)
+                
+                else if ((Game1.options.moveLeftButton.Any(e => Game1.input.GetKeyboardState().IsKeyDown(e.key)) ||
+                          Game1.input.GetGamePadState().IsButtonDown(Buttons.LeftThumbstickLeft) ||
+                          Game1.input.GetGamePadState().IsButtonDown(Buttons.DPadLeft)) &&
+                         !isRunning)
                 {
                     isRunning = true;
                     toSpeak = CycleThroughItems(false, __instance, ___skipIntro, ___startingCabinsLabel, ___difficultyModifierLabel, ___nameBox, ___farmnameBox, ___favThingBox);
                     Task.Delay(200).ContinueWith(_ => { isRunning = false; });
                 }
 
-                else if (characterDesignToggle && MainClass.Config.CharacterCreationMenuSliderIncreaseKey.JustPressed() && !isRunning)
-                {
-                    isRunning = true;
-                    AdjustCurrentSlider(true, __instance);
-                    Task.Delay(200).ContinueWith(_ => { isRunning = false; });
-                }
-
-                else if (characterDesignToggle && MainClass.Config.CharacterCreationMenuSliderLargeIncreaseKey.JustPressed() && !isRunning)
+                else if (characterDesignToggle &&
+                         MainClass.Config.CharacterCreationMenuInputModifierKey.IsDown() &&
+                         (Game1.options.moveUpButton.Any(e => Game1.input.GetKeyboardState().IsKeyDown(e.key)) ||
+                          Game1.input.GetGamePadState().IsButtonDown(Buttons.LeftThumbstickUp) ||
+                          Game1.input.GetGamePadState().IsButtonDown(Buttons.DPadUp)) &&
+                         !isRunning)
                 {
                     isRunning = true;
                     AdjustCurrentSlider(true, __instance, 10);
                     Task.Delay(200).ContinueWith(_ => { isRunning = false; });
                 }
 
-                else if (characterDesignToggle && MainClass.Config.CharacterCreationMenuSliderDecreaseKey.JustPressed() && !isRunning)
+                else if (characterDesignToggle && 
+                         (Game1.options.moveUpButton.Any(e => Game1.input.GetKeyboardState().IsKeyDown(e.key)) ||
+                          Game1.input.GetGamePadState().IsButtonDown(Buttons.LeftThumbstickUp) ||
+                          Game1.input.GetGamePadState().IsButtonDown(Buttons.DPadUp)) &&
+                         !isRunning)
                 {
                     isRunning = true;
-                    AdjustCurrentSlider(false, __instance);
+                    AdjustCurrentSlider(true, __instance);
                     Task.Delay(200).ContinueWith(_ => { isRunning = false; });
                 }
-
-                else if (characterDesignToggle && MainClass.Config.CharacterCreationMenuSliderLargeDecreaseKey.JustPressed() && !isRunning)
+                
+                else if (characterDesignToggle &&
+                         MainClass.Config.CharacterCreationMenuInputModifierKey.IsDown() &&
+                         (Game1.options.moveDownButton.Any(e => Game1.input.GetKeyboardState().IsKeyDown(e.key)) ||
+                          Game1.input.GetGamePadState().IsButtonDown(Buttons.LeftThumbstickDown) ||
+                          Game1.input.GetGamePadState().IsButtonDown(Buttons.DPadDown)) &&
+                         !isRunning)
                 {
                     isRunning = true;
                     AdjustCurrentSlider(false, __instance, 10);
+                    Task.Delay(200).ContinueWith(_ => { isRunning = false; });
+                }
+
+                else if (characterDesignToggle &&
+                         (Game1.options.moveDownButton.Any(e => Game1.input.GetKeyboardState().IsKeyDown(e.key)) ||
+                          Game1.input.GetGamePadState().IsButtonDown(Buttons.LeftThumbstickDown) ||
+                          Game1.input.GetGamePadState().IsButtonDown(Buttons.DPadDown)) &&
+                         !isRunning)
+                {
+                    isRunning = true;
+                    AdjustCurrentSlider(false, __instance);
                     Task.Delay(200).ContinueWith(_ => { isRunning = false; });
                 }
 

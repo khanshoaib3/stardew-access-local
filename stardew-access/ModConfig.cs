@@ -188,39 +188,15 @@ internal class ModConfig
     // Character Creation menu (new game menu) keys
 
     /// <summary>
-    /// Go to next element
-    /// </summary>
-    public KeybindList CharacterCreationMenuNextKey { get; set; } = KeybindList.Parse("Right");
-
-    /// <summary>
-    /// Go to previous element
-    /// </summary>
-    public KeybindList CharacterCreationMenuPreviousKey { get; set; } = KeybindList.Parse("Left");
-
-    /// <summary>
-    /// Increase the slider value by 1
-    /// </summary>
-    public KeybindList CharacterCreationMenuSliderIncreaseKey { get; set; } = KeybindList.Parse("Up");
-
-    /// <summary>
-    /// Increase the slider value by 10
-    /// </summary>
-    public KeybindList CharacterCreationMenuSliderLargeIncreaseKey { get; set; } = KeybindList.Parse("PageUp");
-
-    /// <summary>
-    /// Decrease the slider value by 1
-    /// </summary>
-    public KeybindList CharacterCreationMenuSliderDecreaseKey { get; set; } = KeybindList.Parse("Down");
-
-    /// <summary>
-    /// Decrease the slider value by 10
-    /// </summary>
-    public KeybindList CharacterCreationMenuSliderLargeDecreaseKey { get; set; } = KeybindList.Parse("PageDown");
-
-    /// <summary>
     /// Toggle displaying character design options
     /// </summary>
-    public KeybindList CharacterCreationMenuDesignToggleKey { get; set; } = KeybindList.Parse("LeftControl + Space, RightControl + Space");
+    public KeybindList CharacterCreationMenuDesignToggleKey { get; set; } = KeybindList.Parse("LeftControl + Space, RightControl + Space, LeftStick");
+    
+    /// <summary>
+    /// When pressed, the sliders are increase/decreased in multiples of 10 rather than 1.
+    /// </summary>
+    public KeybindList CharacterCreationMenuInputModifierKey { get; set; } = KeybindList.Parse("LeftShift, LeftShoulder");
+    
     public bool CharacterCreationMenuDesignDefaultEnabled { get; set; } = true;
 
 
