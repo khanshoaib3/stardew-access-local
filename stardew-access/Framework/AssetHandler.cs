@@ -59,7 +59,7 @@ public static class AssetHandler
                 }
             }
             
-            Log.Info($"Loaded assetOnTilesAssetInvalidated {AccessibleTilesDataAssetName} with {modsData.Count} mod entries. Loaded {_accessibleTilesData.Count} maps.");
+            Log.Info($"Loaded {AccessibleTilesDataAssetName} with {modsData.Count} mod entries. Loaded {_accessibleTilesData.Count} maps.");
             return _accessibleTilesData;
         }
     }

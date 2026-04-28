@@ -122,6 +122,10 @@ internal class IClickableMenuPatch : IPatch
 
     internal static string? CurrentMenu;
     internal static bool ManuallyCallingDrawPatch = false;
+    
+    private static readonly Dictionary<string, Func<bool>> DrawHandlers = new();
+    private static readonly Dictionary<string, Func<int, int, int, bool>> DrawWithParamsHandlers = new();
+    private static readonly Dictionary<string, Func<IStardewAccessApi.IDrawHoverTextData, bool>> DrawHoverTextHandlers = new();
 
     #if DEBUG
     private static bool _justOpened = true;
@@ -175,7 +179,7 @@ internal class IClickableMenuPatch : IPatch
 
         harmony.Patch(
             original: AccessTools.Method(typeof(IClickableMenu), "draw", [typeof(SpriteBatch), typeof(int), typeof(int), typeof(int)]),
-            postfix: new HarmonyMethod(typeof(IClickableMenuPatch), nameof(DrawPatch))
+            postfix: new HarmonyMethod(typeof(IClickableMenuPatch), nameof(DrawWithParamsPatch))
         );
 
         harmony.Patch(
@@ -192,6 +196,56 @@ internal class IClickableMenuPatch : IPatch
     {
         try
         {
+            foreach (var (modId, handler) in DrawHandlers)
+            {
+                Log.Trace($"[IClickableMenuPatch::DrawPatch] Executing handler by mod {modId}", once: true);
+                bool canContinue = handler.Invoke();
+
+                if (!canContinue)
+                {
+#if DEBUG
+                    Log.Trace( $"[IClickableMenuPatch::DrawPatch] a handler by mod {modId} returned false, cancelling further execution", true);
+#endif
+                    return;
+                }
+            }
+        
+            DrawPatchDefaultHandler();
+        }
+        catch (Exception e)
+        {
+            Log.Error($"[IClickableMenuPatch.DrawPatch]: {e.Message}\n{e.StackTrace}");
+        }
+    }
+
+    public static void DrawWithParamsPatch(int red, int green, int blue)
+    {
+        try
+        {
+            foreach (var (modId, handler) in DrawWithParamsHandlers)
+            {
+                Log.Trace($"[IClickableMenuPatch::DrawWithParamsPatch] Executing handler by mod {modId}", once: true);
+                bool canContinue = handler.Invoke(red, green, blue);
+
+                if (!canContinue)
+                {
+#if DEBUG
+                    Log.Trace( $"[IClickableMenuPatch::DrawWithParamsPatch] a handler by mod {modId} returned false, cancelling further execution", true);
+#endif
+                    return;
+                }
+            }
+        
+            DrawPatchDefaultHandler();
+        }
+        catch (Exception e)
+        {
+            Log.Error($"[IClickableMenuPatch.DrawWithParamsPatch]: {e.Message}\n{e.StackTrace}");
+        }       
+    }
+
+    private static void DrawPatchDefaultHandler()
+    {
             // The only case when the active menu is null (in vanilla stardew) is when a hud message with no icon is displayed.
             if (Game1.activeClickableMenu is null) return;
 
@@ -247,22 +301,74 @@ internal class IClickableMenuPatch : IPatch
             }
 
             _tryHoverPatch = true;
-        }
-        catch (Exception e)
-        {
-            Log.Error($"[IClickableMenuPatch.DrawPatch]: {e.Message}\n{e.StackTrace}");
-        }
     }
 
     private static void DrawHoverTextPatch(StringBuilder text,
-                                           int moneyAmountToDisplayAtBottom = -1,
-                                           string? boldTitleText = null,
-                                           string? extraItemToShowIndex = null,
-                                           int extraItemToShowAmount = -1,
-                                           string[]? buffIconsToDisplay = null,
-                                           Item? hoveredItem = null,
-                                           CraftingRecipe? craftingIngredients = null)
+        SpriteFont font,
+        int xOffset = 0,
+        int yOffset = 0,
+        int moneyAmountToDisplayAtBottom = -1,
+        string? boldTitleText = null,
+        int healAmountToDisplay = -1,
+        string[]? buffIconsToDisplay = null,
+        Item? hoveredItem = null,
+        int currencySymbol = 0,
+        string? extraItemToShowIndex = null,
+        int extraItemToShowAmount = -1,
+        int overrideX = -1,
+        int overrideY = -1,
+        float alpha = 1f,
+        CraftingRecipe? craftingIngredients = null,
+        IList<Item>? additional_craft_materials = null,
+        Texture2D? boxTexture = null,
+        Rectangle? boxSourceRect = null,
+        Color? textColor = null,
+        Color? textShadowColor = null,
+        float boxScale = 1f,
+        int boxWidthOverride = -1,
+        int boxHeightOverride = -1)
     {
+        foreach (var (modId, handler) in DrawHoverTextHandlers)
+        {
+            Log.Trace($"[IClickableMenuPatch::DrawHoverTextPatch] Executing handler by mod {modId}", once: true);
+            bool canContinue = handler.Invoke(
+                new DrawHoverTextData(
+                    text,
+                    font,
+                    xOffset,
+                    yOffset,
+                    moneyAmountToDisplayAtBottom,
+                    boldTitleText,
+                    healAmountToDisplay,
+                    buffIconsToDisplay,
+                    hoveredItem,
+                    currencySymbol,
+                    extraItemToShowIndex,
+                    extraItemToShowAmount,
+                    overrideX,
+                    overrideY,
+                    alpha,
+                    craftingIngredients,
+                    additional_craft_materials,
+                    boxTexture,
+                    boxSourceRect,
+                    textColor,
+                    textShadowColor,
+                    boxScale,
+                    boxWidthOverride,
+                    boxHeightOverride
+                )
+            );
+
+            if (!canContinue)
+            {
+#if DEBUG
+                Log.Trace($"[IClickableMenuPatch::DrawHoverTextPatch] a handler by mod {modId} returned false, cancelling further execution", true);
+#endif
+                return;
+            }
+        }
+        
         if (!_tryHoverPatch && ActiveMenuOrSubMenu != null && !IgnoreClickableComponentsInMenus.Contains(ActiveMenuOrSubMenu.GetType().FullName ?? "")) return;
         if (ActiveMenuOrSubMenu != null && IgnoreHoverTextInMenus.Contains(ActiveMenuOrSubMenu.GetType().FullName ?? ""))
         {
@@ -367,6 +473,24 @@ internal class IClickableMenuPatch : IPatch
         {
             Log.Error($"[IClickableMenuPatch.ExitThisMenuPatch]: {e.Message}\n{e.StackTrace}");
         }
+    }
+
+    internal static void RegisterDrawHandler(Func<bool> handler, string modId)
+    {
+        Log.Debug($"[IClickableMenuPatch] Registering draw handler for mod {modId}");
+        DrawHandlers[modId] = handler;
+    }
+
+    internal static void RegisterDrawWithParamsHandler(Func<int, int, int, bool> handler, string modId)
+    {
+        Log.Debug($"[IClickableMenuPatch] Registering draw with params handler for mod {modId}");
+        DrawWithParamsHandlers[modId] = handler;
+    }
+
+    internal static void RegisterDrawHoverTextHandler(Func<IStardewAccessApi.IDrawHoverTextData, bool> handler, string modId)
+    {
+        Log.Debug($"[IClickableMenuPatch] Registering draw hover text handler for mod {modId}");
+        DrawHoverTextHandlers[modId] = handler;
     }
 
     internal static void Cleanup(IClickableMenu menu)

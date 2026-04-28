@@ -1,4 +1,6 @@
+using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using stardew_access.Translation;
 using StardewModdingAPI.Utilities;
 using StardewValley;
@@ -8,9 +10,64 @@ using StardewValley.Menus;
 
 namespace stardew_access;
 
+public record DrawHoverTextData(
+    StringBuilder Text,
+    SpriteFont Font,
+    int XOffset = 0,
+    int YOffset = 0,
+    int MoneyAmountToDisplayAtBottom = -1,
+    string? BoldTitleText = null,
+    int HealAmountToDisplay = -1,
+    string[]? BuffIconsToDisplay = null,
+    Item? HoveredItem = null,
+    int CurrencySymbol = 0,
+    string? ExtraItemToShowIndex = null,
+    int ExtraItemToShowAmount = -1,
+    int OverrideX = -1,
+    int OverrideY = -1,
+    float Alpha = 1f,
+    CraftingRecipe? CraftingIngredients = null,
+    IList<Item>? AdditionalCraftMaterials = null,
+    Texture2D? BoxTexture = null,
+    Rectangle? BoxSourceRect = null,
+    Color? TextColor = null,
+    Color? TextShadowColor = null,
+    float BoxScale = 1f,
+    int BoxWidthOverride = -1,
+    int BoxHeightOverride = -1
+) : IStardewAccessApi.IDrawHoverTextData;
+
 // TODO: Update doc comments
 public interface IStardewAccessApi
 {
+    public interface IDrawHoverTextData
+    {
+        StringBuilder Text { get; }
+        SpriteFont Font { get; }
+        int XOffset { get; }
+        int YOffset { get; }
+        int MoneyAmountToDisplayAtBottom { get; }
+        string? BoldTitleText { get; }
+        int HealAmountToDisplay { get; }
+        string[]? BuffIconsToDisplay { get; }
+        Item? HoveredItem { get; }
+        int CurrencySymbol { get; }
+        string? ExtraItemToShowIndex { get; }
+        int ExtraItemToShowAmount { get; }
+        int OverrideX { get; }
+        int OverrideY { get; }
+        float Alpha { get; }
+        CraftingRecipe? CraftingIngredients { get; }
+        IList<Item>? AdditionalCraftMaterials { get; }
+        Texture2D? BoxTexture { get; }
+        Rectangle? BoxSourceRect { get; }
+        Color? TextColor { get; }
+        Color? TextShadowColor { get; }
+        float BoxScale { get; }
+        int BoxWidthOverride { get; }
+        int BoxHeightOverride { get; }
+    }
+
     #region Keybinds
     /// <summary>Primary key to simulate mouse left click.</summary>
     KeybindList LeftClickMainKey { get; }
@@ -503,6 +560,15 @@ public interface IStardewAccessApi
     /// </summary>
     /// <param name="element">The element to speak.</param>
     public void SpeakOptionsElement(OptionsElement element);
+
+    public void AddIClickableMenuDrawHandler(Func<bool> handler, string modId);
+
+    public void AddIClickableMenuDrawHandler(Func<int, int, int, bool> handler, string modId);
+
+    public void AddIClickableMenuDrawHoverTextHandler(
+        Func<IDrawHoverTextData, bool> handler,
+        string modId
+    );
 
     /// <summary>
     /// A combination of <see cref="IgnoreHoverTextInMenu"/> and <see cref="IgnoreClickableComponentsInMenu"/>.

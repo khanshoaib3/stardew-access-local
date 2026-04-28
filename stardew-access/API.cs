@@ -288,6 +288,17 @@ public class API : IStardewAccessApi
     public void SpeakOptionsElement(OptionsElement element)
         => OptionsElementUtils.NarrateElement(element);
 
+    public void AddIClickableMenuDrawHandler(Func<bool> handler, string modId)
+        => IClickableMenuPatch.RegisterDrawHandler(handler, modId);
+
+    public void AddIClickableMenuDrawHandler(Func<int, int, int, bool> handler, string modId)
+        => IClickableMenuPatch.RegisterDrawWithParamsHandler(handler, modId);
+
+    public void AddIClickableMenuDrawHoverTextHandler(
+        Func<IStardewAccessApi.IDrawHoverTextData, bool> handler,
+        string modId
+    ) => IClickableMenuPatch.RegisterDrawHoverTextHandler(handler, modId);
+
     public void RegisterCustomMenuAsAccessible(string? fullNameOfClass)
     {
         if (string.IsNullOrWhiteSpace(fullNameOfClass))
