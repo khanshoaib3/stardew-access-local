@@ -230,7 +230,12 @@ menu-collections_page-unshipped = Unshipped
 menu-crafting_page-recipe_info = {$produce_count} {$name}, {$is_craftable ->
     [0] not craftable
     *[1] craftable
-  }, Ingredients: {$ingredients}, Description: {$description}, {$buffs}
+  }, Ingredients: {$ingredients}{$craft_count ->
+    [0] {EMPTYSTRING()}
+    [1] , Never crafted
+    [2] , Never cooked
+    *[3] , {$craft_count_text}
+  }, Description: {$description}, {$buffs}
 menu-crafting_page-unknown_recipe = Unknown recipe
 menu-crafting_page-previous_recipe_list_button = Previous recipe list button
 menu-crafting_page-next_recipe_list_button = Next recipe list button

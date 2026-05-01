@@ -134,12 +134,29 @@ internal class CraftingPagePatch : IPatch
 
         Item producesItem = ___hoverRecipe.createItem();
         string translationKey = "menu-crafting_page-recipe_info";
+        int craftCountState = 0;
+        string craftCountText = "";
+        if (Game1.options.showAdvancedCraftingInformation)
+        {
+            string? countText = ___hoverRecipe.getCraftCountText();
+            if (countText != null)
+            {
+                craftCountState = 3;
+                craftCountText = countText;
+            }
+            else
+            {
+                craftCountState = ___hoverRecipe.isCookingRecipe ? 2 : 1;
+            }
+        }
         object translationTokens = new
             {
                 produce_count = ___hoverRecipe.numberProducedPerCraft,
                 name = ___hoverRecipe.DisplayName,
                 is_craftable = ___hoverRecipe.doesFarmerHaveIngredientsInInventory(GetContainerContents(__instance._materialContainers)) ? 1 : 0,
                 ingredients = InventoryUtils.GetIngredientsFromRecipe(___hoverRecipe),
+                craft_count = craftCountState,
+                craft_count_text = craftCountText,
                 ___hoverRecipe.description,
                 buffs = $"{InventoryUtils.GetHealthNStaminaFromItem(producesItem)}, {InventoryUtils.GetBuffsFromItem(producesItem)}"
             };
