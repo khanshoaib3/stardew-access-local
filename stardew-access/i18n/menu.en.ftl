@@ -227,9 +227,16 @@ menu-collections_page-unshipped = Unshipped
 
 ### Crafting Page
 
-menu-crafting_page-recipe_info = {$produce_count} {$name}, {$is_craftable ->
-    [0] not craftable
-    *[1] craftable
+menu-crafting_page-recipe_info = {$produce_count} {$name}, {$craftable_count ->
+    [0] {$is_craftable ->
+        [0] not craftable
+        *[1] craftable
+      }
+    [1] {$is_craftable ->
+        [0] not craftable
+        *[1] craftable
+      }
+    *[other] craftable {$craftable_count} times
   }, Ingredients: {$ingredients}{$craft_count ->
     [0] {EMPTYSTRING()}
     [1] , Never crafted

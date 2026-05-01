@@ -134,8 +134,10 @@ internal class CraftingPagePatch : IPatch
 
         Item producesItem = ___hoverRecipe.createItem();
         string translationKey = "menu-crafting_page-recipe_info";
+        IList<Item>? containerContents = GetContainerContents(__instance._materialContainers);
         int craftCountState = 0;
         string craftCountText = "";
+        int craftableCount = 0;
         if (Game1.options.showAdvancedCraftingInformation)
         {
             string? countText = ___hoverRecipe.getCraftCountText();
@@ -148,15 +150,17 @@ internal class CraftingPagePatch : IPatch
             {
                 craftCountState = ___hoverRecipe.isCookingRecipe ? 2 : 1;
             }
+            craftableCount = ___hoverRecipe.getCraftableCount(containerContents);
         }
         object translationTokens = new
             {
                 produce_count = ___hoverRecipe.numberProducedPerCraft,
                 name = ___hoverRecipe.DisplayName,
-                is_craftable = ___hoverRecipe.doesFarmerHaveIngredientsInInventory(GetContainerContents(__instance._materialContainers)) ? 1 : 0,
+                is_craftable = ___hoverRecipe.doesFarmerHaveIngredientsInInventory(containerContents) ? 1 : 0,
                 ingredients = InventoryUtils.GetIngredientsFromRecipe(___hoverRecipe),
                 craft_count = craftCountState,
                 craft_count_text = craftCountText,
+                craftable_count = craftableCount,
                 ___hoverRecipe.description,
                 buffs = $"{InventoryUtils.GetHealthNStaminaFromItem(producesItem)}, {InventoryUtils.GetBuffsFromItem(producesItem)}"
             };
