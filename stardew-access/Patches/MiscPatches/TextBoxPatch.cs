@@ -17,7 +17,7 @@ namespace stardew_access.Patches
                 );
         }
 
-        internal static void DrawPatch(StardewValley.Menus.TextBox __instance)
+        internal static void DrawPatch(TextBox __instance)
         {
             try
             {

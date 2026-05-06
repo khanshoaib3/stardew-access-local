@@ -145,6 +145,11 @@ internal class IClickableMenuPatch : IPatch
                 return null;
             }
 
+            if (Game1.textEntry != null)
+            {
+                return Game1.textEntry;
+            }
+
             while (activeMenu.GetChildMenu() != null)
             {
                 activeMenu = activeMenu.GetChildMenu();
@@ -266,7 +271,6 @@ internal class IClickableMenuPatch : IPatch
                 Log.Debug($"[IClickableMenuPatch::DrawPatch] Skipping menu {activeMenuType.FullName}", once: true);
                 return;
             }
-            
             
             bool allowFallback = AllowFallbackInMenuTypes.Contains(activeMenuType);
             Log.Debug($"[IClickableMenuPatch::DrawPatch] allowFallback: {allowFallback} ActiveMenuType: {activeMenuType}", once: true);

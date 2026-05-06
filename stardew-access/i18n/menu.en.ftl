@@ -627,6 +627,14 @@ menu-purchase_animal-animal_name_text_box = Name text box{$value ->
     *[other] , Value: {$value}
   }
 
+### Text Entry Menu (OSK)
+
+menu-text_entry-backspace = Backspace
+menu-text_entry-space = Space
+menu-text_entry-upper_case_toggle = Upper case toggle button
+menu-text_entry-symbols_toggle = Symbols toggle button
+menu-text_entry-submit = Submit button
+
 ### Title Text Input Menu
 
 menu-title_text_input-paste_button = Paste button
