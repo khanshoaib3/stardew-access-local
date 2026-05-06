@@ -561,10 +561,27 @@ public interface IStardewAccessApi
     /// <param name="element">The element to speak.</param>
     public void SpeakOptionsElement(OptionsElement element);
 
+    /// <summary>
+    /// Register a lambda function or handler that will be executed before the default handler on <see cref="IClickableMenu.draw(SpriteBatch)"/> is executed.
+    /// </summary>
+    /// <param name="handler">The handler, return false to skip further handlers (including the default one)</param>
+    /// <param name="modId">ModId of the registerer, one handler per modId</param>
     public void AddIClickableMenuDrawHandler(Func<bool> handler, string modId);
 
+    /// <summary>
+    /// Register a lambda function or handler that will be executed before the default handler on <see cref="IClickableMenu.draw(SpriteBatch, int, int, int)"/> is executed.
+    /// </summary>
+    /// <param name="handler">The handler, return false to skip further handlers (including the default one)</param>
+    /// <param name="modId">ModId of the registerer, one handler per modId</param>
     public void AddIClickableMenuDrawHandler(Func<int, int, int, bool> handler, string modId);
 
+    /// <summary>
+    /// Register a lambda function or handler that will be executed before the default handler on
+    /// <see cref="IClickableMenu.drawHoverText(SpriteBatch, StringBuilder, SpriteFont, int, int, int, string, int, string[], Item, int, string, int, int, int, float, CraftingRecipe, IList{Item}, Texture2D, Rectangle?, Color?, Color?, float, int, int)"/>
+    /// is executed.
+    /// </summary>
+    /// <param name="handler">The handler, return false to skip further handlers (including the default one)</param>
+    /// <param name="modId">ModId of the registerer, one handler per modId</param>
     public void AddIClickableMenuDrawHoverTextHandler(
         Func<IDrawHoverTextData, bool> handler,
         string modId
