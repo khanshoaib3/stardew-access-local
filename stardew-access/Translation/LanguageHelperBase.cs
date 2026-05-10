@@ -93,12 +93,10 @@ public abstract class LanguageHelperBase : ILanguageHelper
             #if DEBUG
             Log.Verbose($"\"{word}\" not in cache; calling `Pluralize` for {Locale}");
             #endif
-            if (MainClass.Config.DisableInventoryFluentPluralization)
-            {
-                pluralizedWord = word;
-            } else {
-                pluralizedWord = Pluralize(count, word);
-            }
+            
+            if (MainClass.Config.DisableInventoryFluentPluralization) pluralizedWord = word;
+            else pluralizedWord = Pluralize(count, word.Trim());
+            
             _pluralizationCache.TryAdd(key, pluralizedWord);
             #if DEBUG
             Log.Trace($"Translated ({count}, {word}) and added result to cache.", true);
