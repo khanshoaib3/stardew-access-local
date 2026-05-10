@@ -28,7 +28,7 @@ internal static class MouseUtils
             if (MainClass.Config.LeftClickMainKey.JustPressed())
             {
 #if DEBUG
-                Log.Debug($"Simulating left mouse click at {mouseX}x {mouseY}y in menu {IClickableMenuPatch.ActiveMenuOrSubMenu}");
+                Log.Debug($"Simulating left mouse click via Input.Press api at {mouseX}x {mouseY}y in menu {IClickableMenuPatch.ActiveMenuOrSubMenu}");
 #endif
                 MainClass.ModHelper!.Input.Press(SButton.MouseLeft);
                 return true;

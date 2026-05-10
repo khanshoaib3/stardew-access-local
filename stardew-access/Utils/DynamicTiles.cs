@@ -1579,13 +1579,13 @@ public class DynamicTiles
                 foreach (var (modId, handler) in locHandlers)
                 {
 #if DEBUG
-                    Log.Verbose($"Found dynamic tile handler for GameLocation, {currentLocation.Name}, by mod, {modId}");
+                    Log.Verbose($"[{currentLocation.NameOrUniqueName}][{currentLocation.currentEvent?.id}] Found dynamic tile handler for GameLocation, {currentLocation.Name}, by mod, {modId}", once: true);
 #endif
                     var result = handler(x, y);
                     if (result != null)
                     {
 #if DEBUG
-                        Log.Trace($"Found dynamic tile. GameLocation, {currentLocation.Name}, by mod, {modId}");
+                        Log.Trace($"[{currentLocation.NameOrUniqueName}][{currentLocation.currentEvent?.id}] Found dynamic tile. GameLocation, {currentLocation.Name}, by mod, {modId}", once: true);
 #endif
                         return (result.Value.Item1, CATEGORY.FromString(result.Value.Item2));
                     }
@@ -1597,13 +1597,13 @@ public class DynamicTiles
                 foreach (var (modId, handler) in locNameHandlers)
                 {
 #if DEBUG
-                    Log.Verbose($"Found dynamic tile handler for location name (or unique name), {currentLocation.NameOrUniqueName}, by mod, {modId}");
+                    Log.Verbose($"[{currentLocation.NameOrUniqueName}][{currentLocation.currentEvent?.id}] Found dynamic tile handler for location name (or unique name), {currentLocation.NameOrUniqueName}, by mod, {modId}", once: true);
 #endif
                     var result = handler(x, y);
                     if (result != null)
                     {
 #if DEBUG
-                        Log.Trace($"Found dynamic tile. Location name (or unique name), {currentLocation.NameOrUniqueName}, by mod, {modId}");
+                        Log.Trace($"[{currentLocation.NameOrUniqueName}][{currentLocation.currentEvent?.id}] Found dynamic tile. Location name (or unique name), {currentLocation.NameOrUniqueName}, by mod, {modId}", once: true);
 #endif
                         return (result.Value.Item1, CATEGORY.FromString(result.Value.Item2));
                     }
@@ -1617,13 +1617,13 @@ public class DynamicTiles
                 foreach (var (modId, handler) in eventHandlers)
                 {
 #if DEBUG
-                    Log.Verbose($"Found dynamic tile handler for event id, {currentLocation.currentEvent.id}, by mod, {modId}");
+                    Log.Verbose($"[{currentLocation.NameOrUniqueName}][{currentLocation.currentEvent?.id}] Found dynamic tile handler for event id, {currentLocation.currentEvent.id}, by mod, {modId}", once: true);
 #endif
                     var result = handler(x, y);
                     if (result != null)
                     {
 #if DEBUG
-                        Log.Trace($"Found dynamic tile. Event id, {currentLocation.currentEvent.id}, by mod, {modId}");
+                        Log.Trace($"[{currentLocation.NameOrUniqueName}][{currentLocation.currentEvent?.id}] Found dynamic tile. Event id, {currentLocation.currentEvent?.id}, by mod, {modId}", once: true);
 #endif
                         return (result.Value.Item1, CATEGORY.FromString(result.Value.Item2));
                     }
@@ -1631,18 +1631,18 @@ public class DynamicTiles
             }
 
 #if DEBUG
-            Log.Verbose($"Could not found tile info with location/event id handlers, falling back to unconstrained handlers (if any)");
+            Log.Verbose($"[{currentLocation.NameOrUniqueName}][{currentLocation.currentEvent?.id}] Could not find tile info with location/event id handlers, falling back to unconstrained handlers (if any)", once: true);
 #endif
             foreach (var item in UnconstrainedHandlers)
             {
 #if DEBUG
-                Log.Verbose($"Executing unconstrained handler from modid {item.ModId}");
+                Log.Verbose($"[{currentLocation.NameOrUniqueName}][{currentLocation.currentEvent?.id}] Executing unconstrained handler from modid {item.ModId}", once: true);
 #endif
                 var result = item.Handler(x, y);
                 if (result != null)
                 {
 #if DEBUG
-                    Log.Verbose($"Tile found. Unconstrained handler from modid {item.ModId}");
+                    Log.Verbose($"[{currentLocation.NameOrUniqueName}][{currentLocation.currentEvent?.id}] Tile found. Unconstrained handler from modid {item.ModId}", once: true);
 #endif
                     return (result.Value.Item1, CATEGORY.FromString(result.Value.Item2));
                 }
